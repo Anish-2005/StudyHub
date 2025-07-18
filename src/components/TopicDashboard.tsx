@@ -317,11 +317,11 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
       </div>
 
       {/* Content */}
-      <div className="md:flex-1 md:overflow-hidden md:min-h-0">
+      <div className="flex-1 overflow-hidden min-h-0">
         {/* Mobile: Single scrollable container */}
-        <div className="md:hidden flex-1 overflow-y-auto">
+        <div className="md:hidden h-full">
           {activeTab === 'overview' && (
-            <div className="p-4 mobile-scroll-container">
+            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
               <div className="max-w-4xl mx-auto">
                 <div className="grid grid-cols-1 gap-4">
                   {/* Recent Tasks */}
@@ -421,8 +421,8 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
           )}
 
           {activeTab === 'tasks' && (
-            <div className="flex flex-col h-full">
-              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar flex-shrink-0">
+            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
+              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
                 <div className="flex flex-col space-y-3">
                   <h2 className="text-lg font-semibold text-vscode-text">Tasks for {topic.name}</h2>
                   {!isPublicView && (
@@ -438,15 +438,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   )}
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto p-4 mobile-scroll-container">
-                <TaskList tasks={tasks} />
-              </div>
+              <TaskList tasks={tasks} />
             </div>
           )}
 
           {activeTab === 'reminders' && (
-            <div className="flex flex-col h-full">
-              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar flex-shrink-0">
+            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
+              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
                 <div className="flex flex-col space-y-3">
                   <h2 className="text-lg font-semibold text-vscode-text">Reminders for {topic.name}</h2>
                   {!isPublicView && (
@@ -462,15 +460,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   )}
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto p-4 mobile-scroll-container">
-                <ReminderList reminders={reminders} />
-              </div>
+              <ReminderList reminders={reminders} />
             </div>
           )}
 
           {activeTab === 'notes' && (
-            <div className="flex flex-col h-full">
-              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar flex-shrink-0">
+            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
+              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
                 <div className="flex flex-col space-y-3">
                   <h2 className="text-lg font-semibold text-vscode-text">Notes for {topic.name}</h2>
                   {!isPublicView && (
@@ -486,9 +482,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   )}
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto p-4 mobile-scroll-container">
-                <NoteList notes={notes} onDelete={handleDeleteNote} />
-              </div>
+              <NoteList notes={notes} onDelete={handleDeleteNote} />
             </div>
           )}
         </div>
@@ -596,8 +590,8 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         )}
 
         {activeTab === 'tasks' && (
-          <div className="h-full flex flex-col overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-vscode-border bg-vscode-sidebar flex-shrink-0">
+          <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
+            <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <h2 className="text-lg font-semibold text-vscode-text">Tasks for {topic.name}</h2>
                 {!isPublicView && (
@@ -613,15 +607,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 )}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 min-h-0 mobile-scroll-container">
-              <TaskList tasks={tasks} />
-            </div>
+            <TaskList tasks={tasks} />
           </div>
         )}
 
         {activeTab === 'reminders' && (
-          <div className="h-full flex flex-col overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-vscode-border bg-vscode-sidebar flex-shrink-0">
+          <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
+            <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <h2 className="text-lg font-semibold text-vscode-text">Reminders for {topic.name}</h2>
                 {!isPublicView && (
@@ -637,15 +629,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 )}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 min-h-0 mobile-scroll-container">
-              <ReminderList reminders={reminders} />
-            </div>
+            <ReminderList reminders={reminders} />
           </div>
         )}
 
         {activeTab === 'notes' && (
-          <div className="h-full flex flex-col overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-vscode-border bg-vscode-sidebar flex-shrink-0">
+          <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
+            <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <h2 className="text-lg font-semibold text-vscode-text">Notes for {topic.name}</h2>
                 {!isPublicView && (
@@ -661,9 +651,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 )}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 min-h-0 mobile-scroll-container">
-              <NoteList notes={notes} onDelete={handleDeleteNote} />
-            </div>
+            <NoteList notes={notes} onDelete={handleDeleteNote} />
           </div>
         )}
         </div>

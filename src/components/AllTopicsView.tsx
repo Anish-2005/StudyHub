@@ -107,8 +107,8 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
     { id: 'reminders', name: 'Reminders', count: reminders.length },
   ] as const;
 
-  return (
-    <div className="flex flex-col h-full min-h-0 overflow-hidden">
+return (
+    <div className="flex flex-col h-full min-h-0 overflow-hidden" style={{ fontFamily: 'Segoe UI', fontWeight: 400 }}>
       {/* Header */}
       <div className="border-b border-vscode-border bg-vscode-sidebar flex-shrink-0">
         <div className="p-4 sm:p-6">
