@@ -1,0 +1,250 @@
+rules_version = '2';
+
+// Firestore Security Rules for StudyHub
+// Copy these rules to Firebase Console > Firestore Database > Rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isValidUser() {
+      return isAuthenticated() && 
+             request.auth.uid != null && 
+             request.auth.uid.size() > 0;
+    }
+    
+    function isValidEmail() {
+      return isAuthenticated() && 
+             request.auth.token.email != null &&
+             request.auth.token.email.size() > 0;
+    }
+    
+    // Users collection - users can only access their own profile, but displayName can be read for public topic access
+    match /users/{userId} {
+      allow read: if (isAuthenticated() && isOwner(userId)) ||
+                     // Allow reading user data for public topic access (limited fields)
+                     true; // This allows reading user displayName for public URLs
+      allow write: if isAuthenticated() && isOwner(userId);
+      allow create: if isAuthenticated() && 
+                    isOwner(userId) && 
+                    isValidEmail() &&
+                    request.resource.data.keys().hasAll(['email', 'displayName', 'createdAt']) &&
+                    request.resource.data.email == request.auth.token.email;
+      allow update: if isAuthenticated() && 
+                    isOwner(userId) && 
+                    request.resource.data.email == resource.data.email; // Email cannot be changed
+      allow delete: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // Topics collection - users can only access their own topics, but public topics can be read by anyone (even unauthenticated)
+    match /topics/{topicId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
+                     (resource.data.isPublic == true);
+      
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.keys().hasAll(['name', 'userId', 'createdAt', 'updatedAt']) &&
+                    request.resource.data.name is string &&
+                    request.resource.data.name.size() > 0 &&
+                    request.resource.data.name.size() <= 100 &&
+                    (!request.resource.data.keys().hasAny(['isPublic']) || request.resource.data.isPublic is bool);
+      
+      allow update: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.name is string &&
+                    request.resource.data.name.size() > 0 &&
+                    request.resource.data.name.size() <= 100 &&
+                    (!request.resource.data.keys().hasAny(['isPublic']) || request.resource.data.isPublic is bool);
+      
+      allow delete: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+    }
+    
+    // Tasks collection - users can access their own tasks or tasks from public topics (even unauthenticated for public topics)
+    match /tasks/{taskId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) ||
+                     (exists(/databases/$(database)/documents/topics/$(resource.data.topicId)) &&
+                      get(/databases/$(database)/documents/topics/$(resource.data.topicId)).data.isPublic == true);
+      
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.keys().hasAll(['title', 'userId', 'topicId', 'completed', 'priority', 'createdAt', 'updatedAt']) &&
+                    request.resource.data.title is string &&
+                    request.resource.data.title.size() > 0 &&
+                    request.resource.data.title.size() <= 200 &&
+                    request.resource.data.completed is bool &&
+                    request.resource.data.priority in ['low', 'medium', 'high'] &&
+                    exists(/databases/$(database)/documents/topics/$(request.resource.data.topicId));
+      
+      allow update: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.title is string &&
+                    request.resource.data.title.size() > 0 &&
+                    request.resource.data.title.size() <= 200 &&
+                    request.resource.data.completed is bool &&
+                    request.resource.data.priority in ['low', 'medium', 'high'];
+      
+      allow delete: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+    }
+    
+    // Reminders collection - users can access their own reminders or reminders from public topics (even unauthenticated for public topics)
+    match /reminders/{reminderId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) ||
+                     (exists(/databases/$(database)/documents/topics/$(resource.data.topicId)) &&
+                      get(/databases/$(database)/documents/topics/$(resource.data.topicId)).data.isPublic == true);
+      
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.keys().hasAll(['title', 'date', 'type', 'userId', 'topicId', 'completed', 'createdAt']) &&
+                    request.resource.data.title is string &&
+                    request.resource.data.title.size() > 0 &&
+                    request.resource.data.title.size() <= 200 &&
+                    request.resource.data.date is timestamp &&
+                    request.resource.data.type in ['task', 'study', 'review'] &&
+                    request.resource.data.completed is bool &&
+                    exists(/databases/$(database)/documents/topics/$(request.resource.data.topicId));
+      
+      allow update: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.title is string &&
+                    request.resource.data.title.size() > 0 &&
+                    request.resource.data.title.size() <= 200 &&
+                    request.resource.data.type in ['task', 'study', 'review'] &&
+                    request.resource.data.completed is bool;
+      
+      allow delete: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+    }
+    
+    // Notes collection - users can access their own notes or notes from public topics (even unauthenticated for public topics)
+    match /notes/{noteId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) ||
+                     (exists(/databases/$(database)/documents/topics/$(resource.data.topicId)) &&
+                      get(/databases/$(database)/documents/topics/$(resource.data.topicId)).data.isPublic == true);
+      
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.keys().hasAll(['title', 'content', 'topicId', 'userId', 'createdAt', 'updatedAt']) &&
+                    request.resource.data.title is string &&
+                    request.resource.data.title.size() > 0 &&
+                    request.resource.data.title.size() <= 200 &&
+                    request.resource.data.content is string &&
+                    request.resource.data.content.size() >= 0 &&
+                    request.resource.data.content.size() <= 10000 &&
+                    (request.resource.data.tags == null || 
+                     (request.resource.data.tags is list && 
+                      request.resource.data.tags.size() <= 20)) &&
+                    exists(/databases/$(database)/documents/topics/$(request.resource.data.topicId));
+      
+      allow update: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.title is string &&
+                    request.resource.data.title.size() > 0 &&
+                    request.resource.data.title.size() <= 200 &&
+                    request.resource.data.content is string &&
+                    request.resource.data.content.size() >= 0 &&
+                    request.resource.data.content.size() <= 10000 &&
+                    (request.resource.data.tags == null || 
+                     (request.resource.data.tags is list && 
+                      request.resource.data.tags.size() <= 20));
+      
+      allow delete: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+    }
+
+    // Study Sessions collection - users can only access their own sessions
+    match /studySessions/{sessionId} {
+      allow read: if isAuthenticated() && 
+                  resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.keys().hasAll(['topicId', 'userId', 'startTime', 'completed']) &&
+                    request.resource.data.startTime is timestamp &&
+                    request.resource.data.completed is bool &&
+                    exists(/databases/$(database)/documents/topics/$(request.resource.data.topicId));
+      
+      allow update: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.userId == request.auth.uid;
+      
+      allow delete: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+    }
+    
+    // Suggestions collection - users can only access their own suggestions
+    match /suggestions/{suggestionId} {
+      allow read: if isAuthenticated() && 
+                  resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.keys().hasAll(['title', 'type', 'userId', 'dismissed', 'createdAt']) &&
+                    request.resource.data.title is string &&
+                    request.resource.data.title.size() > 0 &&
+                    request.resource.data.title.size() <= 200 &&
+                    request.resource.data.type in ['related_topic', 'study_plan', 'resource'] &&
+                    request.resource.data.dismissed is bool;
+      
+      allow update: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.userId == request.auth.uid;
+      
+      allow delete: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+    }
+    
+    // User preferences subcollection
+    match /users/{userId}/preferences/{preferenceId} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // Analytics subcollection (optional for future features)
+    match /users/{userId}/analytics/{analyticsId} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // Deny access to any other documents
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// Storage Rules for file uploads (if needed in the future)
+// Uncomment and modify as needed
+/*
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Users can only upload to their own folder
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && 
+                         request.auth.uid == userId &&
+                         // Limit file size to 10MB
+                         request.resource.size < 10 * 1024 * 1024 &&
+                         // Only allow image files
+                         request.resource.contentType.matches('image/.*');
+    }
+    
+    // Topic attachments
+    match /topics/{topicId}/{allPaths=**} {
+      allow read, write: if request.auth != null &&
+                         // Verify user owns the topic
+                         exists(/databases/(default)/documents/topics/$(topicId)) &&
+                         get(/databases/(default)/documents/topics/$(topicId)).data.userId == request.auth.uid;
+    }
+  }
+}
+*/

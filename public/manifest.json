@@ -1,0 +1,14 @@
+{
+  "name": "StudyHub - Your Personal Study Workspace",
+  "short_name": "StudyHub",
+  "description": "A VS Code-inspired study management app with topic organization, reminders, and smart suggestions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1e1e",
+  "theme_color": "#1e1e1e",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["productivity", "education"],
+  "prefer_related_applications": false
+}
