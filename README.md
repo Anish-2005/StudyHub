@@ -1,8 +1,193 @@
-# StudyHub 📚
+<div align="center">
+  <h1 style="margin-bottom:0.25rem">StudyHub</h1>
+  <p style="margin-top:0; color:#6b7280">A focused personal study manager — topics, tasks, reminders and notes with public sharing.</p>
+  <p style="margin-top:0.5rem">
+    <strong>Public topic sharing</strong> via human-friendly URLs: <code>/username/topic-name</code> • privacy toggles • responsive UI
+  </p>
+</div>
 
-> Your personal, organized, and intelligent study workspace - designed like VS Code
+---
 
-StudyHub is a modern study management application that brings the familiar VS Code interface to your learning journey. Organize your study topics, track tasks, set reminders, and get smart suggestions to enhance your productivity.
+<div style="display:flex; gap:1rem; align-items:center; margin:0.5rem 0 1rem 0">
+  <div style="flex:1;">
+    <h2 style="margin:0 0 0.25rem 0">Why StudyHub?</h2>
+    <p style="margin:0; color:#374151">StudyHub helps you organize topics (courses / subjects), track tasks, set reminders, and capture notes — with the option to share topics publicly via friendly URLs. It's built to be minimal, fast and privacy-conscious.</p>
+  </div>
+  <div style="flex:0 0 260px; text-align:left; font-size:0.9rem; background:#0f172a; padding:0.75rem; border-radius:8px; color:#e6eef8">
+    <strong>Status</strong>
+    <div style="margin-top:0.5rem">Tech: Next.js 15 • React 18 • TypeScript • Tailwind • Firebase (Firestore)</div>
+  </div>
+</div>
+
+## Table of contents
+
+- Features
+- Quick demo (local)
+- Tech stack
+- Setup & Firebase
+- Routes & sharing model
+- Developer notes (components & tips)
+- Troubleshooting
+- Contributing
+- License
+
+---
+
+## Features
+
+- Organize study material into Topics
+- Create Tasks, Reminders and Notes per Topic
+- Track progress with a compact dashboard and progress bar
+- Make a Topic public or private; public topics are viewable by anyone with the link
+- Human-friendly public routes: `/username/topic-name` (displayName based)
+- Responsive UI (mobile & desktop) with modals and accessible controls
+- No Firestore composite indexes required for common flows — client-side filtering is used where needed
+
+---
+
+## Quick demo (run locally)
+
+Open a PowerShell terminal and run:
+
+```powershell
+# Install dependencies
+npm install
+
+# Start the dev server
+npm run dev
+
+# Open http://localhost:3000 in your browser
+```
+
+Notes:
+- The app expects Firebase configuration (see below) in environment variables.
+
+---
+
+## Tech stack
+
+| Layer | Libraries / Notes |
+|---|---|
+| Frontend | Next.js 15, React 18, TypeScript, Tailwind CSS |
+| Backend / DB | Firebase Firestore (client SDK) |
+| Auth | Firebase Authentication (used for private topics) |
+| Tooling | ESLint / Prettier (project standard), react-hot-toast for notifications |
+
+---
+
+## Setup & Firebase
+
+1. Create a Firebase project and enable Firestore and Authentication.
+2. Add a web app in Firebase and grab the config keys.
+3. Add the following environment variables to your `.env.local` (or platform secrets):
+
+```text
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+NEXT_PUBLIC_FIREBASE_APP_ID=...
+```
+
+4. Firestore rules (example) — the app uses a public/private model for topics. Add or adapt the rules below to your Firestore rules in the console. This example allows unauthenticated reads of topics/documents that are marked public but protects private data.
+
+```js
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /topics/{topicId} {
+      allow read: if resource.data.isPublic == true || request.auth != null && request.auth.uid == resource.data.userId;
+      allow write: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+
+    match /{collection}/{docId} {
+      // example for notes/tasks/reminders — ensure only owners write/read private data
+      allow read: if exists(/databases/$(database)/documents/topics/$(request.resource.data.topicId))
+                 ? (get(/databases/$(database)/documents/topics/$(request.resource.data.topicId)).data.isPublic == true)
+                 : (request.auth != null && request.auth.uid == resource.data.userId);
+      allow write: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+  }
+}
+```
+
+Important: tailor these rules to your exact collections and data shapes. The app was designed to avoid requiring composite indexes for common list reads by filtering in the client where appropriate.
+
+---
+
+## Routes & sharing model
+
+- Topic pages (public or private) are accessible at: `/[username]/[topic]` where `username` is the author's displayName (URL-encoded) and `topic` is a URL-safe topic slug.
+- If a topic is public (`topic.isPublic`), anyone with the link can view it. If private, only the owner (authenticated) can view it.
+- The owner sees the same dynamic route as visitors (so previews and shareable links are identical).
+
+---
+
+## Developer notes & main files
+
+Below is a short mapping of important files and components to help contributors get started.
+
+<table>
+  <thead>
+    <tr><th align="left">Path / Component</th><th align="left">Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>src/components/TopicDashboard.tsx</code></td><td>Per-topic dashboard: header, progress, tabs (Overview / Tasks / Reminders / Notes) and modals.</td></tr>
+    <tr><td><code>src/components/CreateTopicModal.tsx</code></td><td>Modal used to create topics (public/private toggle & displayName-based url slug).</td></tr>
+    <tr><td><code>src/app/[username]/[topic]/page.tsx</code></td><td>Public topic route — loads topic by owner/displayName and topic slug and shows public view to visitors.</td></tr>
+    <tr><td><code>src/utils/slug.ts</code></td><td>Helpers to encode/decode display names and topic names into friendly URL slugs.</td></tr>
+    <tr><td><code>src/lib/firebase.ts</code></td><td>Firebase initialization using env variables.</td></tr>
+  </tbody>
+</table>
+
+---
+
+## Styling & fonts
+
+- The app uses Tailwind CSS. In the project the global font has been set to "Segoe UI" for a clean, native look across platforms. If you prefer another font, change `src/app/globals.css`.
+
+---
+
+## Running tests & linting
+
+If the project includes tests or linters, use:
+
+```powershell
+npm run lint    # run ESLint
+npm test        # run unit tests (if configured)
+npm run build   # production build
+```
+
+---
+
+## Common troubleshooting
+
+- Firestore permission errors: double-check your Firestore rules and that the client is authenticating where needed. Use the browser console to view Firebase error messages.
+- Next.js EPERM errors on Windows: try deleting `.next` and rerunning `npm run dev` or run your console as administrator if file locks persist.
+- Missing fonts or style mismatches: verify `src/app/globals.css` and Tailwind config.
+
+---
+
+## Contributing
+
+Contributions are welcome. Suggested workflow:
+
+1. Fork the repo
+2. Create a feature branch: `git checkout -b feat/my-change`
+3. Make changes and add tests where applicable
+4. Run `npm run lint` and `npm test`
+5. Open a PR with a clear description of the change
+
+---
+
+## License & Contact
+
+This project is MIT licensed. If you want to reach out, open an issue or drop a PR — happy to collaborate.
+
+---
+
+_Made with focus — build better study habits._
 
 ## ✨ Features
 
