@@ -24,6 +24,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
   const { user } = useAuth();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [activeTab, setActiveTab] = useState<'overview' | 'tasks' | 'reminders'>('overview');
+  const [isHeaderMinimized, setIsHeaderMinimized] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -53,6 +54,21 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 
     return () => unsubscribe();
   }, [user]);
+
+  // Handle header minimization on scroll
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const scrollTop = target.scrollTop;
+      setIsHeaderMinimized(scrollTop > 100);
+    };
+
+    const contentContainer = document.querySelector('.mobile-scroll-container');
+    if (contentContainer) {
+      contentContainer.addEventListener('scroll', handleScroll);
+      return () => contentContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
 
   const completedTasks = tasks.filter(task => task.completed);
   const pendingTasks = tasks.filter(task => !task.completed);
@@ -117,36 +133,58 @@ return (
       </div>
 
       {/* Header */}
-      <div className="border-b border-secondary-700/50 bg-secondary-800/50 backdrop-blur-xl flex-shrink-0 relative z-10">
-        <div className="p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
+      <div className={`border-b border-secondary-700/50 bg-secondary-800/50 backdrop-blur-xl flex-shrink-0 relative z-10 transition-all duration-300 ${
+        isHeaderMinimized ? 'py-2' : ''
+      }`}>
+        <div className={`transition-all duration-300 ${
+          isHeaderMinimized ? 'p-4 sm:p-6' : 'p-6 sm:p-8'
+        }`}>
+          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0 transition-all duration-300 ${
+            isHeaderMinimized ? 'mb-3' : 'mb-6'
+          }`}>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent mb-2">
+              <h1 className={`font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent mb-2 transition-all duration-300 ${
+                isHeaderMinimized ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+              }`}>
                 StudyHub Dashboard
               </h1>
-              <p className="text-secondary-400 font-medium">
-                Welcome back, {user?.displayName || 'Student'}! Ready to conquer your studies?
-              </p>
+              {!isHeaderMinimized && (
+                <p className="text-secondary-400 font-medium transition-all duration-300">
+                  Welcome back, {user?.displayName || 'Student'}! Ready to conquer your studies?
+                </p>
+              )}
             </div>
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className={`bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 ${
+                isHeaderMinimized ? 'w-8 h-8' : 'w-12 h-12'
+              }`}>
+                <svg className={`text-white transition-all duration-300 ${
+                  isHeaderMinimized ? 'w-4 h-4' : 'w-6 h-6'
+                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
             </div>
           </div>
 
-          {/* Study Stats */}
-          <StudyStats topics={topics} tasks={tasks} reminders={reminders} />
+          {/* Study Stats - Hide when minimized */}
+          {!isHeaderMinimized && (
+            <div className="transition-all duration-300">
+              <StudyStats topics={topics} tasks={tasks} reminders={reminders} />
+            </div>
+          )}
 
           {/* Tabs */}
-          <div className="flex space-x-2 bg-secondary-800/50 backdrop-blur-sm rounded-xl p-2 border border-secondary-700/50">
+          <div className={`flex space-x-2 bg-secondary-800/50 backdrop-blur-sm rounded-xl p-2 border border-secondary-700/50 transition-all duration-300 ${
+            isHeaderMinimized ? 'p-1' : 'p-2'
+          }`}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 touch-target ${
+                className={`px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 touch-target ${
+                  isHeaderMinimized ? 'px-3 py-2 text-xs' : 'px-4 py-3 text-sm'
+                } ${
                   activeTab === tab.id
                     ? 'bg-primary-500 text-white shadow-lg'
                     : 'text-secondary-400 hover:text-secondary-200 hover:bg-secondary-700/50'
@@ -154,7 +192,9 @@ return (
               >
                 <span className="whitespace-nowrap">{tab.name}</span>
                 {tab.count !== null && tab.count > 0 && (
-                  <span className={`ml-2 px-2 py-1 rounded-full text-xs font-bold ${
+                  <span className={`ml-2 px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
+                    isHeaderMinimized ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-xs'
+                  } ${
                     activeTab === tab.id
                       ? 'bg-white/20 text-white'
                       : 'bg-secondary-700 text-secondary-300'
