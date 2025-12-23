@@ -55,11 +55,21 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
     return () => unsubscribe();
   }, [user]);
 
-  // Handle header minimization on scroll
+  // Handle header minimization on scroll (desktop only)
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;
 
     const handleScroll = (e: Event) => {
+      // Only minimize on desktop (not mobile)
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        // Reset to not minimized on mobile
+        if (isHeaderMinimized) {
+          setIsHeaderMinimized(false);
+        }
+        return;
+      }
+
       // Throttle scroll events for better performance
       if (scrollTimeout) clearTimeout(scrollTimeout);
 
@@ -67,9 +77,8 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
         const target = e.target as HTMLElement;
         const scrollTop = target.scrollTop || window.scrollY || document.documentElement.scrollTop;
 
-        // Lower threshold for mobile devices and more aggressive minimization
-        const isMobile = window.innerWidth < 768;
-        const threshold = isMobile ? 10 : 100; // Very low threshold for mobile since header is already minimal // Even lower threshold for mobile
+        // Desktop threshold
+        const threshold = 100;
         const shouldMinimize = scrollTop > threshold;
 
         // Only update state if it actually changed to prevent unnecessary re-renders
@@ -79,34 +88,34 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
       }, 16); // 60fps updates
     };
 
-    // Try multiple scroll targets for better mobile compatibility
+    // Listen to scroll events
     const scrollTargets = [
       document.querySelector('.mobile-scroll-container'),
       window,
-      document.documentElement,
-      document.body
     ];
 
     scrollTargets.forEach(target => {
       if (target) {
-        target.addEventListener('scroll', handleScroll, { passive: true, capture: false });
-
-        // Also listen for touch events on mobile
-        if ('ontouchstart' in window) {
-          target.addEventListener('touchmove', handleScroll, { passive: true, capture: false });
-        }
+        target.addEventListener('scroll', handleScroll, { passive: true });
       }
     });
+
+    // Also check on resize to reset state if switching to mobile
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile && isHeaderMinimized) {
+        setIsHeaderMinimized(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
       scrollTargets.forEach(target => {
         if (target) {
           target.removeEventListener('scroll', handleScroll);
-          if ('ontouchstart' in window) {
-            target.removeEventListener('touchmove', handleScroll);
-          }
         }
       });
+      window.removeEventListener('resize', handleResize);
       if (scrollTimeout) clearTimeout(scrollTimeout);
     };
   }, [isHeaderMinimized]);
@@ -131,21 +140,21 @@ return (
 
       {/* Header */}
       <div className={`border-b border-secondary-200 dark:border-secondary-700/50 bg-white/50 dark:bg-secondary-800/50 backdrop-blur-xl flex-shrink-0 relative z-10 transition-all duration-300 ${
-        isHeaderMinimized ? 'py-1' : 'py-1 md:py-2'
+        isHeaderMinimized ? 'md:py-1' : 'py-1 md:py-2'
       }`} style={{ touchAction: 'none' }}>
         <div className={`transition-all duration-300 ${
-          isHeaderMinimized ? 'p-2 sm:p-4' : 'p-2 sm:p-6'
+          isHeaderMinimized ? 'p-2 sm:p-4 md:p-3' : 'p-2 sm:p-6'
         }`}>
           <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-6 space-y-2 sm:space-y-0 transition-all duration-300 ${
-            isHeaderMinimized ? 'mb-2' : 'mb-3 md:mb-6'
+            isHeaderMinimized ? 'md:mb-2' : 'mb-3 md:mb-6'
           }`}>
             <div>
               <h1 className={`font-bold text-secondary-900 dark:bg-gradient-to-r dark:from-primary-400 dark:to-primary-600 dark:bg-clip-text dark:text-transparent transition-all duration-300 ${
-                isHeaderMinimized ? 'text-lg sm:text-2xl' : 'text-lg sm:text-3xl'
+                isHeaderMinimized ? 'md:text-xl' : 'text-lg sm:text-3xl'
               }`}>
                 StudyHub Dashboard
               </h1>
-              {/* Hide welcome message on mobile, show only on larger screens when not minimized */}
+              {/* Hide welcome message when minimized on desktop */}
               {!isHeaderMinimized && (
                 <p className="hidden sm:block text-secondary-600 dark:text-secondary-400 font-medium transition-all duration-300">
                   Welcome back, {user?.displayName || 'Student'}! Ready to conquer your studies?
@@ -154,10 +163,10 @@ return (
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
               <div className={`bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 ${
-                isHeaderMinimized ? 'w-6 h-6 sm:w-8 sm:h-8' : 'w-8 h-8 sm:w-12 sm:h-12'
+                isHeaderMinimized ? 'md:w-8 md:h-8' : 'w-8 h-8 sm:w-12 sm:h-12'
               }`}>
                 <svg className={`text-white transition-all duration-300 ${
-                  isHeaderMinimized ? 'w-3 h-3 sm:w-4 sm:h-4' : 'w-4 h-4 sm:w-6 sm:h-6'
+                  isHeaderMinimized ? 'md:w-4 md:h-4' : 'w-4 h-4 sm:w-6 sm:h-6'
                 }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -165,7 +174,7 @@ return (
             </div>
           </div>
 
-          {/* Study Stats - Show compact version on mobile, full version on larger screens */}
+          {/* Study Stats - Hide when minimized on desktop, always show on mobile */}
           {!isHeaderMinimized && (
             <div className="transition-all duration-300">
               {/* Mobile compact stats */}
@@ -218,14 +227,14 @@ return (
 
           {/* Tabs */}
           <div className={`flex space-x-1 sm:space-x-2 bg-secondary-100 dark:bg-secondary-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl border border-secondary-200 dark:border-secondary-700/50 transition-all duration-300 ${
-            isHeaderMinimized ? 'p-1' : 'p-1 sm:p-2'
+            isHeaderMinimized ? 'md:p-1' : 'p-1 sm:p-2'
           }`}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 px-2 sm:px-4 py-2 sm:py-3 rounded-md sm:rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 touch-target ${
-                  isHeaderMinimized ? 'px-2 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-xs' : 'px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm'
+                  isHeaderMinimized ? 'md:px-3 md:py-2 md:text-xs' : 'px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm'
                 } ${
                   activeTab === tab.id
                     ? 'bg-primary-500 text-white shadow-lg'
@@ -235,7 +244,7 @@ return (
                 <span className="whitespace-nowrap">{tab.name}</span>
                 {tab.count !== null && tab.count > 0 && (
                   <span className={`ml-1 sm:ml-2 px-1 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-bold transition-all duration-300 ${
-                    isHeaderMinimized ? 'px-1 py-0.5 text-xs sm:px-1.5 sm:py-0.5 sm:text-xs' : 'px-1 sm:px-2 py-0.5 sm:py-1 text-xs'
+                    isHeaderMinimized ? 'md:px-1.5 md:py-0.5 md:text-xs' : 'px-1 sm:px-2 py-0.5 sm:py-1 text-xs'
                   } ${
                     activeTab === tab.id
                       ? 'bg-secondary-900/20 dark:bg-white/20 text-secondary-900 dark:text-white'
@@ -278,44 +287,44 @@ return (
                     <p className="text-secondary-600 dark:text-secondary-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-sm mx-auto px-4">Start your learning journey by creating your first study topic</p>
                   </div>
                 ) : (
-                  <div className="mobile-grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                  <div className="mobile-grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                     {topics.slice(0, 6).map((topic, index) => (
                       <button
                         key={topic.id}
                         onClick={() => onTopicSelect(topic)}
-                        className="card card-mobile group animate-fade-in text-left"
+                        className="card card-mobile group animate-fade-in text-left hover:shadow-professional-lg hover:scale-105 hover:border-primary-500/30"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
-                        <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start justify-between mb-3 sm:mb-4">
                           <div
-                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shadow-lg"
+                            className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200"
                             style={{ backgroundColor: topic.color + '20', color: topic.color }}
                           >
-                            <svg className="w-4 h-4 md:w-3 md:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                           </div>
-                          <div className="text-xs text-secondary-500 dark:text-secondary-500 font-medium">
+                          <div className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-500 font-medium bg-secondary-100 dark:bg-secondary-700/50 px-2 py-1 rounded-md">
                             {topic.updatedAt.toLocaleDateString()}
                           </div>
                         </div>
 
-                        <h4 className="font-semibold text-secondary-900 dark:text-secondary-100 text-sm sm:text-base mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition-colors line-clamp-2">
+                        <h4 className="font-semibold text-secondary-900 dark:text-secondary-100 text-sm sm:text-lg mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition-colors line-clamp-2">
                           {topic.name}
                         </h4>
-                        <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 line-clamp-2">
+                        <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 line-clamp-2 leading-relaxed">
                           {topic.description || 'No description available'}
                         </p>
 
-                        <div className="mt-3 sm:mt-4 flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
+                        <div className="mt-3 sm:mt-5 pt-3 sm:pt-4 border-t border-secondary-200 dark:border-secondary-700/50 flex items-center justify-between">
+                          <div className="flex items-center space-x-2 sm:space-x-3">
                             <div
-                              className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
+                              className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full shadow-sm"
                               style={{ backgroundColor: topic.color }}
                             ></div>
-                            <span className="text-xs text-secondary-500 dark:text-secondary-500 capitalize">{topic.icon}</span>
+                            <span className="text-xs sm:text-sm text-secondary-500 dark:text-secondary-500 capitalize font-medium">{topic.icon}</span>
                           </div>
-                          <svg className="w-4 h-4 md:w-3 md:h-3 text-secondary-400 dark:text-secondary-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-secondary-400 dark:text-secondary-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
@@ -326,12 +335,12 @@ return (
               </div>
 
               {/* Quick Actions & Recent Activity */}
-              <div className="mobile-grid lg:grid-cols-3 gap-4 sm:gap-8">
+              <div className="mobile-grid lg:grid-cols-3 gap-4 sm:gap-6">
                 {/* Quick Actions */}
                 <div className="card card-mobile lg:col-span-2">
                   <div className="card-header">
                     <h3 className="card-title flex items-center">
-                      <svg className="w-4 h-4 md:w-3 md:h-3 mr-3 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 sm:w-6 sm:h-6 mr-3 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                       Quick Actions
@@ -339,39 +348,39 @@ return (
                     <p className="card-description">Jump into your studies</p>
                   </div>
 
-                  <div className="mobile-grid-2 sm:space-y-3">
-                    <button className="w-full btn-ghost justify-start group btn-mobile">
-                      <div className="w-10 h-10 bg-primary-500/10 rounded-lg flex items-center justify-center mr-3 sm:mr-4 group-hover:bg-primary-500/20 transition-colors">
-                        <svg className="w-4 h-4 md:w-3 md:h-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="mobile-grid-2 sm:grid sm:grid-cols-1 sm:gap-4">
+                    <button className="w-full btn-ghost justify-start group btn-mobile hover:shadow-md hover:bg-secondary-700/50">
+                      <div className="w-10 h-10 sm:w-14 sm:h-14 bg-primary-500/10 rounded-xl flex items-center justify-center mr-3 sm:mr-5 group-hover:bg-primary-500/20 group-hover:scale-110 transition-all duration-200 shadow-sm">
+                        <svg className="w-4 h-4 sm:w-7 sm:h-7 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                         </svg>
                       </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-secondary-900 dark:text-secondary-200 text-sm sm:text-base">Create New Topic</div>
+                      <div className="text-left flex-1">
+                        <div className="font-semibold text-secondary-900 dark:text-secondary-200 text-sm sm:text-lg mb-0.5 sm:mb-1">Create New Topic</div>
                         <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-500">Start organizing your studies</div>
                       </div>
                     </button>
 
-                    <button className="w-full btn-ghost justify-start group btn-mobile">
-                      <div className="w-10 h-10 bg-success-500/10 rounded-lg flex items-center justify-center mr-3 sm:mr-4 group-hover:bg-success-500/20 transition-colors">
-                        <svg className="w-4 h-4 md:w-3 md:h-3 text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button className="w-full btn-ghost justify-start group btn-mobile hover:shadow-md hover:bg-secondary-700/50">
+                      <div className="w-10 h-10 sm:w-14 sm:h-14 bg-success-500/10 rounded-xl flex items-center justify-center mr-3 sm:mr-5 group-hover:bg-success-500/20 group-hover:scale-110 transition-all duration-200 shadow-sm">
+                        <svg className="w-4 h-4 sm:w-7 sm:h-7 text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                       </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-secondary-900 dark:text-secondary-200 text-sm sm:text-base">Add Task</div>
+                      <div className="text-left flex-1">
+                        <div className="font-semibold text-secondary-900 dark:text-secondary-200 text-sm sm:text-lg mb-0.5 sm:mb-1">Add Task</div>
                         <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-500">Track your progress</div>
                       </div>
                     </button>
 
-                    <button className="w-full btn-ghost justify-start group btn-mobile">
-                      <div className="w-10 h-10 bg-warning-500/10 rounded-lg flex items-center justify-center mr-3 sm:mr-4 group-hover:bg-warning-500/20 transition-colors">
-                        <svg className="w-4 h-4 md:w-3 md:h-3 text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button className="w-full btn-ghost justify-start group btn-mobile hover:shadow-md hover:bg-secondary-700/50">
+                      <div className="w-10 h-10 sm:w-14 sm:h-14 bg-warning-500/10 rounded-xl flex items-center justify-center mr-3 sm:mr-5 group-hover:bg-warning-500/20 group-hover:scale-110 transition-all duration-200 shadow-sm">
+                        <svg className="w-4 h-4 sm:w-7 sm:h-7 text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-secondary-900 dark:text-secondary-200 text-sm sm:text-base">Set Reminder</div>
+                      <div className="text-left flex-1">
+                        <div className="font-semibold text-secondary-900 dark:text-secondary-200 text-sm sm:text-lg mb-0.5 sm:mb-1">Set Reminder</div>
                         <div className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-500">Never miss important dates</div>
                       </div>
                     </button>
