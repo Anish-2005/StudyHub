@@ -57,18 +57,59 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 
   // Handle header minimization on scroll
   useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout;
+
     const handleScroll = (e: Event) => {
-      const target = e.target as HTMLElement;
-      const scrollTop = target.scrollTop;
-      setIsHeaderMinimized(scrollTop > 100);
+      // Throttle scroll events for better performance
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+
+      scrollTimeout = setTimeout(() => {
+        const target = e.target as HTMLElement;
+        const scrollTop = target.scrollTop || window.scrollY || document.documentElement.scrollTop;
+
+        // Lower threshold for mobile devices and more aggressive minimization
+        const isMobile = window.innerWidth < 768;
+        const threshold = isMobile ? 10 : 100; // Very low threshold for mobile since header is already minimal // Even lower threshold for mobile
+        const shouldMinimize = scrollTop > threshold;
+
+        // Only update state if it actually changed to prevent unnecessary re-renders
+        if (shouldMinimize !== isHeaderMinimized) {
+          setIsHeaderMinimized(shouldMinimize);
+        }
+      }, 16); // 60fps updates
     };
 
-    const contentContainer = document.querySelector('.mobile-scroll-container');
-    if (contentContainer) {
-      contentContainer.addEventListener('scroll', handleScroll);
-      return () => contentContainer.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
+    // Try multiple scroll targets for better mobile compatibility
+    const scrollTargets = [
+      document.querySelector('.mobile-scroll-container'),
+      window,
+      document.documentElement,
+      document.body
+    ];
+
+    scrollTargets.forEach(target => {
+      if (target) {
+        target.addEventListener('scroll', handleScroll, { passive: true, capture: false });
+
+        // Also listen for touch events on mobile
+        if ('ontouchstart' in window) {
+          target.addEventListener('touchmove', handleScroll, { passive: true, capture: false });
+        }
+      }
+    });
+
+    return () => {
+      scrollTargets.forEach(target => {
+        if (target) {
+          target.removeEventListener('scroll', handleScroll);
+          if ('ontouchstart' in window) {
+            target.removeEventListener('touchmove', handleScroll);
+          }
+        }
+      });
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
+  }, [isHeaderMinimized]);
 
   const completedTasks = tasks.filter(task => task.completed);
   const pendingTasks = tasks.filter(task => !task.completed);
@@ -125,7 +166,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
   ] as const;
 
 return (
-    <div className="flex flex-col h-full min-h-0 overflow-hidden bg-secondary-900 relative">
+    <div className="flex flex-col h-full min-h-0 bg-secondary-900 relative" style={{ touchAction: 'pan-y' }}>
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 right-10 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl"></div>
@@ -134,32 +175,33 @@ return (
 
       {/* Header */}
       <div className={`border-b border-secondary-700/50 bg-secondary-800/50 backdrop-blur-xl flex-shrink-0 relative z-10 transition-all duration-300 ${
-        isHeaderMinimized ? 'py-2' : ''
-      }`}>
+        isHeaderMinimized ? 'py-1' : 'py-1 md:py-2'
+      }`} style={{ touchAction: 'none' }}>
         <div className={`transition-all duration-300 ${
-          isHeaderMinimized ? 'p-4 sm:p-6' : 'p-6 sm:p-8'
+          isHeaderMinimized ? 'p-2 sm:p-4' : 'p-2 sm:p-6'
         }`}>
-          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0 transition-all duration-300 ${
-            isHeaderMinimized ? 'mb-3' : 'mb-6'
+          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-6 space-y-2 sm:space-y-0 transition-all duration-300 ${
+            isHeaderMinimized ? 'mb-2' : 'mb-3 md:mb-6'
           }`}>
             <div>
-              <h1 className={`font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent mb-2 transition-all duration-300 ${
-                isHeaderMinimized ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+              <h1 className={`font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent transition-all duration-300 ${
+                isHeaderMinimized ? 'text-lg sm:text-2xl' : 'text-lg sm:text-3xl'
               }`}>
                 StudyHub Dashboard
               </h1>
+              {/* Hide welcome message on mobile, show only on larger screens when not minimized */}
               {!isHeaderMinimized && (
-                <p className="text-secondary-400 font-medium transition-all duration-300">
+                <p className="hidden sm:block text-secondary-400 font-medium transition-all duration-300">
                   Welcome back, {user?.displayName || 'Student'}! Ready to conquer your studies?
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-3">
-              <div className={`bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 ${
-                isHeaderMinimized ? 'w-8 h-8' : 'w-12 h-12'
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className={`bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 ${
+                isHeaderMinimized ? 'w-6 h-6 sm:w-8 sm:h-8' : 'w-8 h-8 sm:w-12 sm:h-12'
               }`}>
                 <svg className={`text-white transition-all duration-300 ${
-                  isHeaderMinimized ? 'w-4 h-4' : 'w-6 h-6'
+                  isHeaderMinimized ? 'w-3 h-3 sm:w-4 sm:h-4' : 'w-4 h-4 sm:w-6 sm:h-6'
                 }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -167,23 +209,67 @@ return (
             </div>
           </div>
 
-          {/* Study Stats - Hide when minimized */}
+          {/* Study Stats - Show compact version on mobile, full version on larger screens */}
           {!isHeaderMinimized && (
             <div className="transition-all duration-300">
-              <StudyStats topics={topics} tasks={tasks} reminders={reminders} />
+              {/* Mobile compact stats */}
+              <div className="block sm:hidden mb-4">
+                <div className="flex justify-between items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-secondary-100">{topics.length}</div>
+                      <div className="text-xs text-secondary-400">Topics</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-warning-500/20 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-secondary-100">{pendingTasks.length}</div>
+                      <div className="text-xs text-secondary-400">Pending</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-success-500/20 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-secondary-100">{completedTasks.length}</div>
+                      <div className="text-xs text-secondary-400">Done</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop full stats */}
+              <div className="hidden sm:block">
+                <StudyStats topics={topics} tasks={tasks} reminders={reminders} />
+              </div>
             </div>
           )}
 
           {/* Tabs */}
-          <div className={`flex space-x-2 bg-secondary-800/50 backdrop-blur-sm rounded-xl p-2 border border-secondary-700/50 transition-all duration-300 ${
-            isHeaderMinimized ? 'p-1' : 'p-2'
+          <div className={`flex space-x-1 sm:space-x-2 bg-secondary-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl border border-secondary-700/50 transition-all duration-300 ${
+            isHeaderMinimized ? 'p-1' : 'p-1 sm:p-2'
           }`}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 touch-target ${
-                  isHeaderMinimized ? 'px-3 py-2 text-xs' : 'px-4 py-3 text-sm'
+                className={`flex-1 px-2 sm:px-4 py-2 sm:py-3 rounded-md sm:rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 touch-target ${
+                  isHeaderMinimized ? 'px-2 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-xs' : 'px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm'
                 } ${
                   activeTab === tab.id
                     ? 'bg-primary-500 text-white shadow-lg'
@@ -192,8 +278,8 @@ return (
               >
                 <span className="whitespace-nowrap">{tab.name}</span>
                 {tab.count !== null && tab.count > 0 && (
-                  <span className={`ml-2 px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
-                    isHeaderMinimized ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-1 text-xs'
+                  <span className={`ml-1 sm:ml-2 px-1 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-bold transition-all duration-300 ${
+                    isHeaderMinimized ? 'px-1 py-0.5 text-xs sm:px-1.5 sm:py-0.5 sm:text-xs' : 'px-1 sm:px-2 py-0.5 sm:py-1 text-xs'
                   } ${
                     activeTab === tab.id
                       ? 'bg-white/20 text-white'
@@ -209,9 +295,9 @@ return (
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden min-h-0 relative z-10">
+      <div className="flex-1 min-h-0 relative z-10">
         {activeTab === 'overview' && (
-          <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
+          <div className="h-full overflow-y-auto p-4 sm:p-6 mobile-scroll-container">
             <div className="max-w-7xl mx-auto space-y-8">
               {/* Recent Topics */}
               <div className="card">
@@ -437,7 +523,7 @@ return (
         )}
 
         {activeTab === 'tasks' && (
-          <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
+          <div className="h-full overflow-y-auto p-4 sm:p-6 mobile-scroll-container">
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-secondary-100 mb-2">All Tasks</h2>
@@ -449,7 +535,7 @@ return (
         )}
 
         {activeTab === 'reminders' && (
-          <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
+          <div className="h-full overflow-y-auto p-4 sm:p-6 mobile-scroll-container">
             <div className="max-w-6xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-secondary-100 mb-2">All Reminders</h2>

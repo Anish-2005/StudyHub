@@ -118,14 +118,43 @@ html, body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    scroll-behavior: smooth;
+    touch-action: pan-y;
   }
-  
+
+  /* Ensure proper touch scrolling */
+  .mobile-scroll-container::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .mobile-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.4);
+    border-radius: 2px;
+  }
+
+  /* Prevent scroll chaining */
+  .mobile-scroll-container {
+    overscroll-behavior-y: contain;
+  }
+
+  /* Ensure the main container allows touch events to pass through */
+  .mobile-scroll-container {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
   /* Prevent overscroll bounce on iOS */
   body {
     overscroll-behavior: none;
     position: fixed;
     width: 100%;
     height: 100%;
+    touch-action: none;
+  }
+
+  /* Allow scrolling in content areas */
+  .mobile-scroll-container {
+    touch-action: pan-y;
   }
 }
 
