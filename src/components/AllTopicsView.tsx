@@ -351,35 +351,50 @@ return (
                         </svg>
                         Recent Activity
                       </h3>
-                      <p className="card-description">Stay on top of your tasks</p>
+                      <p className="card-description">Stay on top of your tasks and reminders</p>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       {pendingTasks.length > 0 && (
                         <div>
-                          <h4 className="text-sm font-semibold text-secondary-300 mb-3 flex items-center">
-                            <svg className="w-4 h-4 mr-2 text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
+                          <h4 className="text-base font-semibold text-secondary-200 mb-4 flex items-center">
+                            <div className="w-2 h-2 bg-warning-400 rounded-full mr-3"></div>
                             Pending Tasks ({pendingTasks.length})
                           </h4>
-                          <div className="space-y-2">
+                          <div className="space-y-3">
                             {pendingTasks.slice(0, 3).map((task) => (
-                              <div key={task.id} className="p-3 bg-secondary-800/50 rounded-lg border border-secondary-700/50">
-                                <div className="font-medium text-secondary-200 text-sm">{task.title}</div>
-                                <div className="flex items-center justify-between mt-2">
-                                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                    task.priority === 'high' ? 'bg-accent-500/20 text-accent-300' :
-                                    task.priority === 'medium' ? 'bg-warning-500/20 text-warning-300' :
-                                    'bg-secondary-700 text-secondary-400'
+                              <div key={task.id} className="group p-4 bg-gradient-to-r from-secondary-800/60 to-secondary-800/40 rounded-xl border border-secondary-700/30 hover:border-secondary-600/50 transition-all duration-200 hover:shadow-lg">
+                                <div className="flex items-start justify-between mb-3">
+                                  <div className="flex-1">
+                                    <h5 className="font-semibold text-secondary-100 text-base mb-1 group-hover:text-primary-300 transition-colors">
+                                      {task.title}
+                                    </h5>
+                                    {task.description && (
+                                      <p className="text-sm text-secondary-400 line-clamp-2">
+                                        {task.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                    task.priority === 'high' ? 'bg-accent-500/20 text-accent-300 border border-accent-500/30' :
+                                    task.priority === 'medium' ? 'bg-warning-500/20 text-warning-300 border border-warning-500/30' :
+                                    'bg-secondary-700/50 text-secondary-400 border border-secondary-600/30'
                                   }`}>
                                     {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                                  </span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center justify-between">
                                   {task.dueDate && (
-                                    <span className="text-xs text-secondary-500">
+                                    <div className="flex items-center text-sm text-secondary-400">
+                                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                      </svg>
                                       Due {task.dueDate.toLocaleDateString()}
-                                    </span>
+                                    </div>
                                   )}
+                                  <div className="text-xs text-secondary-500">
+                                    {task.topicName && `in ${task.topicName}`}
+                                  </div>
                                 </div>
                               </div>
                             ))}
@@ -389,17 +404,23 @@ return (
 
                       {upcomingReminders.length > 0 && (
                         <div>
-                          <h4 className="text-sm font-semibold text-secondary-300 mb-3 flex items-center">
-                            <svg className="w-4 h-4 mr-2 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM11 3v4a1 1 0 001 1h4m-5-6H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V9l-5-6z" />
-                            </svg>
+                          <h4 className="text-base font-semibold text-secondary-200 mb-4 flex items-center">
+                            <div className="w-2 h-2 bg-primary-400 rounded-full mr-3"></div>
                             Upcoming Reminders ({upcomingReminders.length})
                           </h4>
-                          <div className="space-y-2">
+                          <div className="space-y-3">
                             {upcomingReminders.slice(0, 3).map((reminder) => (
-                              <div key={reminder.id} className="p-3 bg-secondary-800/50 rounded-lg border border-secondary-700/50">
-                                <div className="font-medium text-secondary-200 text-sm">{reminder.title}</div>
-                                <div className="text-xs text-secondary-500 mt-1">
+                              <div key={reminder.id} className="group p-4 bg-gradient-to-r from-secondary-800/60 to-secondary-800/40 rounded-xl border border-secondary-700/30 hover:border-secondary-600/50 transition-all duration-200 hover:shadow-lg">
+                                <div className="flex items-start justify-between mb-2">
+                                  <h5 className="font-semibold text-secondary-100 text-base group-hover:text-primary-300 transition-colors">
+                                    {reminder.title}
+                                  </h5>
+                                  <div className="w-2 h-2 bg-primary-400 rounded-full"></div>
+                                </div>
+                                <div className="flex items-center text-sm text-secondary-400">
+                                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
                                   {reminder.date.toLocaleDateString()} at {reminder.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </div>
                               </div>
