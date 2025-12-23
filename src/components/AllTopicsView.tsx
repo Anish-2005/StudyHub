@@ -295,15 +295,15 @@ return (
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-h-0 relative z-10">
+      <div className="flex-1 min-h-0 relative z-10 gesture-area">
         {activeTab === 'overview' && (
-          <div className="h-full overflow-y-auto p-4 sm:p-6 mobile-scroll-container">
-            <div className="max-w-7xl mx-auto space-y-8">
+          <div className="h-full overflow-y-auto mobile-spacing sm:p-6 mobile-scroll-container">
+            <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
               {/* Recent Topics */}
-              <div className="card">
+              <div className="card card-mobile">
                 <div className="card-header">
                   <h3 className="card-title flex items-center">
-                    <svg className="w-5 h-5 mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="icon-mobile mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                     Recent Topics
@@ -312,30 +312,30 @@ return (
                 </div>
 
                 {topics.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-secondary-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-secondary-700 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <svg className="icon-mobile sm:w-8 sm:h-8 text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                       </svg>
                     </div>
-                    <h4 className="text-lg font-semibold text-secondary-200 mb-2">No topics yet</h4>
-                    <p className="text-secondary-400 mb-6 max-w-sm mx-auto">Start your learning journey by creating your first study topic</p>
+                    <h4 className="text-base sm:text-lg font-semibold text-secondary-200 mb-2">No topics yet</h4>
+                    <p className="text-secondary-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-sm mx-auto px-4">Start your learning journey by creating your first study topic</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="mobile-grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     {topics.slice(0, 6).map((topic, index) => (
                       <button
                         key={topic.id}
                         onClick={() => onTopicSelect(topic)}
-                        className="card group animate-fade-in"
+                        className="card card-mobile group animate-fade-in text-left"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div
-                            className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shadow-lg"
                             style={{ backgroundColor: topic.color + '20', color: topic.color }}
                           >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="icon-mobile sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                           </div>
@@ -344,22 +344,22 @@ return (
                           </div>
                         </div>
 
-                        <h4 className="font-semibold text-secondary-100 mb-2 group-hover:text-primary-300 transition-colors">
+                        <h4 className="font-semibold text-secondary-100 text-sm sm:text-base mb-2 group-hover:text-primary-300 transition-colors line-clamp-2">
                           {topic.name}
                         </h4>
-                        <p className="text-sm text-secondary-400 line-clamp-2">
+                        <p className="text-xs sm:text-sm text-secondary-400 line-clamp-2">
                           {topic.description || 'No description available'}
                         </p>
 
-                        <div className="mt-4 flex items-center justify-between">
+                        <div className="mt-3 sm:mt-4 flex items-center justify-between">
                           <div className="flex items-center space-x-2">
                             <div
-                              className="w-3 h-3 rounded-full"
+                              className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
                               style={{ backgroundColor: topic.color }}
                             ></div>
                             <span className="text-xs text-secondary-500 capitalize">{topic.icon}</span>
                           </div>
-                          <svg className="w-4 h-4 text-secondary-500 group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="icon-mobile text-secondary-500 group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
@@ -370,12 +370,12 @@ return (
               </div>
 
               {/* Quick Actions & Recent Activity */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="mobile-grid lg:grid-cols-3 gap-4 sm:gap-8">
                 {/* Quick Actions */}
-                <div className="card">
+                <div className="card card-mobile lg:col-span-2">
                   <div className="card-header">
                     <h3 className="card-title flex items-center">
-                      <svg className="w-5 h-5 mr-3 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="icon-mobile mr-3 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                       Quick Actions
@@ -383,40 +383,40 @@ return (
                     <p className="card-description">Jump into your studies</p>
                   </div>
 
-                  <div className="space-y-3">
-                    <button className="w-full btn-ghost justify-start group">
-                      <div className="w-10 h-10 bg-primary-500/10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-primary-500/20 transition-colors">
-                        <svg className="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="mobile-grid-2 sm:space-y-3">
+                    <button className="w-full btn-ghost justify-start group btn-mobile">
+                      <div className="w-10 h-10 bg-primary-500/10 rounded-lg flex items-center justify-center mr-3 sm:mr-4 group-hover:bg-primary-500/20 transition-colors">
+                        <svg className="icon-mobile text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                         </svg>
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-secondary-200">Create New Topic</div>
-                        <div className="text-sm text-secondary-500">Start organizing your studies</div>
+                        <div className="font-semibold text-secondary-200 text-sm sm:text-base">Create New Topic</div>
+                        <div className="text-xs sm:text-sm text-secondary-500">Start organizing your studies</div>
                       </div>
                     </button>
 
-                    <button className="w-full btn-ghost justify-start group">
-                      <div className="w-10 h-10 bg-success-500/10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-success-500/20 transition-colors">
-                        <svg className="w-5 h-5 text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button className="w-full btn-ghost justify-start group btn-mobile">
+                      <div className="w-10 h-10 bg-success-500/10 rounded-lg flex items-center justify-center mr-3 sm:mr-4 group-hover:bg-success-500/20 transition-colors">
+                        <svg className="icon-mobile text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-secondary-200">Add Task</div>
-                        <div className="text-sm text-secondary-500">Track your progress</div>
+                        <div className="font-semibold text-secondary-200 text-sm sm:text-base">Add Task</div>
+                        <div className="text-xs sm:text-sm text-secondary-500">Track your progress</div>
                       </div>
                     </button>
 
-                    <button className="w-full btn-ghost justify-start group">
-                      <div className="w-10 h-10 bg-warning-500/10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-warning-500/20 transition-colors">
-                        <svg className="w-5 h-5 text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button className="w-full btn-ghost justify-start group btn-mobile">
+                      <div className="w-10 h-10 bg-warning-500/10 rounded-lg flex items-center justify-center mr-3 sm:mr-4 group-hover:bg-warning-500/20 transition-colors">
+                        <svg className="icon-mobile text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-secondary-200">Set Reminder</div>
-                        <div className="text-sm text-secondary-500">Never miss important dates</div>
+                        <div className="font-semibold text-secondary-200 text-sm sm:text-base">Set Reminder</div>
+                        <div className="text-xs sm:text-sm text-secondary-500">Never miss important dates</div>
                       </div>
                     </button>
                   </div>
@@ -429,10 +429,10 @@ return (
 
                 {/* Recent Activity */}
                 {(pendingTasks.length > 0 || upcomingReminders.length > 0) && (
-                  <div className="card">
+                  <div className="card card-mobile">
                     <div className="card-header">
                       <h3 className="card-title flex items-center">
-                        <svg className="w-5 h-5 mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="icon-mobile mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                         Recent Activity
@@ -440,28 +440,28 @@ return (
                       <p className="card-description">Stay on top of your tasks and reminders</p>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       {pendingTasks.length > 0 && (
                         <div>
-                          <h4 className="text-base font-semibold text-secondary-200 mb-4 flex items-center">
+                          <h4 className="text-sm sm:text-base font-semibold text-secondary-200 mb-3 sm:mb-4 flex items-center">
                             <div className="w-2 h-2 bg-warning-400 rounded-full mr-3"></div>
                             Pending Tasks ({pendingTasks.length})
                           </h4>
-                          <div className="space-y-3">
+                          <div className="space-y-2 sm:space-y-3">
                             {pendingTasks.slice(0, 3).map((task) => (
-                              <div key={task.id} className="group p-4 bg-gradient-to-r from-secondary-800/60 to-secondary-800/40 rounded-xl border border-secondary-700/30 hover:border-secondary-600/50 transition-all duration-200 hover:shadow-lg">
-                                <div className="flex items-start justify-between mb-3">
+                              <div key={task.id} className="group p-3 sm:p-4 bg-gradient-to-r from-secondary-800/60 to-secondary-800/40 rounded-xl border border-secondary-700/30 hover:border-secondary-600/50 transition-all duration-200 hover:shadow-lg card-mobile">
+                                <div className="flex items-start justify-between mb-2 sm:mb-3">
                                   <div className="flex-1">
-                                    <h5 className="font-semibold text-secondary-100 text-base mb-1 group-hover:text-primary-300 transition-colors">
+                                    <h5 className="font-semibold text-secondary-100 text-sm sm:text-base mb-1 group-hover:text-primary-300 transition-colors line-clamp-2">
                                       {task.title}
                                     </h5>
                                     {task.description && (
-                                      <p className="text-sm text-secondary-400 line-clamp-2">
+                                      <p className="text-xs sm:text-sm text-secondary-400 line-clamp-2 mb-2">
                                         {task.description}
                                       </p>
                                     )}
                                   </div>
-                                  <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                  <div className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold flex-shrink-0 ml-2 ${
                                     task.priority === 'high' ? 'bg-accent-500/20 text-accent-300 border border-accent-500/30' :
                                     task.priority === 'medium' ? 'bg-warning-500/20 text-warning-300 border border-warning-500/30' :
                                     'bg-secondary-700/50 text-secondary-400 border border-secondary-600/30'
@@ -471,8 +471,8 @@ return (
                                 </div>
                                 <div className="flex items-center justify-between">
                                   {task.dueDate && (
-                                    <div className="flex items-center text-sm text-secondary-400">
-                                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div className="flex items-center text-xs sm:text-sm text-secondary-400">
+                                      <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                       </svg>
                                       Due {task.dueDate.toLocaleDateString()}
@@ -490,21 +490,21 @@ return (
 
                       {upcomingReminders.length > 0 && (
                         <div>
-                          <h4 className="text-base font-semibold text-secondary-200 mb-4 flex items-center">
+                          <h4 className="text-sm sm:text-base font-semibold text-secondary-200 mb-3 sm:mb-4 flex items-center">
                             <div className="w-2 h-2 bg-primary-400 rounded-full mr-3"></div>
                             Upcoming Reminders ({upcomingReminders.length})
                           </h4>
-                          <div className="space-y-3">
+                          <div className="space-y-2 sm:space-y-3">
                             {upcomingReminders.slice(0, 3).map((reminder) => (
-                              <div key={reminder.id} className="group p-4 bg-gradient-to-r from-secondary-800/60 to-secondary-800/40 rounded-xl border border-secondary-700/30 hover:border-secondary-600/50 transition-all duration-200 hover:shadow-lg">
+                              <div key={reminder.id} className="group p-3 sm:p-4 bg-gradient-to-r from-secondary-800/60 to-secondary-800/40 rounded-xl border border-secondary-700/30 hover:border-secondary-600/50 transition-all duration-200 hover:shadow-lg card-mobile">
                                 <div className="flex items-start justify-between mb-2">
-                                  <h5 className="font-semibold text-secondary-100 text-base group-hover:text-primary-300 transition-colors">
+                                  <h5 className="font-semibold text-secondary-100 text-sm sm:text-base group-hover:text-primary-300 transition-colors line-clamp-2">
                                     {reminder.title}
                                   </h5>
-                                  <div className="w-2 h-2 bg-primary-400 rounded-full"></div>
+                                  <div className="w-2 h-2 bg-primary-400 rounded-full flex-shrink-0 ml-2"></div>
                                 </div>
-                                <div className="flex items-center text-sm text-secondary-400">
-                                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="flex items-center text-xs sm:text-sm text-secondary-400">
+                                  <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                   </svg>
                                   {reminder.date.toLocaleDateString()} at {reminder.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
