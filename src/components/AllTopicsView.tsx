@@ -238,8 +238,8 @@ return (
                     isHeaderMinimized ? 'px-1 py-0.5 text-xs sm:px-1.5 sm:py-0.5 sm:text-xs' : 'px-1 sm:px-2 py-0.5 sm:py-1 text-xs'
                   } ${
                     activeTab === tab.id
-                      ? 'bg-white/20 text-white'
-                      : 'bg-secondary-700 text-secondary-300'
+                      ? 'bg-secondary-900/20 dark:bg-white/20 text-secondary-900 dark:text-white'
+                      : 'bg-secondary-700 dark:bg-secondary-300 text-secondary-300 dark:text-secondary-700'
                   }`}>
                     {tab.count}
                   </span>

@@ -178,7 +178,7 @@ const AuthForm: React.FC = () => {
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-3 px-4 bg-white hover:bg-secondary-50 text-secondary-900 font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center touch-target border border-secondary-300 hover:border-secondary-400 shadow-md hover:shadow-lg transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2 focus:ring-offset-secondary-900 animate-slide-up"
+            className="w-full py-3 px-4 bg-secondary-50 dark:bg-secondary-800 hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-900 dark:text-secondary-100 font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center touch-target border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 shadow-md hover:shadow-lg transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-secondary-500 dark:focus:ring-secondary-400 focus:ring-offset-2 focus:ring-offset-secondary-50 dark:focus:ring-offset-secondary-900 animate-slide-up"
           >
             <svg className="w-5 h-5 mr-3 flex-shrink-0" viewBox="0 0 24 24">
               <path

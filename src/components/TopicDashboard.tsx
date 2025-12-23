@@ -303,8 +303,8 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 {tab.count !== null && (
                   <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
                     activeTab === tab.id
-                      ? 'bg-white/20 text-white'
-                      : 'bg-vscode-active text-vscode-text/50'
+                      ? 'bg-secondary-900/20 dark:bg-white/20 text-secondary-900 dark:text-white'
+                      : 'bg-secondary-300 dark:bg-vscode-active text-secondary-700 dark:text-vscode-text/50'
                   }`}>
                     {tab.count}
                   </span>
