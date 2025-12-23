@@ -3,13 +3,28 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
+import TopBar from './TopBar';
 import { Topic } from '@/types';
 
 const Dashboard: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebarCollapsed');
+      return saved ? JSON.parse(saved) : false;
+    }
+    return false;
+  });
   const [isMobile, setIsMobile] = useState(false);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  // Save sidebar state to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !isMobile) {
+      localStorage.setItem('sidebarCollapsed', JSON.stringify(sidebarCollapsed));
+    }
+  }, [sidebarCollapsed, isMobile]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -17,6 +32,12 @@ const Dashboard: React.FC = () => {
       setIsMobile(mobile);
       if (mobile) {
         setSidebarCollapsed(true);
+      } else {
+        // Restore saved state when switching back to desktop
+        const saved = localStorage.getItem('sidebarCollapsed');
+        if (saved) {
+          setSidebarCollapsed(JSON.parse(saved));
+        }
       }
     };
 
@@ -76,28 +97,15 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
-        {/* Mobile Header */}
-        {isMobile && (
-          <div className="bg-secondary-800/95 backdrop-blur-xl border-b border-secondary-700/50 p-4 flex items-center justify-between md:hidden safe-area-inset-top shadow-lg">
-            <button
-              onClick={toggleSidebar}
-              className="p-3 text-secondary-400 hover:text-secondary-200 hover:bg-secondary-700/50 rounded-xl transition-all duration-200 touch-target"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-
-            <h1 className="text-lg font-bold text-secondary-100">
-              {selectedTopic ? selectedTopic.name : 'StudyHub'}
-            </h1>
-
-            <div className="w-12" /> {/* Spacer for alignment */}
-          </div>
-        )}
+        {/* TopBar - Both Mobile and Desktop */}
+        <TopBar 
+          selectedTopic={selectedTopic}
+          onMenuClick={toggleSidebar}
+          isMobile={isMobile}
+        />
 
         {/* Main Content Area */}
-        <div className="flex-1 overflow-hidden min-h-0" style={{ height: isMobile ? 'calc(100vh - 80px)' : '100%' }}>
+        <div className="flex-1 overflow-hidden min-h-0">
           <MainContent
             selectedTopic={selectedTopic}
             onTopicSelect={handleTopicSelect}
