@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       colors: {
         // Professional Academic Theme - Modern & Student-Friendly
-        primary: {
+        'primary': {
           50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
@@ -22,7 +22,7 @@ module.exports = {
           900: '#0c4a6e',
           950: '#082f49',
         },
-        secondary: {
+        'secondary': {
           50: '#f8fafc',
           100: '#f1f5f9',
           200: '#e2e8f0',
@@ -35,7 +35,7 @@ module.exports = {
           900: '#0f172a',
           950: '#020617',
         },
-        accent: {
+        'accent': {
           50: '#fef2f2',
           100: '#fee2e2',
           200: '#fecaca',
