@@ -559,28 +559,28 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
               </div>
 
               {/* Study Insights */}
-              <div className="mt-6 bg-vscode-sidebar border border-vscode-border rounded-lg p-4">
-                <h3 className="text-lg font-mono font-semibold text-vscode-text mb-4">
+              <div className="mt-6 bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
+                <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
                   Study Insights
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-mono font-bold text-vscode-accent mb-1">
+                    <div className="text-2xl font-mono font-bold text-primary-600 dark:text-vscode-accent mb-1">
                       {Math.ceil((new Date().getTime() - topic.createdAt.getTime()) / (1000 * 60 * 60 * 24))}
                     </div>
-                    <div className="text-sm font-mono text-vscode-text/70">Days studying</div>
+                    <div className="text-sm font-mono text-secondary-600 dark:text-vscode-text/70">Days studying</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-mono font-bold text-vscode-success mb-1">
+                    <div className="text-2xl font-mono font-bold text-success-600 dark:text-vscode-success mb-1">
                       {completedTasks.length}
                     </div>
-                    <div className="text-sm font-mono text-vscode-text/70">Tasks completed</div>
+                    <div className="text-sm font-mono text-secondary-600 dark:text-vscode-text/70">Tasks completed</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-mono font-bold text-vscode-warning mb-1">
+                    <div className="text-2xl font-mono font-bold text-warning-600 dark:text-vscode-warning mb-1">
                       {upcomingReminders.length}
                     </div>
-                    <div className="text-sm font-mono text-vscode-text/70">Upcoming reminders</div>
+                    <div className="text-sm font-mono text-secondary-600 dark:text-vscode-text/70">Upcoming reminders</div>
                   </div>
                 </div>
               </div>
