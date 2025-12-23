@@ -25,39 +25,43 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>('light');
-  const [mounted, setMounted] = useState(false);
 
+  // Initialize theme from localStorage or default
   useEffect(() => {
-    // Load theme from localStorage
     const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme) {
-      setTheme(savedTheme);
+    const initialTheme = savedTheme || 'light';
+    
+    setTheme(initialTheme);
+    
+    // Apply theme class immediately
+    const root = document.documentElement;
+    if (initialTheme === 'dark') {
+      root.classList.add('dark');
     } else {
-      // Default to light
-      setTheme('light');
+      root.classList.remove('dark');
     }
-    setMounted(true);
   }, []);
 
+  // Update when theme changes
   useEffect(() => {
-    if (mounted) {
-      localStorage.setItem('theme', theme);
-      const root = document.documentElement;
-      if (theme === 'dark') {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
+    // Save to localStorage
+    localStorage.setItem('theme', theme);
+    
+    // Apply theme class to document
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
     }
-  }, [theme, mounted]);
+    
+    console.log('Theme changed to:', theme);
+    console.log('Document has dark class:', root.classList.contains('dark'));
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
@@ -28,6 +29,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   isPublicView = false,
 }) => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<'overview' | 'tasks' | 'reminders' | 'notes'>('overview');
   const [notes, setNotes] = useState<Note[]>([]);
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
@@ -341,9 +343,9 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                           <div key={task.id} className="p-3 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
                             <div className="flex items-center space-x-2">
                               <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                task.completed ? 'bg-vscode-success' : 
-                                task.priority === 'high' ? 'bg-red-400' :
-                                task.priority === 'medium' ? 'bg-yellow-400' : 'bg-green-400'
+                                task.completed ? 'bg-success-500 dark:bg-vscode-success' : 
+                                task.priority === 'high' ? 'bg-accent-500 dark:bg-red-400' :
+                                task.priority === 'medium' ? 'bg-warning-500 dark:bg-yellow-400' : 'bg-success-500 dark:bg-green-400'
                               }`}></div>
                               <div className="flex-1 min-w-0">
                                 <div className={`text-sm font-mono truncate ${
@@ -520,7 +522,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                               }`}>
                                 {task.title}
                               </div>
-                              <div className="text-xs text-vscode-text/50">
+                              <div className="text-xs text-secondary-500 dark:text-vscode-text/50">
                                 {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
                               </div>
                             </div>

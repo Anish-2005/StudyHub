@@ -43,8 +43,22 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="StudyHub" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme') || 'light';
+                if (theme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
       </head>
-      <body className={`${inter.className} bg-vscode-bg text-vscode-text antialiased`}>
+      <body className={`${inter.className} bg-white dark:bg-vscode-bg text-secondary-900 dark:text-vscode-text antialiased`}>
         <ThemeProvider>
           <AuthProvider>
             {children}
