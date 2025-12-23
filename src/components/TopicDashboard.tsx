@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
@@ -34,6 +34,12 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   const [showCreateReminderModal, setShowCreateReminderModal] = useState(false);
   const [showCreateNoteModal, setShowCreateNoteModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showActionSheet, setShowActionSheet] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
 
   // Subscribe to notes for this topic
   useEffect(() => {
@@ -161,6 +167,78 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
   const completionPercentage = tasks.length > 0 ? Math.round((completedTasks.length / tasks.length) * 100) : 0;
 
+  // Pull to refresh functionality
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartY.current = touch.clientY;
+    touchStartX.current = touch.clientX;
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!scrollContainerRef.current || isRefreshing) return;
+    
+    const touch = e.touches[0];
+    const scrollTop = scrollContainerRef.current.scrollTop;
+    const deltaY = touch.clientY - touchStartY.current;
+    const deltaX = Math.abs(touch.clientX - touchStartX.current);
+    
+    // Only trigger pull-to-refresh if at top and vertical swipe
+    if (scrollTop === 0 && deltaY > 0 && deltaX < 30) {
+      e.preventDefault();
+      const distance = Math.min(deltaY * 0.5, 100);
+      setPullDistance(distance);
+    }
+  }, [isRefreshing]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (pullDistance > 60 && !isRefreshing) {
+      setIsRefreshing(true);
+      setPullDistance(0);
+      
+      // Simulate refresh - in real app, refetch data
+      setTimeout(() => {
+        setIsRefreshing(false);
+        toast.success('Refreshed!', { duration: 1500, icon: '✨' });
+      }, 1500);
+    } else {
+      setPullDistance(0);
+    }
+  }, [pullDistance, isRefreshing]);
+
+  // Tab swipe gesture
+  const tabs = [
+    { id: 'overview', name: 'Overview', count: null },
+    { id: 'tasks', name: 'Tasks', count: tasks.length },
+    { id: 'reminders', name: 'Reminders', count: reminders.length },
+    { id: 'notes', name: 'Notes', count: notes.length },
+  ] as const;
+
+  const handleTabSwipe = useCallback((direction: 'left' | 'right') => {
+    const currentIndex = tabs.findIndex(tab => tab.id === activeTab);
+    if (direction === 'left' && currentIndex < tabs.length - 1) {
+      setActiveTab(tabs[currentIndex + 1].id);
+    } else if (direction === 'right' && currentIndex > 0) {
+      setActiveTab(tabs[currentIndex - 1].id);
+    }
+  }, [activeTab, tabs]);
+
+  const handleContentTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleContentTouchEnd = useCallback((e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const threshold = 100;
+    
+    if (Math.abs(deltaX) > threshold) {
+      if (deltaX > 0) {
+        handleTabSwipe('right');
+      } else {
+        handleTabSwipe('left');
+      }
+    }
+  }, [handleTabSwipe]);
+
   const getTopicIcon = (icon: string) => {
     const icons: { [key: string]: JSX.Element } = {
       book: (
@@ -198,17 +276,47 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     return icons[icon] || icons.default;
   };
 
-  const tabs = [
-    { id: 'overview', name: 'Overview', count: null },
-    { id: 'tasks', name: 'Tasks', count: tasks.length },
-    { id: 'reminders', name: 'Reminders', count: reminders.length },
-    { id: 'notes', name: 'Notes', count: notes.length },
-  ] as const;
-
   return (
     <div className="flex flex-col h-full md:overflow-hidden">
+      {/* Mobile Pull-to-refresh indicator */}
+      {pullDistance > 0 && (
+        <div 
+          className="md:hidden absolute top-0 left-0 right-0 z-50 flex items-center justify-center transition-all duration-200"
+          style={{ 
+            height: `${pullDistance}px`,
+            opacity: pullDistance / 60,
+          }}
+        >
+          <div 
+            className="text-primary-500 dark:text-vscode-accent"
+            style={{
+              transform: `rotate(${pullDistance * 3.6}deg)`,
+              transition: 'transform 0.1s'
+            }}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* Refreshing indicator */}
+      {isRefreshing && (
+        <div className="md:hidden absolute top-4 left-0 right-0 z-50 flex items-center justify-center">
+          <div className="bg-white dark:bg-secondary-800 rounded-full px-4 py-2 shadow-lg flex items-center space-x-2 animate-fade-in">
+            <div className="animate-spin">
+              <svg className="w-4 h-4 text-primary-500 dark:text-vscode-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Refreshing...</span>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
-      <div className="border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar md:flex-shrink-0">
+      <div className="border-b border-secondary-200 dark:border-vscode-border bg-gradient-to-b from-white to-secondary-50/50 dark:from-vscode-sidebar dark:to-vscode-sidebar md:flex-shrink-0">
         <div className="p-3 md:p-4">
           {/* Topic Info */}
           <div className="flex items-center space-x-3 mb-3 md:mb-4">
@@ -288,14 +396,26 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
           )}
 
           {/* Tabs */}
-          <div className="flex space-x-1 bg-secondary-100 dark:bg-vscode-bg rounded-lg p-1 overflow-x-auto">
+          <div className="relative">
+            {/* Tab indicator for swipe */}
+            <div className="md:hidden absolute -bottom-1 left-0 right-0 flex justify-center space-x-1 pb-1">
+              {tabs.map((tab, index) => (
+                <div 
+                  key={tab.id}
+                  className={`h-0.5 rounded-full transition-all duration-300 ${
+                    activeTab === tab.id ? 'w-8 bg-primary-500 dark:bg-vscode-accent' : 'w-1.5 bg-secondary-300 dark:bg-secondary-700'
+                  }`}
+                />
+              ))}
+            </div>
+            <div className="flex space-x-1 bg-secondary-100 dark:bg-vscode-bg rounded-lg p-1 overflow-x-auto scrollbar-hide">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-shrink-0 px-3 md:px-4 py-2 rounded-md font-mono text-xs md:text-sm transition-all whitespace-nowrap ${
+                className={`flex-shrink-0 px-3 md:px-4 py-2 rounded-md font-mono text-xs md:text-sm transition-all whitespace-nowrap touch-target active:scale-95 ${
                   activeTab === tab.id
-                    ? 'bg-primary-500 dark:bg-vscode-accent text-white'
+                    ? 'bg-primary-500 dark:bg-vscode-accent text-white shadow-lg shadow-primary-500/30'
                     : 'text-secondary-700 dark:text-vscode-text/70 hover:text-secondary-900 dark:hover:text-vscode-text hover:bg-secondary-200 dark:hover:bg-vscode-active'
                 }`}
               >
@@ -311,23 +431,45 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 )}
               </button>
             ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-hidden min-h-0">
-        {/* Mobile: Single scrollable container */}
-        <div className="md:hidden h-full">
+        {/* Mobile: Single scrollable container with swipe */}
+        <div 
+          className="md:hidden h-full"
+          onTouchStart={handleContentTouchStart}
+          onTouchEnd={handleContentTouchEnd}
+        >
           {activeTab === 'overview' && (
-            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
+            <div 
+              ref={scrollContainerRef}
+              className="h-full overflow-y-auto p-4 mobile-scroll-container"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              style={{ paddingTop: pullDistance > 0 ? `${pullDistance}px` : '1rem' }}
+            >
               <div className="max-w-4xl mx-auto">
                 <div className="grid grid-cols-1 gap-4">
                   {/* Recent Tasks */}
-                  <div className="bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
-                    <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
-                      Recent Tasks
-                    </h3>
+                  <div className="bg-gradient-to-br from-white to-secondary-50 dark:from-vscode-sidebar dark:to-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text flex items-center">
+                        <svg className="w-5 h-5 mr-2 text-primary-500 dark:text-vscode-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Recent Tasks
+                      </h3>
+                      {tasks.length > 0 && (
+                        <span className="text-xs font-medium px-2.5 py-1 bg-primary-500/10 dark:bg-vscode-accent/10 text-primary-600 dark:text-vscode-accent rounded-full">
+                          {tasks.length}
+                        </span>
+                      )}
+                    </div>
                     {tasks.length === 0 ? (
                       <div className="text-center py-6">
                         <svg className="w-10 h-10 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,9 +478,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                         <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No tasks yet</p>
                       </div>
                     ) : (
-                      <div className="space-y-2">
-                        {tasks.slice(0, 5).map((task) => (
-                          <div key={task.id} className="p-3 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
+                      <div className="space-y-2.5">
+                        {tasks.slice(0, 5).map((task, index) => (
+                          <div 
+                            key={task.id} 
+                            className="p-3.5 bg-white dark:bg-vscode-bg rounded-xl border border-secondary-200 dark:border-vscode-border hover:border-primary-300 dark:hover:border-vscode-accent/50 transition-all duration-200 active:scale-98 animate-slide-up"
+                            style={{ animationDelay: `${index * 50}ms` }}
+                          >
                             <div className="flex items-center space-x-2">
                               <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                                 task.completed ? 'bg-vscode-success' : 
@@ -363,10 +509,23 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   </div>
 
                   {/* Upcoming Reminders */}
-                  <div className="bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
-                    <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
-                      Upcoming Reminders
-                    </h3>
+                  <div 
+                    className="bg-gradient-to-br from-white to-secondary-50 dark:from-vscode-sidebar dark:to-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: '100ms' }}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text flex items-center">
+                        <svg className="w-5 h-5 mr-2 text-warning-500 dark:text-vscode-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Upcoming Reminders
+                      </h3>
+                      {upcomingReminders.length > 0 && (
+                        <span className="text-xs font-medium px-2.5 py-1 bg-warning-500/10 dark:bg-vscode-warning/10 text-warning-600 dark:text-vscode-warning rounded-full">
+                          {upcomingReminders.length}
+                        </span>
+                      )}
+                    </div>
                     {upcomingReminders.length === 0 ? (
                       <div className="text-center py-6">
                         <svg className="w-10 h-10 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,9 +534,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                         <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No upcoming reminders</p>
                       </div>
                     ) : (
-                      <div className="space-y-2">
-                        {upcomingReminders.slice(0, 5).map((reminder) => (
-                          <div key={reminder.id} className="p-3 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
+                      <div className="space-y-2.5">
+                        {upcomingReminders.slice(0, 5).map((reminder, index) => (
+                          <div 
+                            key={reminder.id} 
+                            className="p-3.5 bg-white dark:bg-vscode-bg rounded-xl border border-secondary-200 dark:border-vscode-border hover:border-warning-300 dark:hover:border-vscode-warning/50 transition-all duration-200 active:scale-98 animate-slide-up"
+                            style={{ animationDelay: `${index * 50}ms` }}
+                          >
                             <div className="text-sm font-mono text-secondary-900 dark:text-vscode-text truncate">{reminder.title}</div>
                             <div className="text-xs text-secondary-500 dark:text-vscode-text/50">
                               {reminder.date.toLocaleDateString()} at {reminder.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -389,28 +552,34 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   </div>
 
                   {/* Study Insights */}
-                  <div className="bg-white dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
-                    <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
+                  <div 
+                    className="bg-gradient-to-br from-primary-50 to-white dark:from-vscode-sidebar dark:to-vscode-sidebar border border-primary-200 dark:border-vscode-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in"
+                    style={{ animationDelay: '200ms' }}
+                  >
+                    <h3 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text mb-5 flex items-center">
+                      <svg className="w-5 h-5 mr-2 text-success-500 dark:text-vscode-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
                       Study Insights
                     </h3>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center">
-                        <div className="text-xl font-mono font-bold text-primary-600 dark:text-vscode-accent mb-1">
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="text-center bg-white dark:bg-vscode-bg rounded-xl p-3 border border-secondary-200 dark:border-vscode-border">
+                        <div className="text-2xl font-bold bg-gradient-to-br from-primary-600 to-primary-400 dark:from-vscode-accent dark:to-vscode-accent bg-clip-text text-transparent mb-1">
                           {Math.ceil((new Date().getTime() - topic.createdAt.getTime()) / (1000 * 60 * 60 * 24))}
                         </div>
-                        <div className="text-xs font-mono text-secondary-600 dark:text-vscode-text/70">Days studying</div>
+                        <div className="text-xs font-medium text-secondary-600 dark:text-vscode-text/70">Days</div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-xl font-mono font-bold text-success-600 dark:text-vscode-success mb-1">
+                      <div className="text-center bg-white dark:bg-vscode-bg rounded-xl p-3 border border-secondary-200 dark:border-vscode-border">
+                        <div className="text-2xl font-bold bg-gradient-to-br from-success-600 to-success-400 dark:from-vscode-success dark:to-vscode-success bg-clip-text text-transparent mb-1">
                           {completedTasks.length}
                         </div>
-                        <div className="text-xs font-mono text-secondary-600 dark:text-vscode-text/70">Tasks completed</div>
+                        <div className="text-xs font-medium text-secondary-600 dark:text-vscode-text/70">Done</div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-xl font-mono font-bold text-warning-600 dark:text-vscode-warning mb-1">
+                      <div className="text-center bg-white dark:bg-vscode-bg rounded-xl p-3 border border-secondary-200 dark:border-vscode-border">
+                        <div className="text-2xl font-bold bg-gradient-to-br from-warning-600 to-warning-400 dark:from-vscode-warning dark:to-vscode-warning bg-clip-text text-transparent mb-1">
                           {upcomingReminders.length}
                         </div>
-                        <div className="text-xs font-mono text-secondary-600 dark:text-vscode-text/70">Upcoming reminders</div>
+                        <div className="text-xs font-medium text-secondary-600 dark:text-vscode-text/70">Upcoming</div>
                       </div>
                     </div>
                   </div>
@@ -420,71 +589,149 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
           )}
 
           {activeTab === 'tasks' && (
-            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
-              <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
-                <div className="flex flex-col space-y-3">
-                  <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Tasks for {topic.name}</h2>
-                  {!isPublicView && (
-                    <button
-                      onClick={() => setShowCreateTaskModal(true)}
-                      className="w-full px-4 py-3 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      <span>Add Task</span>
-                    </button>
-                  )}
-                </div>
+            <div className="h-full overflow-y-auto mobile-scroll-container">
+              <div className="sticky top-0 z-10 p-4 border-b border-secondary-200 dark:border-vscode-border bg-white/95 dark:bg-vscode-sidebar/95 backdrop-blur-sm">
+                <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Tasks for {topic.name}</h2>
               </div>
-              <TaskList tasks={tasks} />
+              <div className="p-4">
+                <TaskList tasks={tasks} />
+              </div>
             </div>
           )}
 
           {activeTab === 'reminders' && (
-            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
-              <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
-                <div className="flex flex-col space-y-3">
-                  <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Reminders for {topic.name}</h2>
-                  {!isPublicView && (
-                    <button
-                      onClick={() => setShowCreateReminderModal(true)}
-                      className="w-full px-4 py-3 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>Add Reminder</span>
-                    </button>
-                  )}
-                </div>
+            <div className="h-full overflow-y-auto mobile-scroll-container">
+              <div className="sticky top-0 z-10 p-4 border-b border-secondary-200 dark:border-vscode-border bg-white/95 dark:bg-vscode-sidebar/95 backdrop-blur-sm">
+                <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Reminders for {topic.name}</h2>
               </div>
-              <ReminderList reminders={reminders} />
+              <div className="p-4">
+                <ReminderList reminders={reminders} />
+              </div>
             </div>
           )}
 
           {activeTab === 'notes' && (
-            <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
-              <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
-                <div className="flex flex-col space-y-3">
-                  <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Notes for {topic.name}</h2>
-                  {!isPublicView && (
-                    <button
-                      onClick={() => setShowCreateNoteModal(true)}
-                      className="w-full px-4 py-3 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      <span>Create Note</span>
-                    </button>
-                  )}
-                </div>
+            <div className="h-full overflow-y-auto mobile-scroll-container">
+              <div className="sticky top-0 z-10 p-4 border-b border-secondary-200 dark:border-vscode-border bg-white/95 dark:bg-vscode-sidebar/95 backdrop-blur-sm">
+                <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Notes for {topic.name}</h2>
               </div>
-              <NoteList notes={notes} onDelete={handleDeleteNote} />
+              <div className="p-4">
+                <NoteList notes={notes} onDelete={handleDeleteNote} />
+              </div>
             </div>
           )}
         </div>
+
+        {/* Floating Action Button (Mobile Only) */}
+        {!isPublicView && (
+          <>
+            <button
+              onClick={() => setShowActionSheet(true)}
+              className="md:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 dark:from-vscode-accent dark:to-vscode-accent/80 text-white rounded-full shadow-2xl shadow-primary-500/40 dark:shadow-vscode-accent/40 flex items-center justify-center transition-all duration-300 active:scale-90 hover:shadow-3xl animate-bounce-subtle"
+              aria-label="Add new item"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+
+            {/* Action Sheet (Mobile Bottom Sheet) */}
+            {showActionSheet && (
+              <div 
+                className="md:hidden fixed inset-0 z-50 animate-fade-in"
+                onClick={() => setShowActionSheet(false)}
+              >
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+                <div 
+                  className="absolute bottom-0 left-0 right-0 bg-white dark:bg-secondary-800 rounded-t-3xl shadow-2xl animate-slide-up-sheet"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Handle bar */}
+                  <div className="flex justify-center pt-3 pb-2">
+                    <div className="w-12 h-1.5 bg-secondary-300 dark:bg-secondary-600 rounded-full" />
+                  </div>
+                  
+                  <div className="p-6 pb-8">
+                    <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-1">Create New</h3>
+                    <p className="text-sm text-secondary-500 dark:text-secondary-400 mb-6">Choose what you'd like to add to {topic.name}</p>
+                    
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => {
+                          setShowCreateTaskModal(true);
+                          setShowActionSheet(false);
+                        }}
+                        className="w-full flex items-center space-x-4 p-4 bg-gradient-to-r from-primary-50 to-primary-100/50 dark:from-vscode-accent/10 dark:to-vscode-accent/5 border border-primary-200 dark:border-vscode-accent/20 rounded-2xl hover:shadow-md transition-all duration-200 active:scale-98 touch-target group"
+                      >
+                        <div className="w-12 h-12 bg-primary-500 dark:bg-vscode-accent rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30 group-active:scale-90 transition-transform">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-secondary-900 dark:text-white">New Task</div>
+                          <div className="text-sm text-secondary-600 dark:text-secondary-400">Add a task to track</div>
+                        </div>
+                        <svg className="w-5 h-5 text-secondary-400 dark:text-secondary-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setShowCreateReminderModal(true);
+                          setShowActionSheet(false);
+                        }}
+                        className="w-full flex items-center space-x-4 p-4 bg-gradient-to-r from-warning-50 to-warning-100/50 dark:from-vscode-warning/10 dark:to-vscode-warning/5 border border-warning-200 dark:border-vscode-warning/20 rounded-2xl hover:shadow-md transition-all duration-200 active:scale-98 touch-target group"
+                      >
+                        <div className="w-12 h-12 bg-warning-500 dark:bg-vscode-warning rounded-xl flex items-center justify-center shadow-lg shadow-warning-500/30 group-active:scale-90 transition-transform">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-secondary-900 dark:text-white">New Reminder</div>
+                          <div className="text-sm text-secondary-600 dark:text-secondary-400">Set a reminder</div>
+                        </div>
+                        <svg className="w-5 h-5 text-secondary-400 dark:text-secondary-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setShowCreateNoteModal(true);
+                          setShowActionSheet(false);
+                        }}
+                        className="w-full flex items-center space-x-4 p-4 bg-gradient-to-r from-success-50 to-success-100/50 dark:from-vscode-success/10 dark:to-vscode-success/5 border border-success-200 dark:border-vscode-success/20 rounded-2xl hover:shadow-md transition-all duration-200 active:scale-98 touch-target group"
+                      >
+                        <div className="w-12 h-12 bg-success-500 dark:bg-vscode-success rounded-xl flex items-center justify-center shadow-lg shadow-success-500/30 group-active:scale-90 transition-transform">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-secondary-900 dark:text-white">New Note</div>
+                          <div className="text-sm text-secondary-600 dark:text-secondary-400">Write a note</div>
+                        </div>
+                        <svg className="w-5 h-5 text-secondary-400 dark:text-secondary-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => setShowActionSheet(false)}
+                      className="w-full mt-4 py-3.5 bg-secondary-100 dark:bg-secondary-700 text-secondary-700 dark:text-secondary-300 font-medium rounded-2xl hover:bg-secondary-200 dark:hover:bg-secondary-600 transition-colors touch-target"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
 
         {/* Desktop: Split layout with scrollable content */}
         <div className="hidden md:block h-full">

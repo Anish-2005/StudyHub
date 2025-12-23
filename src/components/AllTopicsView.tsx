@@ -297,9 +297,19 @@ return (
                     <h4 className="text-base sm:text-lg font-semibold text-secondary-900 dark:text-secondary-200 mb-2">No topics yet</h4>
                     <p className="text-secondary-600 dark:text-secondary-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-sm mx-auto px-4">Start your learning journey by creating your first study topic</p>
                   </div>
+                ) : filteredTopics.length === 0 ? (
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-secondary-200 dark:bg-secondary-700 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <svg className="w-4 h-4 md:w-3 md:h-3 text-secondary-400 dark:text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <h4 className="text-base sm:text-lg font-semibold text-secondary-900 dark:text-secondary-200 mb-2">No topics found</h4>
+                    <p className="text-secondary-600 dark:text-secondary-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-sm mx-auto px-4">Try a different search term</p>
+                  </div>
                 ) : (
                   <div className="mobile-grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                    {topics.slice(0, 6).map((topic, index) => (
+                    {filteredTopics.slice(0, 6).map((topic, index) => (
                       <button
                         key={topic.id}
                         onClick={() => onTopicSelect(topic)}
