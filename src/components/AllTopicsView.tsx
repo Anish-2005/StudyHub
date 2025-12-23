@@ -114,6 +114,8 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
   const completedTasks = tasks.filter(task => task.completed);
   const pendingTasks = tasks.filter(task => !task.completed);
   const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
+
+  const stats = [
     {
       title: 'Total Topics',
       value: topics.length,

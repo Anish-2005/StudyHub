@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 
 const UserMenu: React.FC = () => {
@@ -15,9 +16,11 @@ const UserMenu: React.FC = () => {
       >
         <div className="w-8 h-8 bg-vscode-accent rounded-full flex items-center justify-center mr-3 flex-shrink-0">
           {user?.photoURL ? (
-            <img
+            <Image
               src={user.photoURL}
-              alt={user.displayName}
+              alt={user.displayName || 'User'}
+              width={32}
+              height={32}
               className="w-8 h-8 rounded-full"
             />
           ) : (

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 interface PomodoroTimerProps {
   className?: string;
@@ -37,7 +37,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
     };
   }, [isRunning, timeLeft, handleTimerComplete]);
 
-  const handleTimerComplete = () => {
+  const handleTimerComplete = useCallback(() => {
     setIsRunning(false);
 
     if (!isBreak) {
@@ -77,7 +77,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
         });
       }
     }
-  };
+  }, [isBreak, sessions, setSessions, setTimeLeft, setIsBreak, setIsRunning, longBreakDuration, breakDuration, workDuration]);
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);

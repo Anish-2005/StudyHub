@@ -15,7 +15,6 @@ interface SidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
   isMobile?: boolean;
-  showMobileSidebar?: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -24,7 +23,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   collapsed,
   onToggleCollapse,
   isMobile = false,
-  showMobileSidebar: _showMobileSidebar = false,
 }) => {
   const { user } = useAuth();
   const [topics, setTopics] = useState<Topic[]>([]);

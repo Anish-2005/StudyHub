@@ -24,7 +24,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ topic, username, onClose }) => 
       setCopied(true);
       toast.success('Link copied to clipboard!');
       setTimeout(() => setCopied(false), 2000);
-    } catch (_error) {
+    } catch {
       toast.error('Failed to copy link');
     }
   };

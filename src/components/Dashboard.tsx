@@ -71,7 +71,6 @@ const Dashboard: React.FC = () => {
           collapsed={sidebarCollapsed && !isMobile}
           onToggleCollapse={toggleSidebar}
           isMobile={isMobile}
-          showMobileSidebar={showMobileSidebar}
         />
       </div>
 
