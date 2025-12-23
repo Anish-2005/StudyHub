@@ -208,7 +208,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   return (
     <div className="flex flex-col h-full md:overflow-hidden">
       {/* Header */}
-      <div className="border-b border-vscode-border bg-vscode-sidebar md:flex-shrink-0">
+      <div className="border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar md:flex-shrink-0">
         <div className="p-3 md:p-4">
           {/* Topic Info */}
           <div className="flex items-center space-x-3 mb-3 md:mb-4">
@@ -222,7 +222,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2 mb-1">
-                <h1 className="text-lg md:text-xl font-bold text-vscode-text truncate">
+                <h1 className="text-lg md:text-xl font-bold text-secondary-900 dark:text-vscode-text truncate">
                   {topic.name}
                 </h1>
                 {!isPublicView && (
@@ -232,8 +232,8 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                       onClick={handleTogglePrivacy}
                       className={`p-1.5 rounded-md transition-colors ${
                         topic.isPublic 
-                          ? 'bg-green-400/10 text-green-400' 
-                          : 'bg-gray-400/10 text-gray-400'
+                          ? 'bg-success-500/10 text-success-600 dark:text-success-400' 
+                          : 'bg-secondary-300 dark:bg-gray-400/10 text-secondary-600 dark:text-gray-400'
                       }`}
                       title={topic.isPublic ? 'Public - Anyone can view' : 'Private - Only you can view'}
                     >
@@ -250,7 +250,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                     {topic.isPublic && (
                       <button
                         onClick={() => setShowShareModal(true)}
-                        className="p-1.5 rounded-md bg-vscode-accent/10 text-vscode-accent hover:bg-vscode-accent/20 transition-colors"
+                        className="p-1.5 rounded-md bg-primary-500/10 dark:bg-vscode-accent/10 text-primary-600 dark:text-vscode-accent hover:bg-primary-500/20 dark:hover:bg-vscode-accent/20 transition-colors"
                         title="Share topic"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,7 +261,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   </div>
                 )}
                 {isPublicView && (
-                  <span className="px-2 py-1 bg-green-400/10 text-green-400 text-xs font-mono rounded">
+                  <span className="px-2 py-1 bg-success-500/10 text-success-600 dark:text-success-400 text-xs font-mono rounded">
                     Public
                   </span>
                 )}
@@ -295,7 +295,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-shrink-0 px-3 md:px-4 py-2 rounded-md font-mono text-xs md:text-sm transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-primary-500 text-white dark:bg-vscode-accent dark:text-white'
+                    ? 'bg-primary-500 dark:bg-vscode-accent text-white'
                     : 'text-secondary-700 dark:text-vscode-text/70 hover:text-secondary-900 dark:hover:text-vscode-text hover:bg-secondary-200 dark:hover:bg-vscode-active'
                 }`}
               >
@@ -303,7 +303,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 {tab.count !== null && (
                   <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
                     activeTab === tab.id
-                      ? 'bg-secondary-900/20 dark:bg-white/20 text-secondary-900 dark:text-white'
+                      ? 'bg-white/20 text-white'
                       : 'bg-secondary-300 dark:bg-vscode-active text-secondary-700 dark:text-vscode-text/50'
                   }`}>
                     {tab.count}
@@ -338,7 +338,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                     ) : (
                       <div className="space-y-2">
                         {tasks.slice(0, 5).map((task) => (
-                          <div key={task.id} className="p-3 bg-vscode-bg rounded border border-vscode-border">
+                          <div key={task.id} className="p-3 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
                             <div className="flex items-center space-x-2">
                               <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                                 task.completed ? 'bg-vscode-success' : 
@@ -347,11 +347,11 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                               }`}></div>
                               <div className="flex-1 min-w-0">
                                 <div className={`text-sm font-mono truncate ${
-                                  task.completed ? 'line-through text-vscode-text/50' : 'text-vscode-text'
+                                task.completed ? 'line-through text-secondary-400 dark:text-vscode-text/50' : 'text-secondary-900 dark:text-vscode-text'
                                 }`}>
                                   {task.title}
                                 </div>
-                                <div className="text-xs text-vscode-text/50">
+                                <div className="text-xs text-secondary-500 dark:text-vscode-text/50">
                                   {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
                                 </div>
                               </div>
@@ -377,9 +377,9 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                     ) : (
                       <div className="space-y-2">
                         {upcomingReminders.slice(0, 5).map((reminder) => (
-                          <div key={reminder.id} className="p-3 bg-vscode-bg rounded border border-vscode-border">
-                            <div className="text-sm font-mono text-vscode-text truncate">{reminder.title}</div>
-                            <div className="text-xs text-vscode-text/50">
+                          <div key={reminder.id} className="p-3 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
+                            <div className="text-sm font-mono text-secondary-900 dark:text-vscode-text truncate">{reminder.title}</div>
+                            <div className="text-xs text-secondary-500 dark:text-vscode-text/50">
                               {reminder.date.toLocaleDateString()} at {reminder.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </div>
                           </div>
@@ -389,28 +389,28 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   </div>
 
                   {/* Study Insights */}
-                  <div className="bg-vscode-sidebar border border-vscode-border rounded-lg p-4">
-                    <h3 className="text-lg font-mono font-semibold text-vscode-text mb-4">
+                  <div className="bg-white dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
+                    <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
                       Study Insights
                     </h3>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center">
-                        <div className="text-xl font-mono font-bold text-vscode-accent mb-1">
+                        <div className="text-xl font-mono font-bold text-primary-600 dark:text-vscode-accent mb-1">
                           {Math.ceil((new Date().getTime() - topic.createdAt.getTime()) / (1000 * 60 * 60 * 24))}
                         </div>
-                        <div className="text-xs font-mono text-vscode-text/70">Days studying</div>
+                        <div className="text-xs font-mono text-secondary-600 dark:text-vscode-text/70">Days studying</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-xl font-mono font-bold text-vscode-success mb-1">
+                        <div className="text-xl font-mono font-bold text-success-600 dark:text-vscode-success mb-1">
                           {completedTasks.length}
                         </div>
-                        <div className="text-xs font-mono text-vscode-text/70">Tasks completed</div>
+                        <div className="text-xs font-mono text-secondary-600 dark:text-vscode-text/70">Tasks completed</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-xl font-mono font-bold text-vscode-warning mb-1">
+                        <div className="text-xl font-mono font-bold text-warning-600 dark:text-vscode-warning mb-1">
                           {upcomingReminders.length}
                         </div>
-                        <div className="text-xs font-mono text-vscode-text/70">Upcoming reminders</div>
+                        <div className="text-xs font-mono text-secondary-600 dark:text-vscode-text/70">Upcoming reminders</div>
                       </div>
                     </div>
                   </div>
@@ -421,13 +421,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
           {activeTab === 'tasks' && (
             <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
-              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
+              <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
                 <div className="flex flex-col space-y-3">
-                  <h2 className="text-lg font-semibold text-vscode-text">Tasks for {topic.name}</h2>
+                  <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Tasks for {topic.name}</h2>
                   {!isPublicView && (
                     <button
                       onClick={() => setShowCreateTaskModal(true)}
-                      className="w-full px-4 py-3 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
+                      className="w-full px-4 py-3 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -443,13 +443,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
           {activeTab === 'reminders' && (
             <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
-              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
+              <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
                 <div className="flex flex-col space-y-3">
-                  <h2 className="text-lg font-semibold text-vscode-text">Reminders for {topic.name}</h2>
+                  <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Reminders for {topic.name}</h2>
                   {!isPublicView && (
                     <button
                       onClick={() => setShowCreateReminderModal(true)}
-                      className="w-full px-4 py-3 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
+                      className="w-full px-4 py-3 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -465,13 +465,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
           {activeTab === 'notes' && (
             <div className="h-full overflow-y-auto p-4 mobile-scroll-container">
-              <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
+              <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
                 <div className="flex flex-col space-y-3">
-                  <h2 className="text-lg font-semibold text-vscode-text">Notes for {topic.name}</h2>
+                  <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Notes for {topic.name}</h2>
                   {!isPublicView && (
                     <button
                       onClick={() => setShowCreateNoteModal(true)}
-                      className="w-full px-4 py-3 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
+                      className="w-full px-4 py-3 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center justify-center space-x-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -507,16 +507,16 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   ) : (
                     <div className="space-y-2">
                       {tasks.slice(0, 5).map((task) => (
-                        <div key={task.id} className="p-2 bg-vscode-bg rounded border border-vscode-border">
+                        <div key={task.id} className="p-2 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
                           <div className="flex items-center space-x-2">
                             <div className={`w-2 h-2 rounded-full ${
-                              task.completed ? 'bg-vscode-success' : 
-                              task.priority === 'high' ? 'bg-red-400' :
-                              task.priority === 'medium' ? 'bg-yellow-400' : 'bg-green-400'
+                              task.completed ? 'bg-success-500 dark:bg-vscode-success' : 
+                              task.priority === 'high' ? 'bg-accent-500 dark:bg-red-400' :
+                              task.priority === 'medium' ? 'bg-warning-500 dark:bg-yellow-400' : 'bg-success-500 dark:bg-green-400'
                             }`}></div>
                             <div className="flex-1">
                               <div className={`text-sm font-mono ${
-                                task.completed ? 'line-through text-vscode-text/50' : 'text-vscode-text'
+                                task.completed ? 'line-through text-secondary-400 dark:text-vscode-text/50' : 'text-secondary-900 dark:text-vscode-text'
                               }`}>
                                 {task.title}
                               </div>
@@ -532,23 +532,23 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 </div>
 
                 {/* Upcoming Reminders */}
-                <div className="bg-vscode-sidebar border border-vscode-border rounded-lg p-4">
-                  <h3 className="text-lg font-mono font-semibold text-vscode-text mb-4">
+                <div className="bg-white dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
+                  <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
                     Upcoming Reminders
                   </h3>
                   {upcomingReminders.length === 0 ? (
                     <div className="text-center py-8">
-                      <svg className="w-12 h-12 mx-auto text-vscode-text/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-12 h-12 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <p className="text-sm font-mono text-vscode-text/50">No upcoming reminders</p>
+                      <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No upcoming reminders</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
                       {upcomingReminders.slice(0, 5).map((reminder) => (
-                        <div key={reminder.id} className="p-2 bg-vscode-bg rounded border border-vscode-border">
-                          <div className="text-sm font-mono text-vscode-text">{reminder.title}</div>
-                          <div className="text-xs text-vscode-text/50">
+                        <div key={reminder.id} className="p-2 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
+                          <div className="text-sm font-mono text-secondary-900 dark:text-vscode-text">{reminder.title}</div>
+                          <div className="text-xs text-secondary-500 dark:text-vscode-text/50">
                             {reminder.date.toLocaleDateString()} at {reminder.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </div>
@@ -590,13 +590,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
         {activeTab === 'tasks' && (
           <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
-            <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
+            <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                <h2 className="text-lg font-semibold text-vscode-text">Tasks for {topic.name}</h2>
+                <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Tasks for {topic.name}</h2>
                 {!isPublicView && (
                   <button
                     onClick={() => setShowCreateTaskModal(true)}
-                    className="px-4 py-2 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors touch-target flex items-center space-x-2"
+                    className="px-4 py-2 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center space-x-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -612,13 +612,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
         {activeTab === 'reminders' && (
           <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
-            <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
+            <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                <h2 className="text-lg font-semibold text-vscode-text">Reminders for {topic.name}</h2>
+                <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Reminders for {topic.name}</h2>
                 {!isPublicView && (
                   <button
                     onClick={() => setShowCreateReminderModal(true)}
-                    className="px-4 py-2 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors touch-target flex items-center space-x-2"
+                    className="px-4 py-2 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center space-x-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -634,13 +634,13 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
         {activeTab === 'notes' && (
           <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
-            <div className="p-4 border-b border-vscode-border bg-vscode-sidebar mb-4">
+            <div className="p-4 border-b border-secondary-200 dark:border-vscode-border bg-white dark:bg-vscode-sidebar mb-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                <h2 className="text-lg font-semibold text-vscode-text">Notes for {topic.name}</h2>
+                <h2 className="text-lg font-semibold text-secondary-900 dark:text-vscode-text">Notes for {topic.name}</h2>
                 {!isPublicView && (
                   <button
                     onClick={() => setShowCreateNoteModal(true)}
-                    className="px-4 py-2 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors touch-target flex items-center space-x-2"
+                    className="px-4 py-2 bg-primary-500 dark:bg-vscode-accent text-white font-medium rounded-md hover:bg-primary-600 dark:hover:bg-vscode-accent/80 transition-colors touch-target flex items-center space-x-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
