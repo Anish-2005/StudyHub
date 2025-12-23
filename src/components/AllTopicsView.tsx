@@ -8,6 +8,7 @@ import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
 import ReminderList from './ReminderList';
 import StudyStats from './StudyStats';
+import PomodoroTimer from './PomodoroTimer';
 
 interface AllTopicsViewProps {
   tasks: Task[];
@@ -243,7 +244,7 @@ return (
               </div>
 
               {/* Quick Actions & Recent Activity */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Quick Actions */}
                 <div className="card">
                   <div className="card-header">
@@ -293,6 +294,11 @@ return (
                       </div>
                     </button>
                   </div>
+                </div>
+
+                {/* Pomodoro Timer */}
+                <div className="lg:col-span-1">
+                  <PomodoroTimer />
                 </div>
 
                 {/* Recent Activity */}
