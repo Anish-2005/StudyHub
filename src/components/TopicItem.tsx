@@ -57,51 +57,58 @@ const TopicItem: React.FC<TopicItemProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative group">
       <div
-        className={`w-full text-left p-2 rounded font-medium text-sm transition-colors group cursor-pointer ${
+        className={`w-full text-left p-4 rounded-xl font-medium text-sm transition-all duration-200 cursor-pointer touch-target ${
           isSelected
-            ? 'bg-vscode-accent text-white'
-            : 'text-vscode-text/70 hover:text-vscode-text hover:bg-vscode-active'
+            ? 'bg-primary-500/10 border border-primary-500/30 text-primary-200 shadow-lg glow-primary'
+            : 'text-secondary-300 hover:text-secondary-100 hover:bg-secondary-700/50 border border-transparent hover:border-secondary-600/50'
         }`}
       >
-        <div 
+        <div
           onClick={onSelect}
           className="flex items-center justify-between"
         >
           <div className="flex items-center flex-1 min-w-0">
-            <div className={`w-2 h-2 rounded-full mr-2 flex-shrink-0`} style={{ backgroundColor: topic.color }}></div>
-            <div className="mr-2 flex-shrink-0" style={{ color: isSelected ? 'white' : topic.color }}>
+            <div
+              className={`w-10 h-10 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 transition-all duration-200 ${
+                isSelected
+                  ? 'bg-primary-500 text-white shadow-lg'
+                  : 'bg-secondary-700 group-hover:bg-secondary-600 text-secondary-400 group-hover:text-secondary-200'
+              }`}
+              style={{
+                backgroundColor: isSelected ? undefined : topic.color + '20',
+                color: isSelected ? undefined : topic.color
+              }}
+            >
               {getTopicIcon(topic.icon)}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="truncate font-medium">{topic.name}</div>
-              <div className={`text-xs truncate ${isSelected ? 'text-white/70' : 'text-vscode-text/50'}`}>
+              <div className="truncate font-semibold text-base mb-1">{topic.name}</div>
+              <div className={`text-xs truncate ${isSelected ? 'text-primary-300/70' : 'text-secondary-400'}`}>
                 {topic.description || 'No description'}
+              </div>
+              <div className={`text-xs mt-1 ${isSelected ? 'text-primary-400/70' : 'text-secondary-500'}`}>
+                Updated {format(topic.updatedAt, 'MMM d, yyyy')}
               </div>
             </div>
           </div>
-          
+
           <button
             onClick={(e) => {
               e.stopPropagation();
               setShowMenu(!showMenu);
             }}
-            className={`p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity touch-target ${
-              isSelected ? 'hover:bg-white/20' : 'hover:bg-vscode-border'
+            className={`p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 touch-target ${
+              isSelected
+                ? 'hover:bg-primary-500/20 text-primary-300'
+                : 'hover:bg-secondary-600 text-secondary-400 hover:text-secondary-200'
             }`}
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
             </svg>
           </button>
-        </div>
-        
-        <div 
-          onClick={onSelect}
-          className={`text-xs mt-1 cursor-pointer ${isSelected ? 'text-white/50' : 'text-vscode-text/40'}`}
-        >
-          {format(topic.updatedAt, 'MMM d, yyyy')}
         </div>
       </div>
 
@@ -112,16 +119,21 @@ const TopicItem: React.FC<TopicItemProps> = ({
             className="fixed inset-0 z-10"
             onClick={() => setShowMenu(false)}
           />
-          <div className="absolute right-0 top-8 z-20 bg-vscode-sidebar border border-vscode-border rounded-md shadow-lg py-1 min-w-[120px]">
+          <div className="absolute right-0 top-12 z-20 glass-effect rounded-xl shadow-professional-xl py-2 min-w-[140px] border border-secondary-600/50">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete();
                 setShowMenu(false);
               }}
-              className="w-full text-left px-3 py-2 text-sm font-medium text-vscode-error hover:bg-vscode-active transition-colors touch-target"
+              className="w-full text-left px-4 py-3 text-sm font-semibold text-accent-400 hover:text-accent-300 hover:bg-accent-500/10 transition-all duration-200 touch-target rounded-lg mx-2"
             >
-              Delete
+              <div className="flex items-center">
+                <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Delete Topic
+              </div>
             </button>
           </div>
         </>
