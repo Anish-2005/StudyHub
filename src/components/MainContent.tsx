@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Topic, Task, Reminder } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TopicDashboard from './TopicDashboard';
 import AllTopicsView from './AllTopicsView';

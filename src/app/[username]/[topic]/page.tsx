@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { doc, getDoc, collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Topic, Task, Reminder, User } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,13 +10,14 @@ import { decodeTopicFromUrl, decodeUsernameFromUrl } from '@/utils/slug';
 import TopicDashboard from '@/components/TopicDashboard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
-interface PublicTopicPageProps {}
+interface PublicTopicPageProps {
+  children?: React.ReactNode;
+}
 
 const PublicTopicPage: React.FC<PublicTopicPageProps> = () => {
   const params = useParams();
   const { user } = useAuth();
   const [topic, setTopic] = useState<Topic | null>(null);
-  const [topicOwner, setTopicOwner] = useState<User | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +57,6 @@ const PublicTopicPage: React.FC<PublicTopicPageProps> = () => {
         } as User;
 
         console.log('Found user:', userData);
-        setTopicOwner(userData);
 
         // Query public topics by this user
         const topicsQuery = query(

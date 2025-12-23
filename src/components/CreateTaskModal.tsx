@@ -135,7 +135,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ onClose, onSubmit, to
               </label>
               <select
                 value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
+                onChange={(e) => setFormData({ ...formData, priority: e.target.value as 'low' | 'medium' | 'high' })}
                 className="w-full px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-vscode-text font-mono focus:outline-none focus:border-vscode-accent transition-colors"
               >
                 <option value="low">Low</option>

@@ -126,7 +126,7 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ onClose, onSu
               </label>
               <select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'task' | 'study' | 'review' })}
                 className="w-full px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-vscode-text font-mono focus:outline-none focus:border-vscode-accent transition-colors"
               >
                 <option value="study">Study Session</option>

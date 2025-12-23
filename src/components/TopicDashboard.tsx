@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, onSnapshot, orderBy, addDoc, deleteDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
 import ReminderList from './ReminderList';
@@ -158,7 +158,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   };
 
   const completedTasks = tasks.filter(task => task.completed);
-  const pendingTasks = tasks.filter(task => !task.completed);
   const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
   const completionPercentage = tasks.length > 0 ? Math.round((completedTasks.length / tasks.length) * 100) : 0;
 

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Task, Reminder, Topic } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
 import ReminderList from './ReminderList';
@@ -114,9 +114,6 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
   const completedTasks = tasks.filter(task => task.completed);
   const pendingTasks = tasks.filter(task => !task.completed);
   const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
-  const overdueReminders = reminders.filter(reminder => !reminder.completed && reminder.date < new Date());
-
-  const stats = [
     {
       title: 'Total Topics',
       value: topics.length,
@@ -155,10 +152,6 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM11 3v4a1 1 0 001 1h4m-5-6H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V9l-5-6z" />
         </svg>
       ),
-      color: 'vscode-accent',
-    },
-  ];
-
   const tabs = [
     { id: 'overview', name: 'Overview', count: null },
     { id: 'tasks', name: 'Tasks', count: tasks.length },

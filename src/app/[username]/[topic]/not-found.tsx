@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1 className="text-6xl font-bold text-vscode-text mb-4">404</h1>
         <h2 className="text-2xl font-semibold text-vscode-text mb-4">Topic Not Found</h2>
         <p className="text-vscode-text/70 mb-8 max-w-md">
-          The topic you're looking for doesn't exist or is not public.
+          The topic you&apos;re looking for doesn&apos;t exist or is not public.
         </p>
         <Link
           href="/"

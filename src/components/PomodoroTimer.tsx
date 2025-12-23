@@ -35,7 +35,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft, handleTimerComplete]);
 
   const handleTimerComplete = () => {
     setIsRunning(false);
@@ -51,7 +51,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
         setIsBreak(true);
         // You could add a notification here
         if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification('Time for a long break! 🎉', {
+          new Notification('Time for a long break!', {
             body: 'Great work! Take 15 minutes to relax.',
             icon: '/favicon.svg'
           });
@@ -60,7 +60,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
         setTimeLeft(breakDuration);
         setIsBreak(true);
         if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification('Break time! ☕', {
+          new Notification('Break time!', {
             body: 'Take 5 minutes to stretch and relax.',
             icon: '/favicon.svg'
           });
@@ -71,7 +71,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
       setTimeLeft(workDuration);
       setIsBreak(false);
       if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('Break\'s over! 📚', {
+        new Notification('Break\'s over! Time to study.', {
           body: 'Time to get back to studying.',
           icon: '/favicon.svg'
         });

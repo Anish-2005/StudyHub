@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   collapsed,
   onToggleCollapse,
   isMobile = false,
-  showMobileSidebar = false,
+  showMobileSidebar: _showMobileSidebar = false,
 }) => {
   const { user } = useAuth();
   const [topics, setTopics] = useState<Topic[]>([]);
