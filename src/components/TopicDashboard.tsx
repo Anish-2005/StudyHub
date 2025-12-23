@@ -266,7 +266,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   </span>
                 )}
               </div>
-              <div className="text-xs md:text-sm text-vscode-text/50">
+              <div className="text-xs md:text-sm text-secondary-500 dark:text-vscode-text/50">
                 {completionPercentage}% Complete • {tasks.length} Tasks • {reminders.length} Reminders
               </div>
             </div>
@@ -275,7 +275,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
           {/* Progress Bar */}
           {tasks.length > 0 && (
             <div className="mb-3 md:mb-4">
-              <div className="w-full bg-vscode-bg rounded-full h-1.5 md:h-2">
+              <div className="w-full bg-secondary-200 dark:bg-vscode-bg rounded-full h-1.5 md:h-2">
                 <div 
                   className="h-1.5 md:h-2 rounded-full transition-all duration-500"
                   style={{ 
@@ -288,15 +288,15 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
           )}
 
           {/* Tabs */}
-          <div className="flex space-x-1 bg-vscode-bg rounded-lg p-1 overflow-x-auto">
+          <div className="flex space-x-1 bg-secondary-100 dark:bg-vscode-bg rounded-lg p-1 overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-shrink-0 px-3 md:px-4 py-2 rounded-md font-mono text-xs md:text-sm transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-vscode-accent text-white'
-                    : 'text-vscode-text/70 hover:text-vscode-text hover:bg-vscode-active'
+                    ? 'bg-primary-500 text-white dark:bg-vscode-accent dark:text-white'
+                    : 'text-secondary-700 dark:text-vscode-text/70 hover:text-secondary-900 dark:hover:text-vscode-text hover:bg-secondary-200 dark:hover:bg-vscode-active'
                 }`}
               >
                 {tab.name}
@@ -324,16 +324,16 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
               <div className="max-w-4xl mx-auto">
                 <div className="grid grid-cols-1 gap-4">
                   {/* Recent Tasks */}
-                  <div className="bg-vscode-sidebar border border-vscode-border rounded-lg p-4">
-                    <h3 className="text-lg font-mono font-semibold text-vscode-text mb-4">
+                  <div className="bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
+                    <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
                       Recent Tasks
                     </h3>
                     {tasks.length === 0 ? (
                       <div className="text-center py-6">
-                        <svg className="w-10 h-10 mx-auto text-vscode-text/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-10 h-10 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        <p className="text-sm font-mono text-vscode-text/50">No tasks yet</p>
+                        <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No tasks yet</p>
                       </div>
                     ) : (
                       <div className="space-y-2">
@@ -363,16 +363,16 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   </div>
 
                   {/* Upcoming Reminders */}
-                  <div className="bg-vscode-sidebar border border-vscode-border rounded-lg p-4">
-                    <h3 className="text-lg font-mono font-semibold text-vscode-text mb-4">
+                  <div className="bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
+                    <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
                       Upcoming Reminders
                     </h3>
                     {upcomingReminders.length === 0 ? (
                       <div className="text-center py-6">
-                        <svg className="w-10 h-10 mx-auto text-vscode-text/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-10 h-10 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p className="text-sm font-mono text-vscode-text/50">No upcoming reminders</p>
+                        <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No upcoming reminders</p>
                       </div>
                     ) : (
                       <div className="space-y-2">
@@ -493,16 +493,16 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
               <div className="max-w-4xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Tasks */}
-                <div className="bg-vscode-sidebar border border-vscode-border rounded-lg p-4">
-                  <h3 className="text-lg font-mono font-semibold text-vscode-text mb-4">
+                <div className="bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
+                  <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
                     Recent Tasks
                   </h3>
                   {tasks.length === 0 ? (
                     <div className="text-center py-8">
-                      <svg className="w-12 h-12 mx-auto text-vscode-text/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-12 h-12 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
-                      <p className="text-sm font-mono text-vscode-text/50">No tasks yet</p>
+                      <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No tasks yet</p>
                     </div>
                   ) : (
                     <div className="space-y-2">

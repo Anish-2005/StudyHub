@@ -85,23 +85,23 @@ const StudyStats: React.FC<StudyStatsProps> = ({ topics, tasks, reminders }) => 
               {stat.icon}
             </div>
             <div className="text-right">
-              <div className="text-3xl font-bold text-secondary-100">{stat.value}</div>
-              <div className="text-sm font-medium text-secondary-400">{stat.label}</div>
+              <div className="text-3xl font-bold text-secondary-900 dark:text-secondary-100">{stat.value}</div>
+              <div className="text-sm font-medium text-secondary-600 dark:text-secondary-400">{stat.label}</div>
             </div>
           </div>
 
-          <div className="text-sm text-secondary-500">{stat.description}</div>
+          <div className="text-sm text-secondary-500 dark:text-secondary-500">{stat.description}</div>
 
           {/* Progress bar for completion rate */}
           {stat.label === 'Tasks Completed' && totalTasks > 0 && (
             <div className="mt-4">
-              <div className="w-full bg-secondary-700 rounded-full h-2">
+              <div className="w-full bg-secondary-200 dark:bg-secondary-700 rounded-full h-2">
                 <div
                   className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${completionRate}%` }}
                 ></div>
               </div>
-              <div className="text-xs text-secondary-500 mt-1">{completionRate}% complete</div>
+              <div className="text-xs text-secondary-500 dark:text-secondary-500 mt-1">{completionRate}% complete</div>
             </div>
           )}
         </div>

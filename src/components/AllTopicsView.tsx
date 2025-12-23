@@ -202,8 +202,8 @@ return (
                       </svg>
                     </div>
                     <div>
-                      <div className="text-lg font-bold text-secondary-100">{completedTasks.length}</div>
-                      <div className="text-xs text-secondary-400">Done</div>
+                      <div className="text-lg font-bold text-secondary-900 dark:text-secondary-100">{completedTasks.length}</div>
+                      <div className="text-xs text-secondary-600 dark:text-secondary-400">Done</div>
                     </div>
                   </div>
                 </div>
@@ -217,7 +217,7 @@ return (
           )}
 
           {/* Tabs */}
-          <div className={`flex space-x-1 sm:space-x-2 bg-secondary-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl border border-secondary-700/50 transition-all duration-300 ${
+          <div className={`flex space-x-1 sm:space-x-2 bg-secondary-100 dark:bg-secondary-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl border border-secondary-200 dark:border-secondary-700/50 transition-all duration-300 ${
             isHeaderMinimized ? 'p-1' : 'p-1 sm:p-2'
           }`}>
             {tabs.map((tab) => (
@@ -229,7 +229,7 @@ return (
                 } ${
                   activeTab === tab.id
                     ? 'bg-primary-500 text-white shadow-lg'
-                    : 'text-secondary-400 hover:text-secondary-200 hover:bg-secondary-700/50'
+                    : 'text-secondary-700 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-200 hover:bg-secondary-200 dark:hover:bg-secondary-700/50'
                 }`}
               >
                 <span className="whitespace-nowrap">{tab.name}</span>
