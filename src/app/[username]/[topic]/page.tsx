@@ -10,11 +10,7 @@ import { decodeTopicFromUrl, decodeUsernameFromUrl } from '@/utils/slug';
 import TopicDashboard from '@/components/TopicDashboard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
-interface PublicTopicPageProps {
-  children?: React.ReactNode;
-}
-
-const PublicTopicPage: React.FC<PublicTopicPageProps> = () => {
+const PublicTopicPage: React.FC = () => {
   const params = useParams();
   const { user } = useAuth();
   const [topic, setTopic] = useState<Topic | null>(null);

@@ -17,26 +17,6 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
   const breakDuration = 5 * 60; // 5 minutes
   const longBreakDuration = 15 * 60; // 15 minutes
 
-  useEffect(() => {
-    if (isRunning && timeLeft > 0) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft(time => time - 1);
-      }, 1000);
-    } else if (timeLeft === 0) {
-      handleTimerComplete();
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isRunning, timeLeft, handleTimerComplete]);
-
   const handleTimerComplete = useCallback(() => {
     setIsRunning(false);
 
@@ -78,6 +58,26 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
       }
     }
   }, [isBreak, sessions, setSessions, setTimeLeft, setIsBreak, setIsRunning, longBreakDuration, breakDuration, workDuration]);
+
+  useEffect(() => {
+    if (isRunning && timeLeft > 0) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft(time => time - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      handleTimerComplete();
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning, timeLeft, handleTimerComplete]);
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);
