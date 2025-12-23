@@ -11,11 +11,13 @@ import AllTopicsView from './AllTopicsView';
 interface MainContentProps {
   selectedTopic: Topic | null;
   onTopicSelect: (topic: Topic | null) => void;
+  searchQuery?: string;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
   selectedTopic,
   onTopicSelect,
+  searchQuery = '',
 }) => {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -99,6 +101,22 @@ const MainContent: React.FC<MainContentProps> = ({
     };
   }, [user, selectedTopic]);
 
+  // Filter tasks and reminders based on search query
+  const filteredTasks = searchQuery
+    ? tasks.filter(task =>
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : tasks;
+
+  const filteredReminders = searchQuery
+    ? reminders.filter(reminder =>
+        reminder.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        reminder.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : reminders;
+
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-vscode-bg min-h-0">
@@ -115,14 +133,15 @@ const MainContent: React.FC<MainContentProps> = ({
       {selectedTopic ? (
         <TopicDashboard 
           topic={selectedTopic}
-          tasks={tasks}
-          reminders={reminders}
+          tasks={filteredTasks}
+          reminders={filteredReminders}
         />
       ) : (
         <AllTopicsView 
-          tasks={tasks}
-          reminders={reminders}
+          tasks={filteredTasks}
+          reminders={filteredReminders}
           onTopicSelect={onTopicSelect}
+          searchQuery={searchQuery}
         />
       )}
     </div>

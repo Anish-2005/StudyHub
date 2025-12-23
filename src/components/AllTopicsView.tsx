@@ -14,12 +14,14 @@ interface AllTopicsViewProps {
   tasks: Task[];
   reminders: Reminder[];
   onTopicSelect: (topic: Topic | null) => void;
+  searchQuery?: string;
 }
 
 const AllTopicsView: React.FC<AllTopicsViewProps> = ({
   tasks,
   reminders,
   onTopicSelect,
+  searchQuery = '',
 }) => {
   const { user } = useAuth();
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -54,6 +56,15 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 
     return () => unsubscribe();
   }, [user]);
+
+  // Filter topics based on search query
+  const filteredTopics = searchQuery
+    ? topics.filter(topic =>
+        topic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.icon.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : topics;
 
   // Handle header minimization on scroll (desktop only)
   useEffect(() => {

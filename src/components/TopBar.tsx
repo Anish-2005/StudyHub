@@ -28,6 +28,22 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
     year: 'numeric'
   });
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSearch && searchQuery.trim()) {
+      onSearch(searchQuery.trim());
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    // Real-time search
+    if (onSearch) {
+      onSearch(query.trim());
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-secondary-800 border-b border-secondary-200 dark:border-secondary-700/50 shadow-sm z-30 relative">
       <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 h-16 md:h-20">
@@ -91,9 +107,58 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
             </div>
           </div>
 
-          {/* Search Button - Desktop */}
+          {/* Search - Desktop */}
+          <div className="hidden md:block relative">
+            {showSearch ? (
+              <form onSubmit={handleSearch} className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Search tasks, topics, notes..."
+                  className="w-64 lg:w-80 pl-10 pr-10 py-2 bg-secondary-100 dark:bg-secondary-700/50 border border-secondary-300 dark:border-secondary-600 rounded-lg text-sm text-secondary-900 dark:text-secondary-100 placeholder-secondary-500 dark:placeholder-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  autoFocus
+                  onBlur={() => {
+                    if (!searchQuery) {
+                      setTimeout(() => setShowSearch(false), 150);
+                    }
+                  }}
+                />
+                <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-500 dark:text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      if (onSearch) onSearch('');
+                    }}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-300"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </form>
+            ) : (
+              <button
+                onClick={() => setShowSearch(true)}
+                className="p-2.5 text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-100 hover:bg-secondary-100 dark:hover:bg-secondary-700/50 rounded-lg transition-all duration-200"
+                title="Search"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Search Button - Mobile */}
           <button
-            className="hidden md:flex p-2.5 text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-100 hover:bg-secondary-100 dark:hover:bg-secondary-700/50 rounded-lg transition-all duration-200"
+            onClick={() => setShowSearch(!showSearch)}
+            className="md:hidden p-2.5 text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-100 hover:bg-secondary-100 dark:hover:bg-secondary-700/50 rounded-lg transition-all duration-200"
             title="Search"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,6 +196,39 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
           </div>
         </div>
       </div>
+
+      {/* Mobile Search Bar - Expandable */}
+      {isMobile && showSearch && (
+        <div className="px-4 pb-4 border-t border-secondary-200 dark:border-secondary-700/50 animate-slide-down">
+          <form onSubmit={handleSearch} className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search tasks, topics, notes..."
+              className="w-full pl-10 pr-10 py-2.5 bg-secondary-100 dark:bg-secondary-700/50 border border-secondary-300 dark:border-secondary-600 rounded-lg text-sm text-secondary-900 dark:text-secondary-100 placeholder-secondary-500 dark:placeholder-secondary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+              autoFocus
+            />
+            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-500 dark:text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  if (onSearch) onSearch('');
+                }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-300"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </form>
+        </div>
+      )}
     </div>
   );
 };

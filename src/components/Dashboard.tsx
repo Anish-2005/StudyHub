@@ -18,6 +18,7 @@ const Dashboard: React.FC = () => {
   });
   const [isMobile, setIsMobile] = useState(false);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Save sidebar state to localStorage whenever it changes
   useEffect(() => {
@@ -61,6 +62,11 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Search functionality will be handled by MainContent and AllTopicsView
+  };
+
   return (
     <div className="flex h-screen bg-secondary-900 overflow-hidden relative">
       {/* Background decorative elements */}
@@ -102,6 +108,7 @@ const Dashboard: React.FC = () => {
           selectedTopic={selectedTopic}
           onMenuClick={toggleSidebar}
           isMobile={isMobile}
+          onSearch={handleSearch}
         />
 
         {/* Main Content Area */}
@@ -109,6 +116,7 @@ const Dashboard: React.FC = () => {
           <MainContent
             selectedTopic={selectedTopic}
             onTopicSelect={handleTopicSelect}
+            searchQuery={searchQuery}
           />
         </div>
       </div>
