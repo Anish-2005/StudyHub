@@ -99,7 +99,7 @@ const PomodoroTimer: React.FC<PomodoroTimerProps> = ({ className = '' }) => {
                    (isBreak ? (isBreak ? breakDuration : longBreakDuration) : workDuration) * 100;
 
   return (
-    <div className={`card ${className}`}>
+    <div className={`card py-4 sm:py-6 ${className}`}>
       <div className="card-header">
         <h3 className="card-title flex items-center">
           <svg className="w-5 h-5 mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

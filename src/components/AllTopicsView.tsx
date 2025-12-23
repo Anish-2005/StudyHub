@@ -388,13 +388,13 @@ return (
                 </div>
 
                 {/* Pomodoro Timer */}
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 my-4 sm:my-6">
                   <PomodoroTimer />
                 </div>
 
                 {/* Recent Activity */}
                 {(pendingTasks.length > 0 || upcomingReminders.length > 0) && (
-                  <div className="card card-mobile">
+                  <div className="card card-mobile my-4 sm:my-6">
                     <div className="card-header">
                       <h3 className="card-title flex items-center">
                         <svg className="w-4 h-4 md:w-3 md:h-3 mr-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
