@@ -5,9 +5,6 @@ import { Topic, Task, Reminder, Note } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import TaskList from '../tasks/TaskList';
-import ReminderList from '../reminders/ReminderList';
-import NoteList from '../notes/NoteList';
 import CreateTaskModal from '../modals/CreateTaskModal';
 import CreateReminderModal from '../modals/CreateReminderModal';
 import CreateNoteModal from '../modals/CreateNoteModal';
@@ -16,6 +13,7 @@ import TopicOverviewTab from './TopicOverviewTab';
 import TopicTasksTab from './TopicTasksTab';
 import TopicRemindersTab from './TopicRemindersTab';
 import TopicNotesTab from './TopicNotesTab';
+import TopicOverviewDesktopTab from './TopicOverviewDesktopTab';
 import toast from 'react-hot-toast';
 
 interface TopicDashboardProps {
@@ -598,104 +596,14 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         {/* Desktop: Split layout with scrollable content */}
         <div className="hidden md:block h-full">
           {activeTab === 'overview' && (
-            <div className="h-full overflow-y-auto p-6 mobile-scroll-container">
-              <div className="max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Recent Tasks */}
-                <div className="bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
-                  <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
-                    Recent Tasks
-                  </h3>
-                  {tasks.length === 0 ? (
-                    <div className="text-center py-8">
-                      <svg className="w-12 h-12 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                      <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No tasks yet</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {tasks.slice(0, 5).map((task) => (
-                        <div key={task.id} className="p-2 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-2 h-2 rounded-full ${
-                              task.completed ? 'bg-success-500 dark:bg-vscode-success' : 
-                              task.priority === 'high' ? 'bg-accent-500 dark:bg-red-400' :
-                              task.priority === 'medium' ? 'bg-warning-500 dark:bg-yellow-400' : 'bg-success-500 dark:bg-green-400'
-                            }`}></div>
-                            <div className="flex-1">
-                              <div className={`text-sm font-mono ${
-                                task.completed ? 'line-through text-secondary-400 dark:text-vscode-text/50' : 'text-secondary-900 dark:text-vscode-text'
-                              }`}>
-                                {task.title}
-                              </div>
-                              <div className="text-xs text-vscode-text/50">
-                                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Upcoming Reminders */}
-                <div className="bg-white dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
-                  <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
-                    Upcoming Reminders
-                  </h3>
-                  {upcomingReminders.length === 0 ? (
-                    <div className="text-center py-8">
-                      <svg className="w-12 h-12 mx-auto text-secondary-400 dark:text-vscode-text/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <p className="text-sm font-mono text-secondary-500 dark:text-vscode-text/50">No upcoming reminders</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {upcomingReminders.slice(0, 5).map((reminder) => (
-                        <div key={reminder.id} className="p-2 bg-white dark:bg-vscode-bg rounded border border-secondary-200 dark:border-vscode-border">
-                          <div className="text-sm font-mono text-secondary-900 dark:text-vscode-text">{reminder.title}</div>
-                          <div className="text-xs text-secondary-500 dark:text-vscode-text/50">
-                            {reminder.date.toLocaleDateString()} at {reminder.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Study Insights */}
-              <div className="mt-6 bg-secondary-50 dark:bg-vscode-sidebar border border-secondary-200 dark:border-vscode-border rounded-lg p-4">
-                <h3 className="text-lg font-mono font-semibold text-secondary-900 dark:text-vscode-text mb-4">
-                  Study Insights
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-mono font-bold text-primary-600 dark:text-vscode-accent mb-1">
-                      {Math.ceil((new Date().getTime() - topic.createdAt.getTime()) / (1000 * 60 * 60 * 24))}
-                    </div>
-                    <div className="text-sm font-mono text-secondary-600 dark:text-vscode-text/70">Days studying</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-mono font-bold text-success-600 dark:text-vscode-success mb-1">
-                      {completedTasks.length}
-                    </div>
-                    <div className="text-sm font-mono text-secondary-600 dark:text-vscode-text/70">Tasks completed</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-mono font-bold text-warning-600 dark:text-vscode-warning mb-1">
-                      {upcomingReminders.length}
-                    </div>
-                    <div className="text-sm font-mono text-secondary-600 dark:text-vscode-text/70">Upcoming reminders</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+            <TopicOverviewDesktopTab
+              tasks={tasks}
+              reminders={reminders}
+              completedTasks={completedTasks}
+              upcomingReminders={upcomingReminders}
+              topic={topic}
+            />
+          )}
 
         {activeTab === 'tasks' && (
           <TopicTasksTab tasks={tasks} topic={topic} />
