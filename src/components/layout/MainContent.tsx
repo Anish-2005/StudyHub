@@ -5,7 +5,7 @@ import { Topic, Task, Reminder } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import TopicDashboard from './TopicDashboard';
+import TopicDashboard from './topics/TopicDashboard';
 import AllTopicsView from './AllTopicsView';
 
 interface MainContentProps {
