@@ -5,8 +5,8 @@ import { Topic, Task, Reminder } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import TopicDashboard from './topics/TopicDashboard';
-import AllTopicsView from './AllTopicsView';
+import TopicDashboard from '../topics/TopicDashboard';
+import AllTopicsView from '../topics/AllTopicsView';
 
 interface MainContentProps {
   selectedTopic: Topic | null;

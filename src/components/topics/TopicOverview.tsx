@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Task, Reminder, Note } from '@/types';
-import TaskList from './TaskList';
-import ReminderList from './ReminderList';
-import NoteList from './NoteList';
-import StudyStats from './StudyStats';
+import TaskList from '../tasks/TaskList';
+import ReminderList from '../reminders/ReminderList';
+import NoteList from '../notes/NoteList';
+import StudyStats from '../ui/StudyStats';
 
 interface TopicOverviewProps {
   tasks: Task[];

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Sidebar from './Sidebar';
-import MainContent from './MainContent';
-import TopBar from './TopBar';
+import Sidebar from '../layout/Sidebar';
+import MainContent from '../layout/MainContent';
+import TopBar from '../layout/TopBar';
 import { Topic } from '@/types';
 
 const Dashboard: React.FC = () => {

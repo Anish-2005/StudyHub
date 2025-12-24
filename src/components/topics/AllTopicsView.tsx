@@ -5,14 +5,14 @@ import { Task, Reminder, Topic } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import TaskList from './TaskList';
-import ReminderList from './ReminderList';
-import StudyStats from './StudyStats';
+import TaskList from '../tasks/TaskList';
+import ReminderList from '../reminders/ReminderList';
+import StudyStats from '../ui/StudyStats';
 import PomodoroTimer from './PomodoroTimer';
-import DashboardHeader from './DashboardHeader';
-import MobileStats from './MobileStats';
-import DashboardTabs from './DashboardTabs';
-import OverviewContent from './OverviewContent';
+import DashboardHeader from './dashboard/DashboardHeader';
+import MobileStats from './dashboard/MobileStats';
+import DashboardTabs from './dashboard/DashboardTabs';
+import OverviewContent from './dashboard/OverviewContent';
 
 interface AllTopicsViewProps {
   tasks: Task[];
