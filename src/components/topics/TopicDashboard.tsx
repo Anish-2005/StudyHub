@@ -399,7 +399,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
           <div className="relative">
             {/* Tab indicator for swipe */}
             <div className="md:hidden absolute -bottom-1 left-0 right-0 flex justify-center space-x-1 pb-1">
-              {tabs.map((tab, index) => (
+              {tabs.map((tab) => (
                 <div 
                   key={tab.id}
                   className={`h-0.5 rounded-full transition-all duration-300 ${
@@ -769,7 +769,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                   
                   <div className="p-6 pb-8">
                     <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-1">Create New</h3>
-                    <p className="text-sm text-secondary-500 dark:text-secondary-400 mb-6">Choose what you'd like to add to {topic.name}</p>
+                    <p className="text-sm text-secondary-500 dark:text-secondary-400 mb-6">Choose what you&apos;d like to add to {topic.name}</p>
                     
                     <div className="space-y-3">
                       <button

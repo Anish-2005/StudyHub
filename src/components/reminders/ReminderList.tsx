@@ -5,7 +5,7 @@ import { Reminder } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { doc, updateDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import CreateReminderModal from './CreateReminderModal';
+import CreateReminderModal from '../modals/CreateReminderModal';
 
 interface ReminderListProps {
   reminders: Reminder[];

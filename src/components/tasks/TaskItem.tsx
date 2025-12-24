@@ -10,14 +10,6 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'text-red-600 dark:text-red-400';
-      case 'medium': return 'text-yellow-600 dark:text-yellow-400';
-      case 'low': return 'text-green-600 dark:text-green-400';
-      default: return 'text-secondary-500 dark:text-vscode-text/50';
-    }
-  };
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {

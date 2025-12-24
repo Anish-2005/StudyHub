@@ -12,7 +12,6 @@ import PomodoroTimer from '../ui/PomodoroTimer';
 import DashboardHeader from '../dashboard/DashboardHeader';
 import MobileStats from '../dashboard/MobileStats';
 import DashboardTabs from '../dashboard/DashboardTabs';
-import OverviewContent from '../dashboard/OverviewContent';
 
 interface AllTopicsViewProps {
   tasks: Task[];

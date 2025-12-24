@@ -20,8 +20,6 @@ const TopicOverview: React.FC<TopicOverviewProps> = ({
   notes,
   topicName,
 }) => {
-  const completedTasks = tasks.filter(task => task.completed);
-  const pendingTasks = tasks.filter(task => !task.completed);
   const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
 
   return (
@@ -51,7 +49,7 @@ const TopicOverview: React.FC<TopicOverviewProps> = ({
         <div className="card">
           <div className="card-header">
             <h3 className="card-title">Upcoming Reminders</h3>
-            <p className="card-description">Don't miss important dates</p>
+            <p className="card-description">Don&apos;t miss important dates</p>
           </div>
           <ReminderList reminders={upcomingReminders.slice(0, 5)} />
         </div>

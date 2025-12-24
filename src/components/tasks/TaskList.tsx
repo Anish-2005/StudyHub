@@ -5,7 +5,7 @@ import { Task } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { doc, updateDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import CreateTaskModal from './CreateTaskModal';
+import CreateTaskModal from '../modals/CreateTaskModal';
 
 interface TaskListProps {
   tasks: Task[];
