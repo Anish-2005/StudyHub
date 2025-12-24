@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Topic } from '@/types';
+import { Topic, User } from '@/types';
 
 interface SidebarCollapsedProps {
   topics: Topic[];
@@ -10,7 +10,7 @@ interface SidebarCollapsedProps {
   onToggleCollapse: () => void;
   onCreateTopic: () => void;
   loading: boolean;
-  user: any; // Firebase user object
+  user: User | null;
 }
 
 const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({

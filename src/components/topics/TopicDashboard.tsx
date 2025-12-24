@@ -9,11 +9,9 @@ import CreateTaskModal from '../modals/CreateTaskModal';
 import CreateReminderModal from '../modals/CreateReminderModal';
 import CreateNoteModal from '../modals/CreateNoteModal';
 import ShareModal from '../modals/ShareModal';
-import TopicOverviewTab from './TopicOverviewTab';
-import TopicTasksTab from './TopicTasksTab';
-import TopicRemindersTab from './TopicRemindersTab';
-import TopicNotesTab from './TopicNotesTab';
-import TopicOverviewDesktopTab from './TopicOverviewDesktopTab';
+import TopicDashboardHeader from './dashboard/TopicDashboardHeader';
+import TopicDashboardActionSheet from './dashboard/TopicDashboardActionSheet';
+import TopicDashboardContent from './dashboard/TopicDashboardContent';
 import toast from 'react-hot-toast';
 
 interface TopicDashboardProps {
@@ -39,7 +37,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   const [showActionSheet, setShowActionSheet] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
 
@@ -167,45 +164,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
   const completedTasks = tasks.filter(task => task.completed);
   const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
-  const completionPercentage = tasks.length > 0 ? Math.round((completedTasks.length / tasks.length) * 100) : 0;
-
-  // Pull to refresh functionality
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    touchStartY.current = touch.clientY;
-    touchStartX.current = touch.clientX;
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!scrollContainerRef.current || isRefreshing) return;
-    
-    const touch = e.touches[0];
-    const scrollTop = scrollContainerRef.current.scrollTop;
-    const deltaY = touch.clientY - touchStartY.current;
-    const deltaX = Math.abs(touch.clientX - touchStartX.current);
-    
-    // Only trigger pull-to-refresh if at top and vertical swipe
-    if (scrollTop === 0 && deltaY > 0 && deltaX < 30) {
-      e.preventDefault();
-      const distance = Math.min(deltaY * 0.5, 100);
-      setPullDistance(distance);
-    }
-  }, [isRefreshing]);
-
-  const handleTouchEnd = useCallback(() => {
-    if (pullDistance > 60 && !isRefreshing) {
-      setIsRefreshing(true);
-      setPullDistance(0);
-      
-      // Simulate refresh - in real app, refetch data
-      setTimeout(() => {
-        setIsRefreshing(false);
-        toast.success('Refreshed!', { duration: 1500, icon: '✨' });
-      }, 1500);
-    } else {
-      setPullDistance(0);
-    }
-  }, [pullDistance, isRefreshing]);
 
   // Tab swipe gesture
   const tabs = useMemo(() => [
@@ -224,22 +182,31 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     }
   }, [activeTab, tabs]);
 
-  const handleContentTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
+  // Touch handlers for content component
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartY.current = touch.clientY;
+    touchStartX.current = touch.clientX;
   }, []);
 
-  const handleContentTouchEnd = useCallback((e: React.TouchEvent) => {
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-    const threshold = 100;
-    
-    if (Math.abs(deltaX) > threshold) {
-      if (deltaX > 0) {
-        handleTabSwipe('right');
-      } else {
-        handleTabSwipe('left');
-      }
+  const handleTouchMove = useCallback((_e: React.TouchEvent) => {
+    // Touch handling moved to TopicDashboardContent
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (pullDistance > 60 && !isRefreshing) {
+      setIsRefreshing(true);
+      setPullDistance(0);
+      
+      // Simulate refresh - in real app, refetch data
+      setTimeout(() => {
+        setIsRefreshing(false);
+        toast.success('Refreshed!', { duration: 1500, icon: '✨' });
+      }, 1500);
+    } else {
+      setPullDistance(0);
     }
-  }, [handleTabSwipe]);
+  }, [pullDistance, isRefreshing]);
 
   const getTopicIcon = (icon: string) => {
     const icons: { [key: string]: JSX.Element } = {
@@ -280,344 +247,56 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 
   return (
     <div className="flex flex-col h-full md:overflow-hidden">
-      {/* Mobile Pull-to-refresh indicator */}
-      {pullDistance > 0 && (
-        <div 
-          className="md:hidden absolute top-0 left-0 right-0 z-50 flex items-center justify-center transition-all duration-200"
-          style={{ 
-            height: `${pullDistance}px`,
-            opacity: pullDistance / 60,
-          }}
-        >
-          <div 
-            className="text-primary-500 dark:text-vscode-accent"
-            style={{
-              transform: `rotate(${pullDistance * 3.6}deg)`,
-              transition: 'transform 0.1s'
-            }}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </div>
-        </div>
-      )}
-
-      {/* Refreshing indicator */}
-      {isRefreshing && (
-        <div className="md:hidden absolute top-4 left-0 right-0 z-50 flex items-center justify-center">
-          <div className="bg-white dark:bg-secondary-800 rounded-full px-4 py-2 shadow-lg flex items-center space-x-2 animate-fade-in">
-            <div className="animate-spin">
-              <svg className="w-4 h-4 text-primary-500 dark:text-vscode-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </div>
-            <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Refreshing...</span>
-          </div>
-        </div>
-      )}
-
       {/* Header */}
-      <div className="border-b border-secondary-200 dark:border-vscode-border bg-gradient-to-b from-white to-secondary-50/50 dark:from-vscode-sidebar dark:to-vscode-sidebar md:flex-shrink-0">
-        <div className="p-3 md:p-4">
-          {/* Topic Info */}
-          <div className="flex items-center space-x-3 mb-3 md:mb-4">
-            <div 
-              className="p-2 md:p-3 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: `${topic.color}20`, color: topic.color }}
-            >
-              <div className="w-6 h-6 md:w-8 md:h-8">
-                {getTopicIcon(topic.icon)}
-              </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2 mb-1">
-                <h1 className="text-lg md:text-xl font-bold text-secondary-900 dark:text-vscode-text truncate">
-                  {topic.name}
-                </h1>
-                {!isPublicView && (
-                  <div className="flex items-center space-x-2">
-                    {/* Privacy Toggle */}
-                    <button
-                      onClick={handleTogglePrivacy}
-                      className={`p-1.5 rounded-md transition-colors ${
-                        topic.isPublic 
-                          ? 'bg-success-500/10 text-success-600 dark:text-success-400' 
-                          : 'bg-secondary-300 dark:bg-gray-400/10 text-secondary-600 dark:text-gray-400'
-                      }`}
-                      title={topic.isPublic ? 'Public - Anyone can view' : 'Private - Only you can view'}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {topic.isPublic ? (
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        ) : (
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                        )}
-                      </svg>
-                    </button>
-                    
-                    {/* Share Button */}
-                    {topic.isPublic && (
-                      <button
-                        onClick={() => setShowShareModal(true)}
-                        className="p-1.5 rounded-md bg-primary-500/10 dark:bg-vscode-accent/10 text-primary-600 dark:text-vscode-accent hover:bg-primary-500/20 dark:hover:bg-vscode-accent/20 transition-colors"
-                        title="Share topic"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                )}
-                {isPublicView && (
-                  <span className="px-2 py-1 bg-success-500/10 text-success-600 dark:text-success-400 text-xs font-mono rounded">
-                    Public
-                  </span>
-                )}
-              </div>
-              <div className="text-xs md:text-sm text-secondary-500 dark:text-vscode-text/50">
-                {completionPercentage}% Complete • {tasks.length} Tasks • {reminders.length} Reminders
-              </div>
-            </div>
-          </div>
-
-          {/* Progress Bar */}
-          {tasks.length > 0 && (
-            <div className="mb-3 md:mb-4">
-              <div className="w-full bg-secondary-200 dark:bg-vscode-bg rounded-full h-1.5 md:h-2">
-                <div 
-                  className="h-1.5 md:h-2 rounded-full transition-all duration-500"
-                  style={{ 
-                    width: `${completionPercentage}%`,
-                    backgroundColor: topic.color 
-                  }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Tabs */}
-          <div className="relative">
-            {/* Tab indicator for swipe */}
-            <div className="md:hidden absolute -bottom-1 left-0 right-0 flex justify-center space-x-1 pb-1">
-              {tabs.map((tab) => (
-                <div 
-                  key={tab.id}
-                  className={`h-0.5 rounded-full transition-all duration-300 ${
-                    activeTab === tab.id ? 'w-8 bg-primary-500 dark:bg-vscode-accent' : 'w-1.5 bg-secondary-300 dark:bg-secondary-700'
-                  }`}
-                />
-              ))}
-            </div>
-            <div className="flex space-x-1 bg-secondary-100 dark:bg-vscode-bg rounded-lg p-1 overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-shrink-0 px-3 md:px-4 py-2 rounded-md font-mono text-xs md:text-sm transition-all whitespace-nowrap touch-target active:scale-95 ${
-                  activeTab === tab.id
-                    ? 'bg-primary-500 dark:bg-vscode-accent text-white shadow-lg shadow-primary-500/30'
-                    : 'text-secondary-700 dark:text-vscode-text/70 hover:text-secondary-900 dark:hover:text-vscode-text hover:bg-secondary-200 dark:hover:bg-vscode-active'
-                }`}
-              >
-                {tab.name}
-                {tab.count !== null && (
-                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                    activeTab === tab.id
-                      ? 'bg-white/20 text-white'
-                      : 'bg-secondary-300 dark:bg-vscode-active text-secondary-700 dark:text-vscode-text/50'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <TopicDashboardHeader
+        topic={topic}
+        tasks={tasks}
+        reminders={reminders}
+        notes={notes}
+        activeTab={activeTab}
+        isPublicView={isPublicView}
+        onTabChange={setActiveTab}
+        onTogglePrivacy={handleTogglePrivacy}
+        onShare={() => setShowShareModal(true)}
+      />
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden min-h-0">
-        {/* Mobile: Single scrollable container with swipe */}
-        <div 
-          className="md:hidden h-full"
-          onTouchStart={handleContentTouchStart}
-          onTouchEnd={handleContentTouchEnd}
-        >
-          {activeTab === 'overview' && (
-            <div
-              ref={scrollContainerRef}
-              className="h-full overflow-y-auto mobile-scroll-container bg-secondary-50/50 dark:bg-vscode-bg"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              style={{ paddingTop: pullDistance > 0 ? `${pullDistance}px` : '0' }}
-            >
-              <TopicOverviewTab
-                tasks={tasks}
-                reminders={reminders}
-                completedTasks={completedTasks}
-                upcomingReminders={upcomingReminders}
-                topic={topic}
-              />
-            </div>
-          )}
+      <TopicDashboardContent
+        topic={topic}
+        tasks={tasks}
+        reminders={reminders}
+        notes={notes}
+        activeTab={activeTab}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        isPublicView={isPublicView}
+        onCreateTask={() => setShowActionSheet(true)}
+        onCreateNote={() => setShowActionSheet(true)}
+        onDeleteNote={handleDeleteNote}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTabSwipe={handleTabSwipe}
+      />
 
-          {activeTab === 'tasks' && (
-            <TopicTasksTab tasks={tasks} topic={topic} />
-          )}
-
-          {activeTab === 'reminders' && (
-            <TopicRemindersTab reminders={reminders} topic={topic} />
-          )}
-
-          {activeTab === 'notes' && (
-            <TopicNotesTab notes={notes} topic={topic} onDeleteNote={handleDeleteNote} />
-          )}
-        </div>
-
-        {/* Floating Action Button (Mobile Only) */}
-        {!isPublicView && (
-          <>
-            <button
-              onClick={() => setShowActionSheet(true)}
-              className="md:hidden fixed bottom-6 right-6 z-40 w-16 h-16 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 dark:from-vscode-accent dark:via-vscode-accent dark:to-vscode-accent/90 text-white rounded-2xl shadow-2xl shadow-primary-500/50 dark:shadow-vscode-accent/50 flex items-center justify-center transition-all duration-300 active:scale-90 hover:shadow-3xl"
-              style={{ boxShadow: '0 10px 40px -10px rgba(59, 130, 246, 0.6)' }}
-              aria-label="Add new item"
-            >
-              <div className="relative">
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                </svg>
-                <div className="absolute inset-0 bg-white/20 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
-              </div>
-            </button>
-
-            {/* Action Sheet (Mobile Bottom Sheet) */}
-            {showActionSheet && (
-              <div 
-                className="md:hidden fixed inset-0 z-50 animate-fade-in"
-                onClick={() => setShowActionSheet(false)}
-              >
-                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-                <div 
-                  className="absolute bottom-0 left-0 right-0 bg-white dark:bg-secondary-800 rounded-t-3xl shadow-2xl animate-slide-up-sheet"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {/* Handle bar */}
-                  <div className="flex justify-center pt-3 pb-2">
-                    <div className="w-12 h-1.5 bg-secondary-300 dark:bg-secondary-600 rounded-full" />
-                  </div>
-                  
-                  <div className="p-6 pb-8">
-                    <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-1">Create New</h3>
-                    <p className="text-sm text-secondary-500 dark:text-secondary-400 mb-6">Choose what you&apos;d like to add to {topic.name}</p>
-                    
-                    <div className="space-y-3">
-                      <button
-                        onClick={() => {
-                          setShowCreateTaskModal(true);
-                          setShowActionSheet(false);
-                        }}
-                        className="w-full flex items-center space-x-4 p-4 bg-gradient-to-r from-primary-50 to-primary-100/50 dark:from-vscode-accent/10 dark:to-vscode-accent/5 border border-primary-200 dark:border-vscode-accent/20 rounded-2xl hover:shadow-md transition-all duration-200 active:scale-98 touch-target group"
-                      >
-                        <div className="w-12 h-12 bg-primary-500 dark:bg-vscode-accent rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30 group-active:scale-90 transition-transform">
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 text-left">
-                          <div className="font-semibold text-secondary-900 dark:text-white">New Task</div>
-                          <div className="text-sm text-secondary-600 dark:text-secondary-400">Add a task to track</div>
-                        </div>
-                        <svg className="w-5 h-5 text-secondary-400 dark:text-secondary-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setShowCreateReminderModal(true);
-                          setShowActionSheet(false);
-                        }}
-                        className="w-full flex items-center space-x-4 p-4 bg-gradient-to-r from-warning-50 to-warning-100/50 dark:from-vscode-warning/10 dark:to-vscode-warning/5 border border-warning-200 dark:border-vscode-warning/20 rounded-2xl hover:shadow-md transition-all duration-200 active:scale-98 touch-target group"
-                      >
-                        <div className="w-12 h-12 bg-warning-500 dark:bg-vscode-warning rounded-xl flex items-center justify-center shadow-lg shadow-warning-500/30 group-active:scale-90 transition-transform">
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 text-left">
-                          <div className="font-semibold text-secondary-900 dark:text-white">New Reminder</div>
-                          <div className="text-sm text-secondary-600 dark:text-secondary-400">Set a reminder</div>
-                        </div>
-                        <svg className="w-5 h-5 text-secondary-400 dark:text-secondary-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setShowCreateNoteModal(true);
-                          setShowActionSheet(false);
-                        }}
-                        className="w-full flex items-center space-x-4 p-4 bg-gradient-to-r from-success-50 to-success-100/50 dark:from-vscode-success/10 dark:to-vscode-success/5 border border-success-200 dark:border-vscode-success/20 rounded-2xl hover:shadow-md transition-all duration-200 active:scale-98 touch-target group"
-                      >
-                        <div className="w-12 h-12 bg-success-500 dark:bg-vscode-success rounded-xl flex items-center justify-center shadow-lg shadow-success-500/30 group-active:scale-90 transition-transform">
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 text-left">
-                          <div className="font-semibold text-secondary-900 dark:text-white">New Note</div>
-                          <div className="text-sm text-secondary-600 dark:text-secondary-400">Write a note</div>
-                        </div>
-                        <svg className="w-5 h-5 text-secondary-400 dark:text-secondary-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-
-                    <button
-                      onClick={() => setShowActionSheet(false)}
-                      className="w-full mt-4 py-3.5 bg-secondary-100 dark:bg-secondary-700 text-secondary-700 dark:text-secondary-300 font-medium rounded-2xl hover:bg-secondary-200 dark:hover:bg-secondary-600 transition-colors touch-target"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Desktop: Split layout with scrollable content */}
-        <div className="hidden md:block h-full">
-          {activeTab === 'overview' && (
-            <TopicOverviewDesktopTab
-              tasks={tasks}
-              reminders={reminders}
-              completedTasks={completedTasks}
-              upcomingReminders={upcomingReminders}
-              topic={topic}
-            />
-          )}
-
-        {activeTab === 'tasks' && (
-          <TopicTasksTab tasks={tasks} topic={topic} />
-        )}
-
-        {activeTab === 'reminders' && (
-          <TopicRemindersTab reminders={reminders} topic={topic} />
-        )}
-
-        {activeTab === 'notes' && (
-          <TopicNotesTab notes={notes} topic={topic} onDeleteNote={handleDeleteNote} />
-        )}
-        </div>
-      </div>
+      {/* Action Sheet */}
+      <TopicDashboardActionSheet
+        isOpen={showActionSheet}
+        onClose={() => setShowActionSheet(false)}
+        onCreateTask={() => {
+          setShowCreateTaskModal(true);
+          setShowActionSheet(false);
+        }}
+        onCreateReminder={() => {
+          setShowCreateReminderModal(true);
+          setShowActionSheet(false);
+        }}
+        onCreateNote={() => {
+          setShowCreateNoteModal(true);
+          setShowActionSheet(false);
+        }}
+        topicName={topic.name}
+      />
 
       {/* Modals */}
       {!isPublicView && (
