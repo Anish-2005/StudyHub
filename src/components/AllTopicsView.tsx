@@ -8,7 +8,10 @@ import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
 import ReminderList from './ReminderList';
 import StudyStats from './StudyStats';
-import PomodoroTimer from './PomodoroTimer';
+import DashboardHeader from './DashboardHeader';
+import MobileStats from './MobileStats';
+import DashboardTabs from './DashboardTabs';
+import OverviewContent from './OverviewContent';
 
 interface AllTopicsViewProps {
   tasks: Task[];
@@ -159,19 +162,7 @@ return (
           <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-6 space-y-2 sm:space-y-0 transition-all duration-300 ${
             isHeaderMinimized ? 'md:mb-2' : 'mb-3 md:mb-6'
           }`}>
-            <div>
-              <h1 className={`font-bold text-secondary-900 dark:bg-gradient-to-r dark:from-primary-400 dark:to-primary-600 dark:bg-clip-text dark:text-transparent transition-all duration-300 ${
-                isHeaderMinimized ? 'md:text-xl' : 'text-lg sm:text-3xl'
-              }`}>
-                StudyHub Dashboard
-              </h1>
-              {/* Hide welcome message when minimized on desktop */}
-              {!isHeaderMinimized && (
-                <p className="hidden sm:block text-secondary-600 dark:text-secondary-400 font-medium transition-all duration-300">
-                  Welcome back, {user?.displayName || 'Student'}! Ready to conquer your studies?
-                </p>
-              )}
-            </div>
+            <DashboardHeader user={user} isHeaderMinimized={isHeaderMinimized} />
             <div className="flex items-center space-x-2 sm:space-x-3">
               <div className={`bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 ${
                 isHeaderMinimized ? 'md:w-8 md:h-8' : 'w-8 h-8 sm:w-12 sm:h-12'
@@ -190,43 +181,11 @@ return (
             <div className="transition-all duration-300">
               {/* Mobile compact stats */}
               <div className="block sm:hidden mb-4">
-                <div className="flex justify-between items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center">
-                      <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-lg font-bold text-secondary-100">{topics.length}</div>
-                      <div className="text-xs text-secondary-400">Topics</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-warning-500/20 rounded-lg flex items-center justify-center">
-                      <svg className="w-4 h-4 text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-lg font-bold text-secondary-100">{pendingTasks.length}</div>
-                      <div className="text-xs text-secondary-400">Pending</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-success-500/20 rounded-lg flex items-center justify-center">
-                      <svg className="w-4 h-4 text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-lg font-bold text-secondary-900 dark:text-secondary-100">{completedTasks.length}</div>
-                      <div className="text-xs text-secondary-600 dark:text-secondary-400">Done</div>
-                    </div>
-                  </div>
-                </div>
+                <MobileStats
+                  topics={topics}
+                  pendingTasks={pendingTasks}
+                  completedTasks={completedTasks}
+                />
               </div>
 
               {/* Desktop full stats */}
@@ -237,36 +196,12 @@ return (
           )}
 
           {/* Tabs */}
-          <div className={`flex space-x-1 sm:space-x-2 bg-secondary-100 dark:bg-secondary-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl border border-secondary-200 dark:border-secondary-700/50 transition-all duration-300 ${
-            isHeaderMinimized ? 'md:p-1' : 'p-1 sm:p-2'
-          }`}>
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 px-2 sm:px-4 py-2 sm:py-3 rounded-md sm:rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 touch-target ${
-                  isHeaderMinimized ? 'md:px-3 md:py-2 md:text-xs' : 'px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm'
-                } ${
-                  activeTab === tab.id
-                    ? 'bg-primary-500 text-white shadow-lg'
-                    : 'text-secondary-700 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-200 hover:bg-secondary-200 dark:hover:bg-secondary-700/50'
-                }`}
-              >
-                <span className="whitespace-nowrap">{tab.name}</span>
-                {tab.count !== null && tab.count > 0 && (
-                  <span className={`ml-1 sm:ml-2 px-1 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-bold transition-all duration-300 ${
-                    isHeaderMinimized ? 'md:px-1.5 md:py-0.5 md:text-xs' : 'px-1 sm:px-2 py-0.5 sm:py-1 text-xs'
-                  } ${
-                    activeTab === tab.id
-                      ? 'bg-secondary-900/20 dark:bg-white/20 text-secondary-900 dark:text-white'
-                      : 'bg-secondary-700 dark:bg-secondary-300 text-secondary-300 dark:text-secondary-700'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+          <DashboardTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            isHeaderMinimized={isHeaderMinimized}
+          />
         </div>
       </div>
 
