@@ -13,7 +13,6 @@ interface TopicOverviewDesktopTabProps {
 
 const TopicOverviewDesktopTab: React.FC<TopicOverviewDesktopTabProps> = ({
   tasks,
-  reminders,
   completedTasks,
   upcomingReminders,
   topic,

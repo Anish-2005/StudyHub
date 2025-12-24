@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Task, Reminder, Topic } from '@/types';
-import PomodoroTimer from '../PomodoroTimer';
+import PomodoroTimer from '../ui/PomodoroTimer';
 
 interface AllTopicsOverviewTabProps {
   topics: Topic[];

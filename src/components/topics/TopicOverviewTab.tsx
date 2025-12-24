@@ -13,7 +13,6 @@ interface TopicOverviewTabProps {
 
 const TopicOverviewTab: React.FC<TopicOverviewTabProps> = ({
   tasks,
-  reminders,
   completedTasks,
   upcomingReminders,
   topic,
