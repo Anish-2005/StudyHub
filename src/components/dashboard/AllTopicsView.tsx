@@ -9,10 +9,10 @@ import TaskList from './TaskList';
 import ReminderList from './ReminderList';
 import StudyStats from './StudyStats';
 import PomodoroTimer from './PomodoroTimer';
-import DashboardHeader from './dashboard/DashboardHeader';
-import MobileStats from './dashboard/MobileStats';
-import DashboardTabs from './dashboard/DashboardTabs';
-import OverviewContent from './dashboard/OverviewContent';
+import DashboardHeader from './DashboardHeader';
+import MobileStats from './MobileStats';
+import DashboardTabs from './DashboardTabs';
+import OverviewContent from './OverviewContent';
 
 interface AllTopicsViewProps {
   tasks: Task[];

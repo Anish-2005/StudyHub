@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Topic } from '@/types';
 import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import TopicItem from './TopicItem';
+import TopicItem from './topics/TopicItem';
 import CreateTopicModal from './CreateTopicModal';
 import UserMenu from './UserMenu';
 
