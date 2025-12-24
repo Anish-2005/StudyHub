@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
@@ -206,12 +206,12 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   }, [pullDistance, isRefreshing]);
 
   // Tab swipe gesture
-  const tabs = [
+  const tabs = useMemo(() => [
     { id: 'overview', name: 'Overview', count: null },
     { id: 'tasks', name: 'Tasks', count: tasks.length },
     { id: 'reminders', name: 'Reminders', count: reminders.length },
     { id: 'notes', name: 'Notes', count: notes.length },
-  ] as const;
+  ] as const, [tasks.length, reminders.length, notes.length]);
 
   const handleTabSwipe = useCallback((direction: 'left' | 'right') => {
     const currentIndex = tabs.findIndex(tab => tab.id === activeTab);
