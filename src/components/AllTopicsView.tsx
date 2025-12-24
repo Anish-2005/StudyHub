@@ -7,7 +7,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
 import ReminderList from './reminders/ReminderList';
-import StudyStats from './StudyStats';
+import StudyStats from './ui/StudyStats';
 import PomodoroTimer from './PomodoroTimer';
 import DashboardHeader from './dashboard/DashboardHeader';
 import MobileStats from './dashboard/MobileStats';

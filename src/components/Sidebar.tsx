@@ -7,7 +7,7 @@ import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc } from 'fi
 import { db } from '@/lib/firebase';
 import TopicItem from './topics/TopicItem';
 import CreateTopicModal from './modals/CreateTopicModal';
-import UserMenu from './UserMenu';
+import UserMenu from './ui/UserMenu';
 
 interface SidebarProps {
   selectedTopic: Topic | null;
