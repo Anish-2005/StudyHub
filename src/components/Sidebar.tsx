@@ -6,7 +6,7 @@ import { Topic } from '@/types';
 import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TopicItem from './topics/TopicItem';
-import CreateTopicModal from './CreateTopicModal';
+import CreateTopicModal from './modals/CreateTopicModal';
 import UserMenu from './UserMenu';
 
 interface SidebarProps {

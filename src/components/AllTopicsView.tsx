@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
-import ReminderList from './ReminderList';
+import ReminderList from './reminders/ReminderList';
 import StudyStats from './StudyStats';
 import PomodoroTimer from './PomodoroTimer';
 import DashboardHeader from './dashboard/DashboardHeader';
