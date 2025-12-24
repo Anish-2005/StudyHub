@@ -271,7 +271,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         pullDistance={pullDistance}
         isPublicView={isPublicView}
         onCreateTask={() => setShowActionSheet(true)}
-        onCreateNote={() => setShowActionSheet(true)}
         onDeleteNote={handleDeleteNote}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
