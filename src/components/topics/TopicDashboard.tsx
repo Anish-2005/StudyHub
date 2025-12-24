@@ -8,10 +8,10 @@ import { db } from '@/lib/firebase';
 import TaskList from '../tasks/TaskList';
 import ReminderList from '../reminders/ReminderList';
 import NoteList from '../notes/NoteList';
-import CreateTaskModal from './CreateTaskModal';
-import CreateReminderModal from './CreateReminderModal';
-import CreateNoteModal from './CreateNoteModal';
-import ShareModal from './ShareModal';
+import CreateTaskModal from '../modals/CreateTaskModal';
+import CreateReminderModal from '../modals/CreateReminderModal';
+import CreateNoteModal from '../modals/CreateNoteModal';
+import ShareModal from '../modals/ShareModal';
 import toast from 'react-hot-toast';
 
 interface TopicDashboardProps {

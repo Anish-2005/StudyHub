@@ -5,7 +5,7 @@ import { Task, Reminder, Topic } from '@/types';
 import RecentTopicsSection from './RecentTopicsSection';
 import QuickActionsSection from './QuickActionsSection';
 import RecentActivitySection from './RecentActivitySection';
-import PomodoroTimer from './PomodoroTimer';
+import PomodoroTimer from '../ui/PomodoroTimer';
 
 interface OverviewContentProps {
   topics: Topic[];

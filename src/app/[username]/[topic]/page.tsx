@@ -7,8 +7,8 @@ import { db } from '@/lib/firebase';
 import { Topic, Task, Reminder, User } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { decodeTopicFromUrl, decodeUsernameFromUrl } from '@/utils/slug';
-import TopicDashboard from '@/components/TopicDashboard';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import TopicDashboard from '@/components/topics/TopicDashboard';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const PublicTopicPage: React.FC = () => {
   const params = useParams();

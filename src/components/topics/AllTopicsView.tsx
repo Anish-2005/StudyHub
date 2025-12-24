@@ -8,11 +8,11 @@ import { db } from '@/lib/firebase';
 import TaskList from '../tasks/TaskList';
 import ReminderList from '../reminders/ReminderList';
 import StudyStats from '../ui/StudyStats';
-import PomodoroTimer from './PomodoroTimer';
-import DashboardHeader from './dashboard/DashboardHeader';
-import MobileStats from './dashboard/MobileStats';
-import DashboardTabs from './dashboard/DashboardTabs';
-import OverviewContent from './dashboard/OverviewContent';
+import PomodoroTimer from '../ui/PomodoroTimer';
+import DashboardHeader from '../dashboard/DashboardHeader';
+import MobileStats from '../dashboard/MobileStats';
+import DashboardTabs from '../dashboard/DashboardTabs';
+import OverviewContent from '../dashboard/OverviewContent';
 
 interface AllTopicsViewProps {
   tasks: Task[];

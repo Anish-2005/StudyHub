@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Topic } from '@/types';
-import TopicItem from './TopicItem';
+import TopicItem from '../topics/TopicItem';
 
 interface RecentTopicsSectionProps {
   topics: Topic[];
