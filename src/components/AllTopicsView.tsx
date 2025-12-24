@@ -8,6 +8,7 @@ import { db } from '@/lib/firebase';
 import TaskList from './TaskList';
 import ReminderList from './ReminderList';
 import StudyStats from './StudyStats';
+import PomodoroTimer from './PomodoroTimer';
 import DashboardHeader from './DashboardHeader';
 import MobileStats from './MobileStats';
 import DashboardTabs from './DashboardTabs';
@@ -142,7 +143,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
     { id: 'overview', name: 'Overview', count: null },
     { id: 'tasks', name: 'Tasks', count: tasks.length },
     { id: 'reminders', name: 'Reminders', count: reminders.length },
-  ] as const;
+  ];
 
 return (
     <div className="flex flex-col h-full min-h-0 bg-secondary-50 dark:bg-secondary-900 relative" style={{ touchAction: 'pan-y' }}>
@@ -199,7 +200,7 @@ return (
           <DashboardTabs
             tabs={tabs}
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={(tabId) => setActiveTab(tabId as 'overview' | 'tasks' | 'reminders')}
             isHeaderMinimized={isHeaderMinimized}
           />
         </div>

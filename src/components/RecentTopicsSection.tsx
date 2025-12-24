@@ -41,7 +41,9 @@ const RecentTopicsSection: React.FC<RecentTopicsSectionProps> = ({
             <TopicItem
               key={topic.id}
               topic={topic}
-              onClick={() => onTopicSelect(topic)}
+              isSelected={false}
+              onSelect={() => onTopicSelect(topic)}
+              onDelete={() => {}}
             />
           ))}
         </div>

@@ -42,7 +42,7 @@ const TopicOverview: React.FC<TopicOverviewProps> = ({
             <h3 className="card-title">Recent Tasks</h3>
             <p className="card-description">Your latest tasks for this topic</p>
           </div>
-          <TaskList tasks={tasks.slice(0, 5)} showCreateButton={false} />
+          <TaskList tasks={tasks.slice(0, 5)} />
         </div>
       )}
 
@@ -53,7 +53,7 @@ const TopicOverview: React.FC<TopicOverviewProps> = ({
             <h3 className="card-title">Upcoming Reminders</h3>
             <p className="card-description">Don't miss important dates</p>
           </div>
-          <ReminderList reminders={upcomingReminders.slice(0, 5)} showCreateButton={false} />
+          <ReminderList reminders={upcomingReminders.slice(0, 5)} />
         </div>
       )}
 
@@ -64,7 +64,7 @@ const TopicOverview: React.FC<TopicOverviewProps> = ({
             <h3 className="card-title">Recent Notes</h3>
             <p className="card-description">Your latest study notes</p>
           </div>
-          <NoteList notes={notes.slice(0, 3)} showCreateButton={false} />
+          <NoteList notes={notes.slice(0, 3)} />
         </div>
       )}
     </div>
