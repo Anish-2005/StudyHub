@@ -95,19 +95,29 @@ const TopicDashboardHeader: React.FC<TopicDashboardHeaderProps> = ({
       )}
 
       <div className="mt-4 overflow-x-auto scrollbar-hide">
-        <div className="surface inline-flex min-w-full gap-1 p-1 md:min-w-fit">
+        <div className="surface !rounded-xl inline-flex min-w-full gap-1 p-1.5 md:min-w-fit">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className={`touch-target rounded-lg px-3 py-2 text-xs font-semibold transition-colors md:text-sm ${
+              className={`group touch-target inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition-colors md:text-sm ${
                 activeTab === tab.id
-                  ? 'bg-primary-500 text-white'
-                  : 'text-secondary-300 hover:bg-secondary-800 hover:text-secondary-100'
+                  ? 'border-primary-400/45 bg-primary-500/16 text-primary-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]'
+                  : 'border-transparent text-secondary-300 hover:border-secondary-700 hover:bg-secondary-800 hover:text-secondary-100'
               }`}
             >
-              {tab.name}
-              {tab.count !== null && <span className="ml-1.5 text-[11px] opacity-80">{tab.count}</span>}
+              <span>{tab.name}</span>
+              {tab.count !== null && (
+                <span
+                  className={`inline-flex min-w-[1.3rem] items-center justify-center rounded-lg px-1.5 py-0.5 text-[10px] font-bold leading-none ${
+                    activeTab === tab.id
+                      ? 'bg-primary-400/25 text-primary-100'
+                      : 'bg-secondary-800 text-secondary-400 group-hover:bg-secondary-700 group-hover:text-secondary-300'
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              )}
             </button>
           ))}
         </div>

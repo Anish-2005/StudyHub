@@ -421,6 +421,41 @@ body {
   .ambient-float {
     animation: pulse-float 9s ease-in-out infinite;
   }
+
+  .modal-scroll {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-primary-500) / 0.46) rgb(var(--color-secondary-800) / 0.4);
+  }
+
+  .modal-scroll::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .modal-scroll::-webkit-scrollbar-track {
+    margin-block: 10px;
+    border-radius: 9999px;
+    background: rgb(var(--color-secondary-800) / 0.4);
+  }
+
+  .modal-scroll::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    background: linear-gradient(
+      180deg,
+      rgb(var(--color-primary-400) / 0.72) 0%,
+      rgb(var(--color-primary-600) / 0.72) 100%
+    );
+  }
+
+  .modal-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      rgb(var(--color-primary-300) / 0.82) 0%,
+      rgb(var(--color-primary-500) / 0.82) 100%
+    );
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -477,6 +512,10 @@ body {
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
+  }
+
+  .modal-scroll::-webkit-scrollbar {
+    width: 7px;
   }
 }
 

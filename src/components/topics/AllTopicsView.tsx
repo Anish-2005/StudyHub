@@ -224,20 +224,30 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
             </div>
           </div>
 
-          <div className="surface p-1">
+          <div className="surface !rounded-xl p-1.5">
             <div className="flex gap-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`touch-target motion-lift rounded-lg px-3 py-2 text-xs font-semibold transition-colors md:px-4 md:text-sm ${
+                  className={`group touch-target motion-lift inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition-colors md:px-4 md:text-sm ${
                     activeTab === tab.id
-                      ? 'bg-primary-500 text-white'
-                      : 'text-secondary-300 hover:bg-secondary-800 hover:text-secondary-100'
+                      ? 'border-primary-400/45 bg-primary-500/16 text-primary-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]'
+                      : 'border-transparent text-secondary-300 hover:border-secondary-700 hover:bg-secondary-800 hover:text-secondary-100'
                   }`}
                 >
-                  {tab.label}
-                  {tab.count !== null && <span className="ml-1.5 text-[11px] opacity-80">{tab.count}</span>}
+                  <span>{tab.label}</span>
+                  {tab.count !== null && (
+                    <span
+                      className={`inline-flex min-w-[1.3rem] items-center justify-center rounded-lg px-1.5 py-0.5 text-[10px] font-bold leading-none ${
+                        activeTab === tab.id
+                          ? 'bg-primary-400/25 text-primary-100'
+                          : 'bg-secondary-800 text-secondary-400 group-hover:bg-secondary-700 group-hover:text-secondary-300'
+                      }`}
+                    >
+                      {tab.count}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>

@@ -48,7 +48,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
 
   return (
     <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/65 p-2 motion-fade-up sm:items-center sm:p-6">
-      <div className="surface motion-scale-in max-h-[94vh] w-full max-w-2xl overflow-y-auto">
+      <div className="surface modal-scroll motion-scale-in max-h-[94vh] w-full max-w-2xl overflow-y-auto overflow-x-hidden">
         <div className="sticky top-0 z-10 border-b border-secondary-700/70 bg-secondary-900/95 px-4 py-3 md:px-5">
           <div className="flex items-center justify-between gap-3">
             <div>
