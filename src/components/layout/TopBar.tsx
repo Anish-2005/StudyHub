@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Topic } from '@/types';
+import StudyHubLogo from '@/components/branding/StudyHubLogo';
 
 interface TopBarProps {
   selectedTopic: Topic | null;
@@ -16,14 +17,16 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
   const [query, setQuery] = useState('');
   const [showMobileSearch, setShowMobileSearch] = useState(false);
 
-  const dateText = useMemo(() => {
-    return new Date().toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  }, []);
+  const dateText = useMemo(
+    () =>
+      new Date().toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+    [],
+  );
 
   const currentTime = new Date().toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -41,11 +44,11 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
     : 'Track priorities across all topics';
 
   return (
-    <header className="border-b border-secondary-700/70 bg-secondary-900/85 px-4 py-3 backdrop-blur-xl md:px-6">
+    <header className="border-b border-secondary-700/90 bg-secondary-950/95 px-4 py-3 backdrop-blur-xl md:px-6">
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuClick}
-          className="touch-target rounded-lg border border-secondary-700 bg-secondary-800/70 px-2.5 text-secondary-200 hover:bg-secondary-700"
+          className="touch-target rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800"
           title="Toggle sidebar"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,8 +56,10 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
           </svg>
         </button>
 
+        {!selectedTopic && <StudyHubLogo size={30} withWordmark={false} compact className="hidden md:inline-flex" />}
+
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+          <h1 className="truncate text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-sora)' }}>
             {pageTitle}
           </h1>
           <p className="truncate text-xs text-secondary-400 md:text-sm">{pageSubtitle}</p>
@@ -62,7 +67,7 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
 
         <button
           onClick={() => setShowMobileSearch((prev) => !prev)}
-          className="touch-target rounded-lg border border-secondary-700 bg-secondary-800/70 px-2.5 text-secondary-200 hover:bg-secondary-700 md:hidden"
+          className="touch-target rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800 md:hidden"
           title="Search"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +81,7 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
             <p className="text-[11px] text-secondary-500">{dateText}</p>
           </div>
 
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary-800 text-sm font-semibold text-secondary-100">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary-900 text-sm font-semibold text-secondary-100 border border-secondary-700">
             {user?.displayName?.charAt(0).toUpperCase() || 'U'}
           </div>
         </div>
@@ -94,7 +99,7 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
             value={query}
             onChange={(e) => handleChange(e.target.value)}
             placeholder="Search topics, tasks, notes, reminders"
-            className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 py-2.5 pl-9 pr-10 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
+            className="w-full rounded-xl border border-secondary-700 bg-secondary-900 py-2.5 pl-9 pr-10 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
           />
           {query && (
             <button
@@ -124,7 +129,7 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
               value={query}
               onChange={(e) => handleChange(e.target.value)}
               placeholder="Search"
-              className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 py-2.5 pl-9 pr-10 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
+              className="w-full rounded-xl border border-secondary-700 bg-secondary-900 py-2.5 pl-9 pr-10 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
             />
             {query && (
               <button
@@ -146,4 +151,3 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
 };
 
 export default TopBar;
-

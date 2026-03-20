@@ -12,7 +12,7 @@ const UserMenu: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setShowMenu((prev) => !prev)}
-        className="touch-target flex w-full items-center rounded-lg border border-secondary-700 bg-secondary-800/55 p-2 transition-colors hover:bg-secondary-800"
+        className="touch-target flex w-full items-center rounded-xl border border-secondary-700 bg-secondary-900/95 p-2.5 transition-colors hover:bg-secondary-800"
       >
         <div className="mr-3 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-500 text-sm font-semibold text-white">
           {user?.photoURL ? (
@@ -61,4 +61,3 @@ const UserMenu: React.FC = () => {
 };
 
 export default UserMenu;
-

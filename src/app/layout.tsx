@@ -1,30 +1,35 @@
 ﻿import type { Metadata, Viewport } from 'next'
-import { Manrope, Space_Grotesk } from 'next/font/google'
+import { Nunito_Sans, Sora } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { Toaster } from 'react-hot-toast'
 
-const manrope = Manrope({
+const nunito = Nunito_Sans({
   subsets: ['latin'],
-  variable: '--font-manrope',
+  variable: '--font-nunito',
   display: 'swap',
 })
 
-const spaceGrotesk = Space_Grotesk({
+const sora = Sora({
   subsets: ['latin'],
-  variable: '--font-space-grotesk',
+  variable: '--font-sora',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'StudyHub',
-  description: 'Structured study workspace for tasks, reminders, and topic planning.',
+  description: 'A polished study workspace for topics, tasks, reminders, and notes.',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
     title: 'StudyHub',
   },
   manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/icon.svg',
+  },
 }
 
 export const viewport: Viewport = {
@@ -32,7 +37,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#070b14',
+  themeColor: '#fffaf3',
   viewportFit: 'cover',
 }
 
@@ -42,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${manrope.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${nunito.variable} ${sora.variable}`}>
       <body className="bg-vscode-bg text-vscode-text antialiased">
         <AuthProvider>
           {children}
@@ -50,14 +55,15 @@ export default function RootLayout({
             position="bottom-right"
             containerClassName="!bottom-4 !right-4"
             toastOptions={{
-              duration: 3500,
+              duration: 3200,
               style: {
-                background: '#0f172a',
-                color: '#e2e8f0',
-                border: '1px solid rgba(148, 163, 184, 0.35)',
-                borderRadius: '10px',
+                background: '#fffdf8',
+                color: '#2f2a24',
+                border: '1px solid #ded3c6',
+                borderRadius: '12px',
                 fontSize: '13px',
                 maxWidth: '92vw',
+                boxShadow: '0 10px 24px rgba(84,58,28,0.14)',
               },
             }}
           />
@@ -66,4 +72,3 @@ export default function RootLayout({
     </html>
   )
 }
-

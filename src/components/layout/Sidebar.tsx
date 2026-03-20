@@ -100,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={`
           ${isMobile ? 'w-[84vw] max-w-[340px]' : 'w-[340px]'}
-          h-full border-r border-secondary-700/70 bg-secondary-900/95
+          h-full border-r border-secondary-700/90 bg-secondary-950/95
           backdrop-blur-xl
         `}
       >

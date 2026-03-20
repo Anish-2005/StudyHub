@@ -1,8 +1,9 @@
 ﻿'use client';
 
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '@/contexts/AuthContext';
+import StudyHubLogo from '@/components/branding/StudyHubLogo';
 
 const AuthForm: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -45,63 +46,50 @@ const AuthForm: React.FC = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-transparent px-4 py-8 sm:px-6">
+    <div className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-6">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-16 top-20 h-64 w-64 rounded-full bg-primary-500/20 blur-3xl" />
-        <div className="absolute -right-8 bottom-14 h-72 w-72 rounded-full bg-secondary-500/20 blur-3xl" />
+        <div className="absolute left-0 top-12 h-72 w-72 rounded-full bg-primary-200/50 blur-3xl" />
+        <div className="absolute right-8 top-1/3 h-80 w-80 rounded-full bg-accent-200/45 blur-3xl" />
       </div>
 
-      <div className="app-shell relative grid w-full max-w-6xl overflow-hidden md:grid-cols-[1.05fr_1fr]">
-        <section className="hidden border-r border-secondary-700/60 bg-gradient-to-br from-secondary-900 to-secondary-800 p-10 md:block">
-          <div className="mb-10 inline-flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-500/90 text-white shadow-lg shadow-primary-500/30">
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-secondary-400">Study OS</p>
-              <h1 className="text-2xl font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
-                StudyHub
-              </h1>
-            </div>
-          </div>
+      <div className="app-shell relative grid w-full max-w-6xl overflow-hidden md:grid-cols-[1.1fr_1fr]">
+        <section className="hidden border-r border-secondary-700/90 bg-gradient-to-br from-secondary-950 to-secondary-900 px-10 py-12 md:block">
+          <StudyHubLogo size={52} />
 
-          <h2 className="max-w-sm text-3xl font-semibold leading-tight text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
-            Structure your study workflow with one clean system.
+          <h2 className="mt-10 max-w-md text-4xl font-semibold leading-tight text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
+            Learn with structure.
+            <br />
+            Execute with clarity.
           </h2>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-secondary-400">
-            Track topics, tasks, and reminders in one place so you always know what to work on next.
+            StudyHub gives you one professional workspace for topic planning, task execution, reminders, and notes.
           </p>
 
-          <div className="mt-10 space-y-4">
+          <div className="mt-10 space-y-3">
             {[
-              'Focused dashboard for every topic',
-              'Priority tasks and reminders in one timeline',
-              'Consistent workflow across desktop and mobile',
+              'Focused dashboards for each topic',
+              'Prioritized task and reminder workflow',
+              'Fast switching across desktop and mobile',
             ].map((item) => (
               <div key={item} className="surface-soft flex items-center gap-3 px-4 py-3">
-                <span className="h-2 w-2 rounded-full bg-primary-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-primary-500" />
                 <span className="text-sm text-secondary-200">{item}</span>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="bg-secondary-900/90 p-6 sm:p-8 md:p-10">
+        <section className="bg-secondary-950/92 p-6 sm:p-8 md:p-10">
           <div className="mx-auto w-full max-w-md">
-            <div className="mb-6 md:hidden">
-              <p className="text-xs uppercase tracking-[0.2em] text-secondary-500">Study OS</p>
-              <h1 className="mt-1 text-2xl font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
-                StudyHub
-              </h1>
+            <div className="mb-7 md:hidden">
+              <StudyHubLogo size={46} />
             </div>
 
-            <div className="surface p-2">
-              <div className="grid grid-cols-2 gap-2">
+            <div className="surface p-1.5">
+              <div className="grid grid-cols-2 gap-1.5">
                 <button
                   onClick={() => setIsLogin(true)}
-                  className={`touch-target rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`touch-target rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
                     isLogin ? 'bg-primary-500 text-white' : 'text-secondary-300 hover:bg-secondary-800'
                   }`}
                 >
@@ -109,7 +97,7 @@ const AuthForm: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setIsLogin(false)}
-                  className={`touch-target rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`touch-target rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
                     !isLogin ? 'bg-primary-500 text-white' : 'text-secondary-300 hover:bg-secondary-800'
                   }`}
                 >
@@ -121,14 +109,12 @@ const AuthForm: React.FC = () => {
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               {!isLogin && (
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">
-                    Display Name
-                  </label>
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-secondary-400">Display Name</label>
                   <input
                     type="text"
                     value={formData.displayName}
                     onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                    className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3.5 py-3 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
+                    className="w-full rounded-xl border border-secondary-700 bg-secondary-900 px-3.5 py-3 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
                     placeholder="Your name"
                     required={!isLogin}
                   />
@@ -136,29 +122,25 @@ const AuthForm: React.FC = () => {
               )}
 
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">
-                  Email
-                </label>
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-secondary-400">Email</label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3.5 py-3 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
+                  className="w-full rounded-xl border border-secondary-700 bg-secondary-900 px-3.5 py-3 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
                   placeholder="you@example.com"
                   required
                 />
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">
-                  Password
-                </label>
+                <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-secondary-400">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3.5 py-3 pr-12 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
+                    className="w-full rounded-xl border border-secondary-700 bg-secondary-900 px-3.5 py-3 pr-12 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
                     placeholder="Enter your password"
                     required
                   />
@@ -212,4 +194,3 @@ const AuthForm: React.FC = () => {
 };
 
 export default AuthForm;
-
