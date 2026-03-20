@@ -24,11 +24,11 @@ const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
   user,
 }) => {
   return (
-    <aside className="flex h-full w-16 flex-col border-r border-secondary-700/90 bg-secondary-950/95">
+    <aside className="motion-slide-in-left flex h-full w-16 flex-col border-r border-secondary-700/90 bg-secondary-950/95">
       <div className="border-b border-secondary-700/90 p-2.5">
         <button
           onClick={onToggleCollapse}
-          className="touch-target flex h-10 w-10 items-center justify-center rounded-xl bg-secondary-900 border border-secondary-700 hover:bg-secondary-800"
+          className="touch-target motion-lift flex h-10 w-10 items-center justify-center rounded-xl bg-secondary-900 border border-secondary-700 hover:bg-secondary-800"
           title="Expand Sidebar"
         >
           <StudyHubLogo size={22} withWordmark={false} compact />
@@ -38,7 +38,7 @@ const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
       <div className="border-b border-secondary-700/90 p-2.5">
         <button
           onClick={() => onTopicSelect(null)}
-          className={`touch-target flex h-10 w-10 items-center justify-center rounded-xl border transition-colors ${
+          className={`touch-target motion-lift flex h-10 w-10 items-center justify-center rounded-xl border transition-colors ${
             !selectedTopic
               ? 'border-primary-500/50 bg-primary-500/10 text-primary-200'
               : 'border-secondary-700 bg-secondary-900 text-secondary-300 hover:bg-secondary-800 hover:text-secondary-100'
@@ -60,7 +60,7 @@ const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
             <button
               key={topic.id}
               onClick={() => onTopicSelect(topic)}
-              className={`touch-target relative flex h-10 w-10 items-center justify-center rounded-xl border transition-transform hover:scale-105 ${
+              className={`touch-target motion-lift relative flex h-10 w-10 items-center justify-center rounded-xl border transition-transform hover:scale-105 ${
                 selectedTopic?.id === topic.id
                   ? 'border-primary-500/70 bg-primary-500/15'
                   : 'border-secondary-700 bg-secondary-900/80 hover:border-secondary-600'
@@ -78,7 +78,7 @@ const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
             onToggleCollapse();
             onCreateTopic();
           }}
-          className="touch-target flex h-10 w-10 items-center justify-center rounded-xl border border-secondary-700 bg-secondary-900 text-secondary-200 hover:bg-secondary-800"
+          className="touch-target motion-lift flex h-10 w-10 items-center justify-center rounded-xl border border-secondary-700 bg-secondary-900 text-secondary-200 hover:bg-secondary-800"
           title="Create Topic"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

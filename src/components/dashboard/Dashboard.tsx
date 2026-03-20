@@ -61,12 +61,12 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="h-full w-full p-0 md:p-5">
-      <div className="app-shell relative flex h-full overflow-hidden">
+    <div className="motion-fade-up h-full w-full p-0 md:p-5">
+      <div className="app-shell motion-delay-1 relative flex h-full overflow-hidden">
         {isMobile && showMobileSidebar && (
           <button
             aria-label="Close sidebar overlay"
-            className="absolute inset-0 z-30 bg-secondary-50/65 backdrop-blur-sm"
+            className="motion-fade-up absolute inset-0 z-30 bg-secondary-50/65 backdrop-blur-sm"
             onClick={() => setShowMobileSidebar(false)}
           />
         )}
@@ -74,8 +74,8 @@ const Dashboard: React.FC = () => {
         <div
           className={`
             ${isMobile ? 'absolute left-0 top-0 z-40 h-full' : 'relative h-full'}
-            ${isMobile && !showMobileSidebar ? '-translate-x-full' : 'translate-x-0'}
-            transition-transform duration-300 ease-out
+            ${isMobile && !showMobileSidebar ? '-translate-x-full opacity-0 pointer-events-none' : 'translate-x-0 opacity-100'}
+            transition-all duration-300 ease-out
           `}
         >
           <Sidebar
@@ -87,7 +87,7 @@ const Dashboard: React.FC = () => {
           />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="motion-fade-up motion-delay-2 flex min-w-0 flex-1 flex-col">
           <TopBar
             selectedTopic={selectedTopic}
             onMenuClick={toggleSidebar}

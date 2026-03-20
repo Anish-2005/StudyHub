@@ -99,6 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     <>
       <aside
         className={`
+          motion-slide-in-left
           ${isMobile ? 'w-[84vw] max-w-[340px]' : 'w-[340px]'}
           h-full border-r border-secondary-700/90 bg-secondary-950/95
           backdrop-blur-xl

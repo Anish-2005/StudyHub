@@ -12,6 +12,13 @@
   --app-primary: #ff5f3a;
   --app-primary-strong: #e94a25;
   --app-accent: #14b8a6;
+  --motion-duration-fast: 180ms;
+  --motion-duration-base: 280ms;
+  --motion-duration-slow: 420ms;
+  --motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-soft: cubic-bezier(0.25, 0.9, 0.35, 1);
+  --motion-distance-sm: 8px;
+  --motion-distance-md: 14px;
 }
 
 * {
@@ -37,23 +44,86 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  animation: app-fade-in var(--motion-duration-slow) var(--motion-ease-soft) both;
 }
 
 #__next {
   height: 100%;
 }
 
+@keyframes app-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance-md));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in-soft {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--motion-distance-md) * -1));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
 @layer components {
   .app-shell {
     @apply border border-secondary-700/90 bg-secondary-950/90 backdrop-blur-xl rounded-none md:rounded-[24px] shadow-[0_18px_48px_rgba(84,58,28,0.16)];
+    animation: scale-in-soft var(--motion-duration-slow) var(--motion-ease-standard) both;
   }
 
   .surface {
     @apply bg-secondary-900/85 border border-secondary-700 rounded-2xl;
+    transition:
+      border-color var(--motion-duration-base) var(--motion-ease-standard),
+      box-shadow var(--motion-duration-base) var(--motion-ease-standard),
+      transform var(--motion-duration-base) var(--motion-ease-standard),
+      background-color var(--motion-duration-base) var(--motion-ease-standard);
   }
 
   .surface-soft {
     @apply bg-secondary-800/75 border border-secondary-700 rounded-xl;
+    transition:
+      border-color var(--motion-duration-base) var(--motion-ease-standard),
+      transform var(--motion-duration-base) var(--motion-ease-standard),
+      background-color var(--motion-duration-base) var(--motion-ease-standard);
   }
 
   .panel-title {
@@ -66,18 +136,34 @@ body {
 
   .icon-pill {
     @apply inline-flex items-center justify-center w-10 h-10 rounded-lg bg-secondary-800 border border-secondary-700 text-secondary-200;
+    transition:
+      transform var(--motion-duration-base) var(--motion-ease-standard),
+      border-color var(--motion-duration-base) var(--motion-ease-standard),
+      background-color var(--motion-duration-base) var(--motion-ease-standard);
   }
 
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 bg-primary-500 text-white font-bold hover:bg-primary-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-secondary-900;
+    transition:
+      transform var(--motion-duration-fast) var(--motion-ease-standard),
+      box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+      background-color var(--motion-duration-fast) var(--motion-ease-standard);
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 bg-secondary-900 text-secondary-200 border border-secondary-700 hover:bg-secondary-800 transition-colors focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2 focus:ring-offset-secondary-900;
+    transition:
+      transform var(--motion-duration-fast) var(--motion-ease-standard),
+      box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+      background-color var(--motion-duration-fast) var(--motion-ease-standard);
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-secondary-300 hover:text-secondary-100 hover:bg-secondary-800 transition-colors;
+    transition:
+      transform var(--motion-duration-fast) var(--motion-ease-standard),
+      color var(--motion-duration-fast) var(--motion-ease-standard),
+      background-color var(--motion-duration-fast) var(--motion-ease-standard);
   }
 
   .card {
@@ -86,6 +172,30 @@ body {
 
   .brand-glass {
     @apply bg-secondary-950/80 border border-secondary-700/80 backdrop-blur-md;
+  }
+
+  .motion-fade-up {
+    animation: rise-in var(--motion-duration-slow) var(--motion-ease-standard) both;
+  }
+
+  .motion-scale-in {
+    animation: scale-in-soft var(--motion-duration-slow) var(--motion-ease-standard) both;
+  }
+
+  .motion-slide-in-left {
+    animation: slide-in-left var(--motion-duration-slow) var(--motion-ease-standard) both;
+  }
+
+  .motion-delay-1 {
+    animation-delay: 80ms;
+  }
+
+  .motion-delay-2 {
+    animation-delay: 140ms;
+  }
+
+  .motion-delay-3 {
+    animation-delay: 200ms;
   }
 }
 
@@ -113,6 +223,32 @@ body {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  .motion-lift {
+    transition:
+      transform var(--motion-duration-base) var(--motion-ease-standard),
+      box-shadow var(--motion-duration-base) var(--motion-ease-standard),
+      border-color var(--motion-duration-base) var(--motion-ease-standard);
+  }
+
+  .ambient-float {
+    animation: pulse-float 9s ease-in-out infinite;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .btn-ghost:hover,
+  .motion-lift:hover {
+    transform: translateY(-1px);
+  }
+
+  .surface:hover,
+  .surface-soft:hover,
+  .motion-lift:hover {
+    box-shadow: 0 14px 32px rgba(24, 14, 2, 0.14);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -134,6 +270,14 @@ body {
 }
 
 @media (max-width: 768px) {
+  :root {
+    --motion-duration-fast: 150ms;
+    --motion-duration-base: 220ms;
+    --motion-duration-slow: 340ms;
+    --motion-distance-sm: 6px;
+    --motion-distance-md: 10px;
+  }
+
   body {
     overscroll-behavior: none;
     touch-action: pan-y;
@@ -146,5 +290,16 @@ body {
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -13,7 +13,7 @@ export default function Home() {
   }
 
   return (
-    <main className="h-screen overflow-hidden" style={{ height: '100dvh' }}>
+    <main className="motion-fade-up h-screen overflow-hidden" style={{ height: '100dvh' }}>
       {user ? <Dashboard /> : <AuthForm />}
     </main>
   );

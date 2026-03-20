@@ -14,13 +14,13 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   isMobile,
 }) => {
   return (
-    <div className="border-b border-secondary-700/90 px-4 py-4 md:px-5">
+    <div className="motion-fade-up border-b border-secondary-700/90 px-4 py-4 md:px-5">
       <div className="mb-4 flex items-start justify-between gap-3">
         <StudyHubLogo size={40} />
 
         <button
           onClick={onToggleCollapse}
-          className="touch-target rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-300 hover:bg-secondary-800 hover:text-secondary-100"
+          className="touch-target motion-lift rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-300 transition-colors hover:bg-secondary-800 hover:text-secondary-100"
           title={isMobile ? 'Close Sidebar' : 'Collapse Sidebar'}
         >
           {isMobile ? (
