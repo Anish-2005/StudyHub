@@ -59,7 +59,7 @@ const TopicItem: React.FC<TopicItemProps> = ({
   return (
     <div className="relative">
       <div
-        className={`group rounded-xl border p-3 transition-colors ${
+        className={`group motion-lift rounded-xl border p-3 transition-colors ${
           isSelected
             ? 'border-primary-500/50 bg-primary-500/10 text-primary-100'
             : 'border-secondary-700 bg-secondary-800/55 text-secondary-200 hover:border-secondary-600 hover:bg-secondary-800'
@@ -103,7 +103,7 @@ const TopicItem: React.FC<TopicItemProps> = ({
             aria-label="Close topic menu"
             onClick={() => setShowMenu(false)}
           />
-          <div className="surface absolute right-0 top-12 z-20 min-w-[140px] p-1.5">
+          <div className="surface motion-scale-in absolute right-0 top-12 z-20 min-w-[140px] p-1.5">
             <button
               onClick={(e) => {
                 e.stopPropagation();

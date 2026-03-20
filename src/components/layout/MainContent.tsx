@@ -114,8 +114,8 @@ const MainContent: React.FC<MainContentProps> = ({
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center bg-secondary-900/60">
-        <div className="surface-soft flex items-center gap-3 px-4 py-3 text-sm text-secondary-300">
+      <div className="motion-fade-up flex h-full items-center justify-center bg-secondary-900/60">
+        <div className="surface-soft motion-scale-in flex items-center gap-3 px-4 py-3 text-sm text-secondary-300">
           <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
           Syncing workspace...
         </div>
@@ -124,7 +124,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   return (
-    <section className="h-full overflow-hidden bg-secondary-900/55">
+    <section className="motion-fade-up h-full overflow-hidden bg-secondary-900/55">
       {selectedTopic ? (
         <TopicDashboard topic={selectedTopic} tasks={filteredTasks} reminders={filteredReminders} />
       ) : (

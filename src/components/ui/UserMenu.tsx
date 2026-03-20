@@ -12,7 +12,7 @@ const UserMenu: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setShowMenu((prev) => !prev)}
-        className="touch-target flex w-full items-center rounded-xl border border-secondary-700 bg-secondary-900/95 p-2.5 transition-colors hover:bg-secondary-800"
+        className="touch-target motion-lift flex w-full items-center rounded-xl border border-secondary-700 bg-secondary-900/95 p-2.5 transition-colors hover:bg-secondary-800"
       >
         <div className="mr-3 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-500 text-sm font-semibold text-white">
           {user?.photoURL ? (
@@ -40,7 +40,7 @@ const UserMenu: React.FC = () => {
       {showMenu && (
         <>
           <button className="fixed inset-0 z-10 cursor-default" aria-label="Close user menu" onClick={() => setShowMenu(false)} />
-          <div className="surface absolute bottom-full left-0 right-0 z-20 mb-2 p-1.5">
+          <div className="surface motion-scale-in absolute bottom-full left-0 right-0 z-20 mb-2 p-1.5">
             <button
               onClick={() => {
                 logout();

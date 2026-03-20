@@ -82,29 +82,29 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 
   const renderOverview = () => {
     return (
-      <div className="mobile-scroll-container h-full px-4 pb-6 pt-5 md:px-6 md:pb-8">
+      <div className="mobile-scroll-container motion-fade-up h-full px-4 pb-6 pt-5 md:px-6 md:pb-8">
         <div className="mx-auto w-full max-w-7xl space-y-5 md:space-y-6">
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-            <article className="surface p-4">
+            <article className="surface motion-lift motion-fade-up p-4">
               <p className="text-xs uppercase tracking-wide text-secondary-500">Topics</p>
               <p className="mt-1 text-2xl font-semibold text-secondary-100">{topics.length}</p>
             </article>
-            <article className="surface p-4">
+            <article className="surface motion-lift motion-fade-up motion-delay-1 p-4">
               <p className="text-xs uppercase tracking-wide text-secondary-500">Pending Tasks</p>
               <p className="mt-1 text-2xl font-semibold text-warning-300">{pendingTasks.length}</p>
             </article>
-            <article className="surface p-4">
+            <article className="surface motion-lift motion-fade-up motion-delay-2 p-4">
               <p className="text-xs uppercase tracking-wide text-secondary-500">Overdue</p>
               <p className="mt-1 text-2xl font-semibold text-accent-300">{overdueTasks.length}</p>
             </article>
-            <article className="surface p-4">
+            <article className="surface motion-lift motion-fade-up motion-delay-3 p-4">
               <p className="text-xs uppercase tracking-wide text-secondary-500">Completed</p>
               <p className="mt-1 text-2xl font-semibold text-success-300">{completedTasks.length}</p>
             </article>
           </div>
 
           <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
-            <div className="surface p-4 md:p-5">
+            <div className="surface motion-lift motion-fade-up p-4 md:p-5">
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
                   <h2 className="text-lg font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
@@ -128,11 +128,12 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
                 </div>
               ) : (
                 <div className="grid gap-3 md:grid-cols-2">
-                  {filteredTopics.slice(0, 8).map((topic) => (
+                  {filteredTopics.slice(0, 8).map((topic, index) => (
                     <button
                       key={topic.id}
                       onClick={() => onTopicSelect(topic)}
-                      className="surface-soft group w-full text-left transition-colors hover:border-primary-500/45"
+                      className="surface-soft motion-lift motion-fade-up group w-full text-left transition-colors hover:border-primary-500/45"
+                      style={{ animationDelay: `${Math.min(40 * index, 240)}ms` }}
                     >
                       <div className="flex items-start justify-between gap-2 p-4">
                         <div className="flex min-w-0 items-start gap-3">
@@ -162,15 +163,15 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
             </div>
 
             <div className="space-y-5">
-              <section className="surface p-4 md:p-5">
+              <section className="surface motion-lift motion-fade-up motion-delay-1 p-4 md:p-5">
                 <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
                   Next Up
                 </h3>
                 <p className="mt-1 text-xs text-secondary-400">Immediate items requiring attention.</p>
 
                 <div className="mt-4 space-y-2.5">
-                  {pendingTasks.slice(0, 3).map((task) => (
-                    <div key={task.id} className="surface-soft p-3">
+                  {pendingTasks.slice(0, 3).map((task, index) => (
+                    <div key={task.id} className="surface-soft motion-fade-up p-3" style={{ animationDelay: `${80 + index * 45}ms` }}>
                       <p className="text-sm font-medium text-secondary-100">{task.title}</p>
                       <p className="mt-1 text-xs text-secondary-400">
                         {task.dueDate ? `Due ${task.dueDate.toLocaleDateString()}` : 'No due date'}
@@ -182,15 +183,15 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
                 </div>
               </section>
 
-              <section className="surface p-4 md:p-5">
+              <section className="surface motion-lift motion-fade-up motion-delay-2 p-4 md:p-5">
                 <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
                   Upcoming Reminders
                 </h3>
                 <p className="mt-1 text-xs text-secondary-400">Time-based commitments coming soon.</p>
 
                 <div className="mt-4 space-y-2.5">
-                  {upcomingReminders.slice(0, 4).map((reminder) => (
-                    <div key={reminder.id} className="surface-soft p-3">
+                  {upcomingReminders.slice(0, 4).map((reminder, index) => (
+                    <div key={reminder.id} className="surface-soft motion-fade-up p-3" style={{ animationDelay: `${80 + index * 45}ms` }}>
                       <p className="text-sm font-medium text-secondary-100">{reminder.title}</p>
                       <p className="mt-1 text-xs text-secondary-400">
                         {reminder.date.toLocaleDateString()} at{' '}
@@ -210,8 +211,8 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      <div className="border-b border-secondary-700/90 bg-secondary-950/85 px-4 py-4 md:px-6">
+    <div className="motion-fade-up flex h-full flex-col overflow-hidden">
+      <div className="motion-fade-up border-b border-secondary-700/90 bg-secondary-950/85 px-4 py-4 md:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <StudyHubLogo size={34} withWordmark={false} compact />
@@ -229,7 +230,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`touch-target rounded-lg px-3 py-2 text-xs font-semibold transition-colors md:px-4 md:text-sm ${
+                  className={`touch-target motion-lift rounded-lg px-3 py-2 text-xs font-semibold transition-colors md:px-4 md:text-sm ${
                     activeTab === tab.id
                       ? 'bg-primary-500 text-white'
                       : 'text-secondary-300 hover:bg-secondary-800 hover:text-secondary-100'
@@ -244,7 +245,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
         </div>
       </div>
 
-      <div className="min-h-0 flex-1">
+      <div key={activeTab} className="motion-fade-up min-h-0 flex-1">
         {activeTab === 'overview' && renderOverview()}
 
         {activeTab === 'tasks' && (

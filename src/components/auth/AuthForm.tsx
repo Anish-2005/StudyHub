@@ -48,12 +48,12 @@ const AuthForm: React.FC = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-6">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-0 top-12 h-72 w-72 rounded-full bg-primary-200/50 blur-3xl" />
-        <div className="absolute right-8 top-1/3 h-80 w-80 rounded-full bg-accent-200/45 blur-3xl" />
+        <div className="ambient-float absolute left-0 top-12 h-72 w-72 rounded-full bg-primary-200/50 blur-3xl" />
+        <div className="ambient-float motion-delay-1 absolute right-8 top-1/3 h-80 w-80 rounded-full bg-accent-200/45 blur-3xl" />
       </div>
 
-      <div className="app-shell relative grid w-full max-w-6xl overflow-hidden md:grid-cols-[1.1fr_1fr]">
-        <section className="hidden border-r border-secondary-700/90 bg-gradient-to-br from-secondary-950 to-secondary-900 px-10 py-12 md:block">
+      <div className="app-shell motion-scale-in relative grid w-full max-w-6xl overflow-hidden md:grid-cols-[1.1fr_1fr]">
+        <section className="motion-slide-in-left hidden border-r border-secondary-700/90 bg-gradient-to-br from-secondary-950 to-secondary-900 px-10 py-12 md:block">
           <StudyHubLogo size={52} />
 
           <h2 className="mt-10 max-w-md text-4xl font-semibold leading-tight text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
@@ -70,8 +70,12 @@ const AuthForm: React.FC = () => {
               'Focused dashboards for each topic',
               'Prioritized task and reminder workflow',
               'Fast switching across desktop and mobile',
-            ].map((item) => (
-              <div key={item} className="surface-soft flex items-center gap-3 px-4 py-3">
+            ].map((item, index) => (
+              <div
+                key={item}
+                className="surface-soft motion-fade-up motion-lift flex items-center gap-3 px-4 py-3"
+                style={{ animationDelay: `${100 + index * 60}ms` }}
+              >
                 <span className="h-2.5 w-2.5 rounded-full bg-primary-500" />
                 <span className="text-sm text-secondary-200">{item}</span>
               </div>
@@ -79,17 +83,17 @@ const AuthForm: React.FC = () => {
           </div>
         </section>
 
-        <section className="bg-secondary-950/92 p-6 sm:p-8 md:p-10">
-          <div className="mx-auto w-full max-w-md">
-            <div className="mb-7 md:hidden">
+        <section className="motion-fade-up motion-delay-1 bg-secondary-950/92 p-6 sm:p-8 md:p-10">
+          <div className="motion-fade-up mx-auto w-full max-w-md">
+            <div className="motion-fade-up mb-7 md:hidden">
               <StudyHubLogo size={46} />
             </div>
 
-            <div className="surface p-1.5">
+            <div className="surface motion-scale-in p-1.5">
               <div className="grid grid-cols-2 gap-1.5">
                 <button
                   onClick={() => setIsLogin(true)}
-                  className={`touch-target rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`touch-target motion-lift rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
                     isLogin ? 'bg-primary-500 text-white' : 'text-secondary-300 hover:bg-secondary-800'
                   }`}
                 >
@@ -97,7 +101,7 @@ const AuthForm: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setIsLogin(false)}
-                  className={`touch-target rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`touch-target motion-lift rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
                     !isLogin ? 'bg-primary-500 text-white' : 'text-secondary-300 hover:bg-secondary-800'
                   }`}
                 >
@@ -106,9 +110,9 @@ const AuthForm: React.FC = () => {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleSubmit} className="motion-fade-up motion-delay-2 mt-6 space-y-4">
               {!isLogin && (
-                <div>
+                <div className="motion-fade-up">
                   <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-secondary-400">Display Name</label>
                   <input
                     type="text"
@@ -147,25 +151,25 @@ const AuthForm: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="touch-target absolute right-1 top-1/2 -translate-y-1/2 rounded-md px-2 text-secondary-400 hover:text-secondary-200"
+                    className="touch-target motion-lift absolute right-1 top-1/2 -translate-y-1/2 rounded-md px-2 text-secondary-400 hover:text-secondary-200"
                   >
                     {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} className="btn-primary touch-target w-full">
+              <button type="submit" disabled={loading} className="btn-primary touch-target motion-lift w-full">
                 {loading ? (isLogin ? 'Signing In...' : 'Creating Account...') : isLogin ? 'Sign In' : 'Create Account'}
               </button>
             </form>
 
-            <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-secondary-500">
+            <div className="motion-fade-up motion-delay-3 my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-secondary-500">
               <span className="h-px flex-1 bg-secondary-700" />
               <span>Or</span>
               <span className="h-px flex-1 bg-secondary-700" />
             </div>
 
-            <button onClick={handleGoogleSignIn} disabled={loading} className="btn-secondary touch-target w-full">
+            <button onClick={handleGoogleSignIn} disabled={loading} className="btn-secondary touch-target motion-lift w-full">
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"

@@ -22,13 +22,13 @@ const SidebarTopicsSection: React.FC<SidebarTopicsSectionProps> = ({
   loading,
 }) => {
   return (
-    <div className="flex h-full flex-col">
+    <div className="motion-fade-up motion-delay-1 flex h-full flex-col">
       <div className="border-b border-secondary-700/70 px-4 py-4 md:px-5">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="panel-title">Navigation</h2>
           <button
             onClick={onCreateTopic}
-            className="touch-target rounded-lg border border-secondary-700 bg-secondary-800/60 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
+            className="touch-target motion-lift rounded-lg border border-secondary-700 bg-secondary-800/60 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
             title="Create Topic"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@ const SidebarTopicsSection: React.FC<SidebarTopicsSectionProps> = ({
 
         <button
           onClick={() => onTopicSelect(null)}
-          className={`w-full rounded-xl border px-3 py-3 text-left transition-colors ${
+          className={`motion-lift w-full rounded-xl border px-3 py-3 text-left transition-colors ${
             !selectedTopic
               ? 'border-primary-500/50 bg-primary-500/10 text-primary-200'
               : 'border-secondary-700 bg-secondary-800/55 text-secondary-200 hover:border-secondary-600 hover:bg-secondary-800'
@@ -68,7 +68,7 @@ const SidebarTopicsSection: React.FC<SidebarTopicsSectionProps> = ({
         )}
 
         {!loading && topics.length === 0 && (
-          <div className="surface-soft mx-2 mt-2 p-5 text-center">
+          <div className="surface-soft motion-scale-in mx-2 mt-2 p-5 text-center">
             <p className="text-sm font-semibold text-secondary-200">No topics yet</p>
             <p className="mt-1 text-xs text-secondary-400">Create your first topic to start organizing.</p>
             <button onClick={onCreateTopic} className="btn-primary mt-4 w-full">
@@ -79,14 +79,19 @@ const SidebarTopicsSection: React.FC<SidebarTopicsSectionProps> = ({
 
         {!loading && topics.length > 0 && (
           <div className="space-y-2">
-            {topics.map((topic) => (
-              <TopicItem
+            {topics.map((topic, index) => (
+              <div
                 key={topic.id}
-                topic={topic}
-                isSelected={selectedTopic?.id === topic.id}
-                onSelect={() => onTopicSelect(topic)}
-                onDelete={() => onDeleteTopic(topic.id)}
-              />
+                className="motion-fade-up"
+                style={{ animationDelay: `${Math.min(index * 35, 220)}ms` }}
+              >
+                <TopicItem
+                  topic={topic}
+                  isSelected={selectedTopic?.id === topic.id}
+                  onSelect={() => onTopicSelect(topic)}
+                  onDelete={() => onDeleteTopic(topic.id)}
+                />
+              </div>
             ))}
           </div>
         )}

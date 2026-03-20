@@ -44,11 +44,11 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
     : 'Track priorities across all topics';
 
   return (
-    <header className="border-b border-secondary-700/90 bg-secondary-950/95 px-4 py-3 backdrop-blur-xl md:px-6">
+    <header className="motion-fade-up border-b border-secondary-700/90 bg-secondary-950/95 px-4 py-3 backdrop-blur-xl md:px-6">
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuClick}
-          className="touch-target rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800"
+          className="touch-target motion-lift rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800"
           title="Toggle sidebar"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
 
         <button
           onClick={() => setShowMobileSearch((prev) => !prev)}
-          className="touch-target rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800 md:hidden"
+          className="touch-target motion-lift rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800 md:hidden"
           title="Search"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
         </div>
       </div>
 
-      <div className="mt-3 hidden md:block">
+      <div className="motion-fade-up motion-delay-1 mt-3 hidden md:block">
         <label className="relative block">
           <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-secondary-500">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,7 +117,7 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
       </div>
 
       {isMobile && showMobileSearch && (
-        <div className="mt-3 md:hidden">
+        <div className="motion-fade-up mt-3 md:hidden">
           <label className="relative block">
             <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-secondary-500">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -80,8 +80,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
 
   return (
     <>
-      <div className="flex h-full flex-col">
-        <div className="border-b border-secondary-700/70 bg-secondary-900/65 px-4 py-4 md:px-6">
+      <div className="motion-fade-up flex h-full flex-col">
+        <div className="motion-fade-up border-b border-secondary-700/70 bg-secondary-900/65 px-4 py-4 md:px-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-secondary-100 md:text-xl" style={{ fontFamily: 'var(--font-sora)' }}>
@@ -92,7 +92,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
               </p>
             </div>
 
-            <button onClick={() => setShowCreateModal(true)} className="btn-primary touch-target">
+            <button onClick={() => setShowCreateModal(true)} className="btn-primary touch-target motion-lift">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
@@ -101,15 +101,15 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
           </div>
 
           <div className="mt-4 grid grid-cols-3 gap-2 md:max-w-md">
-            <div className="surface-soft px-3 py-2">
+            <div className="surface-soft motion-fade-up px-3 py-2">
               <p className="text-[11px] uppercase tracking-wide text-secondary-500">Pending</p>
               <p className="text-lg font-semibold text-warning-200">{stats.pending}</p>
             </div>
-            <div className="surface-soft px-3 py-2">
+            <div className="surface-soft motion-fade-up motion-delay-1 px-3 py-2">
               <p className="text-[11px] uppercase tracking-wide text-secondary-500">Completed</p>
               <p className="text-lg font-semibold text-success-200">{stats.completed}</p>
             </div>
-            <div className="surface-soft px-3 py-2">
+            <div className="surface-soft motion-fade-up motion-delay-2 px-3 py-2">
               <p className="text-[11px] uppercase tracking-wide text-secondary-500">Overdue</p>
               <p className="text-lg font-semibold text-accent-200">{stats.overdue}</p>
             </div>
@@ -120,7 +120,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
               <button
                 key={filterOption}
                 onClick={() => setFilter(filterOption)}
-                className={`touch-target flex-1 rounded-md px-3 py-2 text-xs font-semibold capitalize transition-colors md:text-sm ${
+                className={`touch-target motion-lift flex-1 rounded-md px-3 py-2 text-xs font-semibold capitalize transition-colors md:text-sm ${
                   filter === filterOption
                     ? 'bg-primary-500 text-white'
                     : 'text-secondary-300 hover:bg-secondary-800 hover:text-secondary-100'
@@ -134,7 +134,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
 
         <div className="mobile-scroll-container flex-1 px-4 py-4 md:px-6 md:py-5">
           {filteredTasks.length === 0 ? (
-            <div className="surface-soft mx-auto max-w-2xl py-12 text-center">
+            <div className="surface-soft motion-scale-in mx-auto max-w-2xl py-12 text-center">
               <p className="text-base font-semibold text-secondary-100">
                 {filter === 'all' ? 'No tasks yet' : `No ${filter} tasks`}
               </p>
@@ -149,10 +149,11 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
             </div>
           ) : (
             <div className="mx-auto max-w-5xl space-y-3">
-              {filteredTasks.map((task) => (
+              {filteredTasks.map((task, index) => (
                 <article
                   key={task.id}
-                  className={`surface p-4 transition-colors ${task.completed ? 'opacity-70' : 'hover:border-primary-500/40'}`}
+                  className={`surface motion-lift motion-fade-up p-4 transition-colors ${task.completed ? 'opacity-70' : 'hover:border-primary-500/40'}`}
+                  style={{ animationDelay: `${Math.min(index * 35, 220)}ms` }}
                 >
                   <div className="flex items-start gap-3">
                     <button
@@ -180,7 +181,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
                           </span>
                           <button
                             onClick={() => handleDeleteTask(task.id)}
-                            className="touch-target rounded-md p-1.5 text-secondary-400 hover:bg-accent-500/10 hover:text-accent-300"
+                            className="touch-target motion-lift rounded-md p-1.5 text-secondary-400 hover:bg-accent-500/10 hover:text-accent-300"
                             title="Delete task"
                           >
                             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
