@@ -289,6 +289,28 @@ body {
   }
 }
 
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+    filter: saturate(1.08) blur(1px);
+  }
+  to {
+    opacity: 1;
+    filter: saturate(1) blur(0);
+  }
+}
+
+@keyframes theme-fade-out {
+  from {
+    opacity: 1;
+    filter: saturate(1) blur(0);
+  }
+  to {
+    opacity: 0.92;
+    filter: saturate(0.95) blur(0.5px);
+  }
+}
+
 @layer components {
   .app-shell {
     @apply border border-secondary-700/90 bg-secondary-950/90 backdrop-blur-xl rounded-none md:rounded-[24px] shadow-[0_18px_48px_rgba(84,58,28,0.16)];
@@ -473,6 +495,32 @@ body {
   }
 }
 
+html.theme-changing *,
+html.theme-changing *::before,
+html.theme-changing *::after {
+  transition:
+    background-color 420ms cubic-bezier(0.22, 1, 0.36, 1) !important,
+    color 420ms cubic-bezier(0.22, 1, 0.36, 1) !important,
+    border-color 420ms cubic-bezier(0.22, 1, 0.36, 1) !important,
+    box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1) !important,
+    fill 420ms cubic-bezier(0.22, 1, 0.36, 1) !important,
+    stroke 420ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(root) {
+  animation-name: theme-fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: theme-fade-in;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -527,5 +575,10 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms !important;
   }
 }

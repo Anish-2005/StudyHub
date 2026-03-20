@@ -5,9 +5,19 @@ import React, { useEffect, useState } from 'react';
 type ThemeMode = 'warm' | 'midnight';
 
 const STORAGE_KEY = 'studyhub-theme';
+const THEME_TRANSITION_MS = 450;
 
 const applyTheme = (theme: ThemeMode) => {
   document.documentElement.setAttribute('data-theme', theme);
+};
+
+type ViewTransitionLike = {
+  ready: Promise<void>;
+  finished: Promise<void>;
+};
+
+type ThemeTransitionDocument = {
+  startViewTransition?: (callback: () => void) => ViewTransitionLike;
 };
 
 interface ThemeToggleProps {
@@ -17,6 +27,7 @@ interface ThemeToggleProps {
 
 const ThemeToggle: React.FC<ThemeToggleProps> = ({ compact = false, className = '' }) => {
   const [theme, setTheme] = useState<ThemeMode>('warm');
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem(STORAGE_KEY);
@@ -28,8 +39,34 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ compact = false, className = 
   const toggleTheme = () => {
     const nextTheme: ThemeMode = theme === 'warm' ? 'midnight' : 'warm';
     setTheme(nextTheme);
-    localStorage.setItem(STORAGE_KEY, nextTheme);
-    applyTheme(nextTheme);
+    setIsAnimating(true);
+
+    const root = document.documentElement;
+    const updateTheme = () => {
+      localStorage.setItem(STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme);
+    };
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const transitionDoc = document as unknown as ThemeTransitionDocument;
+
+    if (typeof transitionDoc.startViewTransition === 'function' && !reducedMotion) {
+      const transition = transitionDoc.startViewTransition(updateTheme);
+      transition.ready
+        .then(() => root.classList.add('theme-changing'))
+        .catch(() => {
+          // no-op: fallback covered by finished cleanup
+        });
+      transition.finished.finally(() => {
+        root.classList.remove('theme-changing');
+      });
+    } else {
+      root.classList.add('theme-changing');
+      updateTheme();
+      window.setTimeout(() => root.classList.remove('theme-changing'), THEME_TRANSITION_MS);
+    }
+
+    window.setTimeout(() => setIsAnimating(false), THEME_TRANSITION_MS);
   };
 
   return (
@@ -41,7 +78,11 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ compact = false, className = 
       title={theme === 'warm' ? 'Switch to midnight theme' : 'Switch to warm theme'}
       aria-label={theme === 'warm' ? 'Switch to midnight theme' : 'Switch to warm theme'}
     >
-      <span className="inline-flex h-4 w-4 items-center justify-center">
+      <span
+        className={`inline-flex h-4 w-4 items-center justify-center transition-transform duration-500 ${
+          isAnimating ? 'rotate-[160deg] scale-90' : 'rotate-0 scale-100'
+        }`}
+      >
         {theme === 'warm' ? (
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646a9 9 0 1011.708 11.708z" />
