@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import CreateTaskModal from '../modals/CreateTaskModal';
 import CreateReminderModal from '../modals/CreateReminderModal';
@@ -40,30 +40,28 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
 
-  // Subscribe to notes for this topic
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setNotes([]);
+      return;
+    }
 
-    // Use simple query with only userId, then filter by topicId client-side
-    const notesQuery = query(
-      collection(db, 'notes'),
-      where('userId', '==', user.uid)
-    );
+    const notesQuery = query(collection(db, 'notes'), where('userId', '==', user.uid));
 
     const unsubscribe = onSnapshot(notesQuery, (snapshot) => {
-      const notesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
+      const notesData = snapshot.docs.map((entry) => ({
+        id: entry.id,
+        ...entry.data(),
+        createdAt: entry.data().createdAt?.toDate(),
+        updatedAt: entry.data().updatedAt?.toDate(),
       })) as Note[];
 
-      // Filter by topicId and sort client-side to avoid composite index requirement
       const topicNotes = notesData
-        .filter(note => note.topicId === topic.id)
+        .filter((note) => note.topicId === topic.id)
         .sort((a, b) => {
-          if (!a.updatedAt || !b.updatedAt) return 0;
-          return b.updatedAt.getTime() - a.updatedAt.getTime();
+          const aTime = a.updatedAt?.getTime() ?? 0;
+          const bTime = b.updatedAt?.getTime() ?? 0;
+          return bTime - aTime;
         });
 
       setNotes(topicNotes);
@@ -72,7 +70,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     return () => unsubscribe();
   }, [user, topic.id]);
 
-  // Handle creating tasks
   const handleCreateTask = async (taskData: Omit<Task, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {
     if (!user) return;
 
@@ -85,7 +82,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         updatedAt: Timestamp.fromDate(new Date()),
       });
 
-      toast.success('Task created successfully!');
+      toast.success('Task created successfully');
       setShowCreateTaskModal(false);
     } catch (error) {
       console.error('Error creating task:', error);
@@ -93,7 +90,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     }
   };
 
-  // Handle creating reminders
   const handleCreateReminder = async (reminderData: Omit<Reminder, 'id' | 'userId' | 'createdAt'>) => {
     if (!user) return;
 
@@ -106,7 +102,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         createdAt: Timestamp.fromDate(new Date()),
       });
 
-      toast.success('Reminder created successfully!');
+      toast.success('Reminder created successfully');
       setShowCreateReminderModal(false);
     } catch (error) {
       console.error('Error creating reminder:', error);
@@ -114,7 +110,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     }
   };
 
-  // Handle creating notes
   const handleCreateNote = async (noteData: Omit<Note, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {
     if (!user) return;
 
@@ -126,7 +121,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         updatedAt: Timestamp.fromDate(new Date()),
       });
 
-      toast.success('Note created successfully!');
+      toast.success('Note created successfully');
       setShowCreateNoteModal(false);
     } catch (error) {
       console.error('Error creating note:', error);
@@ -134,18 +129,16 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     }
   };
 
-  // Handle deleting notes
   const handleDeleteNote = async (noteId: string) => {
     try {
       await deleteDoc(doc(db, 'notes', noteId));
-      toast.success('Note deleted successfully!');
+      toast.success('Note deleted');
     } catch (error) {
       console.error('Error deleting note:', error);
       toast.error('Failed to delete note. Please try again.');
     }
   };
 
-  // Handle privacy toggle
   const handleTogglePrivacy = async () => {
     if (!user) return;
 
@@ -162,92 +155,60 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     }
   };
 
-  const completedTasks = tasks.filter(task => task.completed);
-  const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
+  const tabs = useMemo(
+    () => [
+      { id: 'overview', name: 'Overview', count: null },
+      { id: 'tasks', name: 'Tasks', count: tasks.length },
+      { id: 'reminders', name: 'Reminders', count: reminders.length },
+      { id: 'notes', name: 'Notes', count: notes.length },
+    ] as const,
+    [tasks.length, reminders.length, notes.length],
+  );
 
-  // Tab swipe gesture
-  const tabs = useMemo(() => [
-    { id: 'overview', name: 'Overview', count: null },
-    { id: 'tasks', name: 'Tasks', count: tasks.length },
-    { id: 'reminders', name: 'Reminders', count: reminders.length },
-    { id: 'notes', name: 'Notes', count: notes.length },
-  ] as const, [tasks.length, reminders.length, notes.length]);
+  const handleTabSwipe = useCallback(
+    (direction: 'left' | 'right') => {
+      const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
+      if (direction === 'left' && currentIndex < tabs.length - 1) {
+        setActiveTab(tabs[currentIndex + 1].id);
+      } else if (direction === 'right' && currentIndex > 0) {
+        setActiveTab(tabs[currentIndex - 1].id);
+      }
+    },
+    [activeTab, tabs],
+  );
 
-  const handleTabSwipe = useCallback((direction: 'left' | 'right') => {
-    const currentIndex = tabs.findIndex(tab => tab.id === activeTab);
-    if (direction === 'left' && currentIndex < tabs.length - 1) {
-      setActiveTab(tabs[currentIndex + 1].id);
-    } else if (direction === 'right' && currentIndex > 0) {
-      setActiveTab(tabs[currentIndex - 1].id);
-    }
-  }, [activeTab, tabs]);
-
-  // Touch handlers for content component
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
     touchStartY.current = touch.clientY;
     touchStartX.current = touch.clientX;
   }, []);
 
-  const handleTouchMove = useCallback((_e: React.TouchEvent) => {
-    // Touch handling moved to TopicDashboardContent
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const deltaY = touch.clientY - touchStartY.current;
+    const deltaX = Math.abs(touch.clientX - touchStartX.current);
+
+    if (deltaY <= 0 || deltaX > 60) return;
+    setPullDistance(Math.min(90, deltaY * 0.35));
   }, []);
 
   const handleTouchEnd = useCallback(() => {
     if (pullDistance > 60 && !isRefreshing) {
       setIsRefreshing(true);
       setPullDistance(0);
-      
-      // Simulate refresh - in real app, refetch data
+
       setTimeout(() => {
         setIsRefreshing(false);
-        toast.success('Refreshed!', { duration: 1500, icon: '✨' });
-      }, 1500);
-    } else {
-      setPullDistance(0);
+        toast.success('Workspace refreshed');
+      }, 1200);
+      return;
     }
-  }, [pullDistance, isRefreshing]);
 
-  const getTopicIcon = (icon: string) => {
-    const icons: { [key: string]: JSX.Element } = {
-      book: (
-        <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      ),
-      code: (
-        <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-        </svg>
-      ),
-      science: (
-        <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-        </svg>
-      ),
-      math: (
-        <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      ),
-      language: (
-        <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-        </svg>
-      ),
-      default: (
-        <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      ),
-    };
-
-    return icons[icon] || icons.default;
-  };
+    setPullDistance(0);
+  }, [isRefreshing, pullDistance]);
 
   return (
-    <div className="flex flex-col h-full md:overflow-hidden">
-      {/* Header */}
+    <div className="flex h-full flex-col overflow-hidden">
       <TopicDashboardHeader
         topic={topic}
         tasks={tasks}
@@ -260,7 +221,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         onShare={() => setShowShareModal(true)}
       />
 
-      {/* Content */}
       <TopicDashboardContent
         topic={topic}
         tasks={tasks}
@@ -278,7 +238,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         onTabSwipe={handleTabSwipe}
       />
 
-      {/* Action Sheet */}
       <TopicDashboardActionSheet
         isOpen={showActionSheet}
         onClose={() => setShowActionSheet(false)}
@@ -297,7 +256,6 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         topicName={topic.name}
       />
 
-      {/* Modals */}
       {!isPublicView && (
         <>
           {showCreateTaskModal && (

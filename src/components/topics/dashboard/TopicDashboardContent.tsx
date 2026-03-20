@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useCallback, useMemo } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
 import TopicOverviewTab from '../TopicOverviewTab';
 import TopicTasksTab from '../TopicTasksTab';
@@ -41,82 +41,54 @@ const TopicDashboardContent: React.FC<TopicDashboardContentProps> = ({
   onTouchEnd,
   onTabSwipe,
 }) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
 
-  const completedTasks = tasks.filter(task => task.completed);
-  const upcomingReminders = reminders.filter(reminder => !reminder.completed && reminder.date > new Date());
+  const completedTasks = tasks.filter((task) => task.completed);
+  const upcomingReminders = reminders.filter((reminder) => !reminder.completed && reminder.date > new Date());
 
   const handleContentTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   }, []);
 
-  const handleContentTouchEnd = useCallback((e: React.TouchEvent) => {
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-    const threshold = 100;
+  const handleContentTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const threshold = 100;
 
-    if (Math.abs(deltaX) > threshold) {
-      if (deltaX > 0) {
-        onTabSwipe('right');
-      } else {
-        onTabSwipe('left');
-      }
-    }
-  }, [onTabSwipe]);
+      if (Math.abs(deltaX) <= threshold) return;
+      onTabSwipe(deltaX > 0 ? 'right' : 'left');
+    },
+    [onTabSwipe],
+  );
 
   return (
-    <div className="flex-1 overflow-hidden min-h-0">
-      {/* Mobile Pull-to-refresh indicator */}
+    <div className="relative min-h-0 flex-1 overflow-hidden">
       {pullDistance > 0 && (
         <div
-          className="md:hidden absolute top-0 left-0 right-0 z-50 flex items-center justify-center transition-all duration-200"
-          style={{
-            height: `${pullDistance}px`,
-            opacity: pullDistance / 60,
-          }}
+          className="pointer-events-none absolute left-0 right-0 top-0 z-40 flex items-center justify-center md:hidden"
+          style={{ height: `${pullDistance}px`, opacity: Math.min(1, pullDistance / 60) }}
         >
-          <div
-            className="text-primary-500 dark:text-vscode-accent"
-            style={{
-              transform: `rotate(${pullDistance * 3.6}deg)`,
-              transition: 'transform 0.1s'
-            }}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </div>
+          <span className="rounded-full bg-secondary-900/90 px-3 py-1 text-xs text-secondary-300">Pull to refresh</span>
         </div>
       )}
 
-      {/* Refreshing indicator */}
       {isRefreshing && (
-        <div className="md:hidden absolute top-4 left-0 right-0 z-50 flex items-center justify-center">
-          <div className="bg-white dark:bg-secondary-800 rounded-full px-4 py-2 shadow-lg flex items-center space-x-2 animate-fade-in">
-            <div className="animate-spin">
-              <svg className="w-4 h-4 text-primary-500 dark:text-vscode-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </div>
-            <span className="text-sm font-medium text-secondary-700 dark:text-secondary-300">Refreshing...</span>
+        <div className="absolute left-0 right-0 top-3 z-50 flex justify-center md:hidden">
+          <div className="surface-soft flex items-center gap-2 px-3 py-2 text-xs text-secondary-200">
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+            Refreshing...
           </div>
         </div>
       )}
 
-      {/* Mobile: Single scrollable container with swipe */}
-      <div
-        className="md:hidden h-full"
-        onTouchStart={handleContentTouchStart}
-        onTouchEnd={handleContentTouchEnd}
-      >
+      <div className="md:hidden h-full" onTouchStart={handleContentTouchStart} onTouchEnd={handleContentTouchEnd}>
         {activeTab === 'overview' && (
           <div
-            ref={scrollContainerRef}
-            className="h-full overflow-y-auto mobile-scroll-container bg-secondary-50/50 dark:bg-vscode-bg"
+            className="mobile-scroll-container h-full"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
-            style={{ paddingTop: pullDistance > 0 ? `${pullDistance}px` : '0' }}
+            style={{ paddingTop: pullDistance > 0 ? `${pullDistance}px` : undefined }}
           >
             <TopicOverviewTab
               tasks={tasks}
@@ -128,38 +100,24 @@ const TopicDashboardContent: React.FC<TopicDashboardContentProps> = ({
           </div>
         )}
 
-        {activeTab === 'tasks' && (
-          <TopicTasksTab tasks={tasks} topic={topic} />
-        )}
-
-        {activeTab === 'reminders' && (
-          <TopicRemindersTab reminders={reminders} topic={topic} />
-        )}
-
-        {activeTab === 'notes' && (
-          <TopicNotesTab notes={notes} topic={topic} onDeleteNote={onDeleteNote} />
-        )}
+        {activeTab === 'tasks' && <TopicTasksTab tasks={tasks} topic={topic} />}
+        {activeTab === 'reminders' && <TopicRemindersTab reminders={reminders} topic={topic} />}
+        {activeTab === 'notes' && <TopicNotesTab notes={notes} topic={topic} onDeleteNote={onDeleteNote} />}
       </div>
 
-      {/* Floating Action Button (Mobile Only) */}
       {!isPublicView && (
         <button
           onClick={onCreateTask}
-          className="md:hidden fixed bottom-6 right-6 z-40 w-16 h-16 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 dark:from-vscode-accent dark:via-vscode-accent dark:to-vscode-accent/90 text-white rounded-2xl shadow-2xl shadow-primary-500/50 dark:shadow-vscode-accent/50 flex items-center justify-center transition-all duration-300 active:scale-90 hover:shadow-3xl"
-          style={{ boxShadow: '0 10px 40px -10px rgba(59, 130, 246, 0.6)' }}
-          aria-label="Add new task"
+          className="touch-target fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-500 text-white shadow-2xl shadow-primary-500/30 md:hidden"
+          aria-label="Create item"
         >
-          <div className="relative">
-            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-            </svg>
-            <div className="absolute inset-0 bg-white/20 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
-          </div>
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+          </svg>
         </button>
       )}
 
-      {/* Desktop: Split layout with scrollable content */}
-      <div className="hidden md:block h-full">
+      <div className="hidden h-full md:block">
         {activeTab === 'overview' && (
           <TopicOverviewDesktopTab
             tasks={tasks}
@@ -170,17 +128,9 @@ const TopicDashboardContent: React.FC<TopicDashboardContentProps> = ({
           />
         )}
 
-        {activeTab === 'tasks' && (
-          <TopicTasksTab tasks={tasks} topic={topic} />
-        )}
-
-        {activeTab === 'reminders' && (
-          <TopicRemindersTab reminders={reminders} topic={topic} />
-        )}
-
-        {activeTab === 'notes' && (
-          <TopicNotesTab notes={notes} topic={topic} onDeleteNote={onDeleteNote} />
-        )}
+        {activeTab === 'tasks' && <TopicTasksTab tasks={tasks} topic={topic} />}
+        {activeTab === 'reminders' && <TopicRemindersTab reminders={reminders} topic={topic} />}
+        {activeTab === 'notes' && <TopicNotesTab notes={notes} topic={topic} onDeleteNote={onDeleteNote} />}
       </div>
     </div>
   );
