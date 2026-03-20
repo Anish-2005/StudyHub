@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import React, { useId } from 'react';
+import React from 'react';
 
 interface StudyHubLogoProps {
   size?: number;
@@ -17,42 +17,40 @@ const StudyHubLogo: React.FC<StudyHubLogoProps> = ({
   textClassName = '',
   compact = false,
 }) => {
-  const id = useId().replace(/:/g, '');
-  const gradId = `studyhub-grad-${id}`;
-  const shadeId = `studyhub-shade-${id}`;
-
   return (
     <div className={`inline-flex items-center ${compact ? 'gap-2' : 'gap-3'} ${className}`}>
       <svg
         width={size}
         height={size}
-        viewBox="0 0 68 68"
+        viewBox="0 0 64 64"
         role="img"
         aria-label="StudyHub logo"
         className="shrink-0"
       >
-        <defs>
-          <linearGradient id={gradId} x1="8" y1="8" x2="60" y2="60" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#ff7f5d" />
-            <stop offset="1" stopColor="#14b8a6" />
-          </linearGradient>
-          <linearGradient id={shadeId} x1="14" y1="14" x2="54" y2="54" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#fffdf8" stopOpacity="0.96" />
-            <stop offset="1" stopColor="#f0ebe2" stopOpacity="0.96" />
-          </linearGradient>
-        </defs>
-
-        <rect x="4" y="4" width="60" height="60" rx="18" fill={`url(#${gradId})`} />
-        <path d="M16 21c6-3.8 13.4-3.8 19.4 0v21.2c-6-3.8-13.4-3.8-19.4 0V21z" fill={`url(#${shadeId})`} />
-        <path d="M32.6 21c6-3.8 13.4-3.8 19.4 0v21.2c-6-3.8-13.4-3.8-19.4 0V21z" fill="#fff7ef" />
-        <path d="M34 20.5v22" stroke="#ffd4c6" strokeWidth="1.3" />
-        <circle cx="46.2" cy="26.4" r="2.8" fill="#ff5f3a" />
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="#F8FAFC" stroke="#DBE2EA" strokeWidth="1.3" />
+        <path
+          d="M32 20C27 17 21 17 16 20V44C21 41 27 41 32 44"
+          fill="none"
+          stroke="#111827"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M32 20C37 17 43 17 48 20V44C43 41 37 41 32 44"
+          fill="none"
+          stroke="#111827"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path d="M32 20V44" stroke="#111827" strokeWidth="2.1" strokeLinecap="round" />
+        <circle cx="46" cy="18" r="2.5" fill="#FF5F3A" />
       </svg>
 
       {withWordmark && (
         <div className={`min-w-0 ${textClassName}`}>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-secondary-500">Study Suite</p>
-          <p className="truncate text-lg font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
+          <p className="truncate text-lg font-semibold tracking-[-0.01em] text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
             StudyHub
           </p>
         </div>
