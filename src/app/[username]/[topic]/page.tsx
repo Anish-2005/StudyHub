@@ -1,18 +1,19 @@
 ﻿'use client';
 
 import React, { useEffect, useState } from 'react';
-import { notFound, useParams } from 'next/navigation';
+import { notFound, useParams, useSearchParams } from 'next/navigation';
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Reminder, Task, Topic, User } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { decodeTopicFromUrl, decodeUsernameFromUrl } from '@/utils/slug';
+import { ShareTab, decodeTopicFromUrl, decodeUsernameFromUrl } from '@/utils/slug';
 import TopicDashboard from '@/components/topics/TopicDashboard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import StudyHubLogo from '@/components/branding/StudyHubLogo';
 
 const PublicTopicPage: React.FC = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const [topic, setTopic] = useState<Topic | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -24,6 +25,12 @@ const PublicTopicPage: React.FC = () => {
   const topicParam = params.topic as string;
   const username = decodeUsernameFromUrl(usernameParam);
   const topicName = decodeTopicFromUrl(topicParam);
+  const tabParam = searchParams.get('tab');
+  const taskParam = searchParams.get('task');
+  const initialTab: ShareTab =
+    tabParam === 'tasks' || tabParam === 'reminders' || tabParam === 'notes'
+      ? tabParam
+      : 'overview';
 
   useEffect(() => {
     const loadTopic = async () => {
@@ -154,7 +161,15 @@ const PublicTopicPage: React.FC = () => {
           )}
 
           <div className="h-full">
-            <TopicDashboard topic={topic} tasks={tasks} reminders={reminders} isPublicView={!isOwner} />
+            <TopicDashboard
+              topic={topic}
+              tasks={tasks}
+              reminders={reminders}
+              isPublicView={!isOwner}
+              initialTab={initialTab}
+              highlightedTaskId={taskParam}
+              shareUsername={username}
+            />
           </div>
         </div>
       </div>

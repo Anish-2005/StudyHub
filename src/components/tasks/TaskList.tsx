@@ -1,22 +1,32 @@
 ﻿'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Task } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import CreateTaskModal from '../modals/CreateTaskModal';
+import toast from 'react-hot-toast';
 
 interface TaskListProps {
   tasks: Task[];
   topicId?: string;
   topicName?: string;
+  highlightedTaskId?: string | null;
+  getTaskShareLink?: (task: Task) => string | null;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
+const TaskList: React.FC<TaskListProps> = ({
+  tasks,
+  topicId,
+  topicName,
+  highlightedTaskId = null,
+  getTaskShareLink,
+}) => {
   const { user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
+  const highlightedTaskRef = useRef<HTMLElement | null>(null);
 
   const filteredTasks = useMemo(() => {
     if (filter === 'pending') return tasks.filter((task) => !task.completed);
@@ -76,6 +86,47 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
     if (priority === 'high') return 'bg-accent-500/15 text-accent-300 border-accent-500/35';
     if (priority === 'medium') return 'bg-warning-500/15 text-warning-200 border-warning-500/35';
     return 'bg-success-500/15 text-success-200 border-success-500/35';
+  };
+
+  useEffect(() => {
+    if (!highlightedTaskId) return;
+
+    const timeoutId = window.setTimeout(() => {
+      highlightedTaskRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 220);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [highlightedTaskId, filteredTasks.length]);
+
+  const handleShareTask = async (task: Task) => {
+    const shareUrl = getTaskShareLink?.(task);
+    if (!shareUrl) {
+      toast.error('Task link unavailable. Make the topic public to share.');
+      return;
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${task.title} - StudyHub`,
+          text: topicName ? `Task from ${topicName}` : 'StudyHub task',
+          url: shareUrl,
+        });
+        return;
+      } catch (error) {
+        if ((error as Error).name === 'AbortError') return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('Task link copied');
+    } catch {
+      toast.error('Failed to copy task link');
+    }
   };
 
   return (
@@ -152,7 +203,14 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
               {filteredTasks.map((task, index) => (
                 <article
                   key={task.id}
-                  className={`surface motion-lift motion-fade-up p-4 transition-colors ${task.completed ? 'opacity-70' : 'hover:border-primary-500/40'}`}
+                  ref={highlightedTaskId === task.id ? highlightedTaskRef : null}
+                  className={`surface motion-lift motion-fade-up p-4 transition-colors ${
+                    highlightedTaskId === task.id
+                      ? 'border-primary-400/70 ring-2 ring-primary-400/35'
+                      : task.completed
+                        ? 'opacity-70'
+                        : 'hover:border-primary-500/40'
+                  }`}
                   style={{ animationDelay: `${Math.min(index * 35, 220)}ms` }}
                 >
                   <div className="flex items-start gap-3">
@@ -179,6 +237,22 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
                           <span className={`rounded-md border px-2.5 py-1 text-xs font-semibold capitalize ${getPriorityClass(task.priority)}`}>
                             {task.priority}
                           </span>
+
+                          {getTaskShareLink && (
+                            <button
+                              onClick={() => handleShareTask(task)}
+                              className="touch-target motion-lift rounded-md p-1.5 text-secondary-400 hover:bg-primary-500/12 hover:text-primary-200"
+                              title="Share task"
+                            >
+                              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12a3 3 0 013-3h7" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 7l3 2-3 2" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 12a3 3 0 01-3 3H7" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 17l-3-2 3-2" />
+                              </svg>
+                            </button>
+                          )}
+
                           <button
                             onClick={() => handleDeleteTask(task.id)}
                             className="touch-target motion-lift rounded-md p-1.5 text-secondary-400 hover:bg-accent-500/10 hover:text-accent-300"

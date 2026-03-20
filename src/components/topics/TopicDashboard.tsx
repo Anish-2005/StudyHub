@@ -13,12 +13,16 @@ import TopicDashboardHeader from './dashboard/TopicDashboardHeader';
 import TopicDashboardActionSheet from './dashboard/TopicDashboardActionSheet';
 import TopicDashboardContent from './dashboard/TopicDashboardContent';
 import toast from 'react-hot-toast';
+import { ShareTab, getTaskShareUrl } from '@/utils/slug';
 
 interface TopicDashboardProps {
   topic: Topic;
   tasks: Task[];
   reminders: Reminder[];
   isPublicView?: boolean;
+  initialTab?: ShareTab;
+  highlightedTaskId?: string | null;
+  shareUsername?: string;
 }
 
 const TopicDashboard: React.FC<TopicDashboardProps> = ({
@@ -26,9 +30,12 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   tasks,
   reminders,
   isPublicView = false,
+  initialTab = 'overview',
+  highlightedTaskId = null,
+  shareUsername,
 }) => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'tasks' | 'reminders' | 'notes'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'tasks' | 'reminders' | 'notes'>(initialTab);
   const [notes, setNotes] = useState<Note[]>([]);
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
   const [showCreateReminderModal, setShowCreateReminderModal] = useState(false);
@@ -39,6 +46,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   const [pullDistance, setPullDistance] = useState(0);
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
+  const resolvedShareUsername = shareUsername || user?.displayName || '';
 
   useEffect(() => {
     if (!user) {
@@ -207,6 +215,20 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
     setPullDistance(0);
   }, [isRefreshing, pullDistance]);
 
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
+  const getTaskShareLink = useCallback(
+    (task: Task) => {
+      if (!topic.isPublic || !resolvedShareUsername) return null;
+      return getTaskShareUrl(resolvedShareUsername, topic.name, task.id);
+    },
+    [topic.isPublic, topic.name, resolvedShareUsername],
+  );
+
+  const taskShareLinkBuilder = topic.isPublic && resolvedShareUsername ? getTaskShareLink : undefined;
+
   return (
     <div className="motion-fade-up flex h-full flex-col overflow-hidden">
       <TopicDashboardHeader
@@ -227,6 +249,8 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
         reminders={reminders}
         notes={notes}
         activeTab={activeTab}
+        highlightedTaskId={highlightedTaskId}
+        getTaskShareLink={taskShareLinkBuilder}
         isRefreshing={isRefreshing}
         pullDistance={pullDistance}
         isPublicView={isPublicView}
@@ -288,7 +312,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
                 name: topic.name,
                 isPublic: topic.isPublic,
               }}
-              username={user?.displayName || ''}
+              username={resolvedShareUsername}
               onClose={() => setShowShareModal(false)}
             />
           )}

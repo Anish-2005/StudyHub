@@ -14,6 +14,8 @@ interface TopicDashboardContentProps {
   reminders: Reminder[];
   notes: Note[];
   activeTab: 'overview' | 'tasks' | 'reminders' | 'notes';
+  highlightedTaskId?: string | null;
+  getTaskShareLink?: (task: Task) => string | null;
   isRefreshing: boolean;
   pullDistance: number;
   isPublicView: boolean;
@@ -31,6 +33,8 @@ const TopicDashboardContent: React.FC<TopicDashboardContentProps> = ({
   reminders,
   notes,
   activeTab,
+  highlightedTaskId = null,
+  getTaskShareLink,
   isRefreshing,
   pullDistance,
   isPublicView,
@@ -100,7 +104,14 @@ const TopicDashboardContent: React.FC<TopicDashboardContentProps> = ({
           </div>
         )}
 
-        {activeTab === 'tasks' && <TopicTasksTab tasks={tasks} topic={topic} />}
+        {activeTab === 'tasks' && (
+          <TopicTasksTab
+            tasks={tasks}
+            topic={topic}
+            highlightedTaskId={highlightedTaskId}
+            getTaskShareLink={getTaskShareLink}
+          />
+        )}
         {activeTab === 'reminders' && <TopicRemindersTab reminders={reminders} topic={topic} />}
         {activeTab === 'notes' && <TopicNotesTab notes={notes} topic={topic} onDeleteNote={onDeleteNote} />}
       </div>
@@ -128,7 +139,14 @@ const TopicDashboardContent: React.FC<TopicDashboardContentProps> = ({
           />
         )}
 
-        {activeTab === 'tasks' && <TopicTasksTab tasks={tasks} topic={topic} />}
+        {activeTab === 'tasks' && (
+          <TopicTasksTab
+            tasks={tasks}
+            topic={topic}
+            highlightedTaskId={highlightedTaskId}
+            getTaskShareLink={getTaskShareLink}
+          />
+        )}
         {activeTab === 'reminders' && <TopicRemindersTab reminders={reminders} topic={topic} />}
         {activeTab === 'notes' && <TopicNotesTab notes={notes} topic={topic} onDeleteNote={onDeleteNote} />}
       </div>
