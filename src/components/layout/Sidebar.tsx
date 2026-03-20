@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Topic } from '@/types';
-import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import CreateTopicModal from '../modals/CreateTopicModal';
 import SidebarCollapsed from './sidebar/SidebarCollapsed';
@@ -31,19 +31,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setTopics([]);
+      setLoading(false);
+      return;
+    }
 
-    const q = query(
-      collection(db, 'topics'),
-      where('userId', '==', user.uid)
-    );
+    const q = query(collection(db, 'topics'), where('userId', '==', user.uid));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const topicsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
+      const topicsData = snapshot.docs.map((entry) => ({
+        id: entry.id,
+        ...entry.data(),
+        createdAt: entry.data().createdAt?.toDate(),
+        updatedAt: entry.data().updatedAt?.toDate(),
       })) as Topic[];
 
       setTopics(topicsData.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()));
@@ -96,11 +97,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      <div className={`
-        ${isMobile ? 'w-80 max-w-[85vw]' : 'w-80'} 
-        bg-secondary-800/95 backdrop-blur-xl border-r border-secondary-700/50 flex flex-col h-full shadow-professional-xl
-        ${isMobile ? 'safe-area-inset-top' : ''}
-      `}>
+      <aside
+        className={`
+          ${isMobile ? 'w-[84vw] max-w-[340px]' : 'w-[340px]'}
+          h-full border-r border-secondary-700/70 bg-secondary-900/95
+          backdrop-blur-xl
+        `}
+      >
         <SidebarHeader onToggleCollapse={onToggleCollapse} isMobile={isMobile} />
 
         <SidebarTopicsSection
@@ -111,11 +114,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           onCreateTopic={() => setShowCreateModal(true)}
           loading={loading}
         />
-      </div>
+      </aside>
 
-      {/* Create Topic Modal */}
-
-      {/* Create Topic Modal */}
       {showCreateModal && (
         <CreateTopicModal
           onClose={() => setShowCreateModal(false)}

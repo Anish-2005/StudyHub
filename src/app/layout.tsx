@@ -1,18 +1,24 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Manrope, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { Toaster } from 'react-hot-toast'
 
-const inter = Inter({ 
+const manrope = Manrope({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-manrope',
+  display: 'swap',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'StudyHub - Your Personal Study Workspace',
-  description: 'A VS Code-inspired study management app with topic organization, reminders, and smart suggestions.',
+  title: 'StudyHub',
+  description: 'Structured study workspace for tasks, reminders, and topic planning.',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -26,7 +32,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#1e1e1e',
+  themeColor: '#070b14',
   viewportFit: 'cover',
 }
 
@@ -36,41 +42,23 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="StudyHub" />
-      </head>
-      <body className={`${inter.className} bg-vscode-bg text-vscode-text antialiased`}>
+    <html lang="en" className={`${manrope.variable} ${spaceGrotesk.variable}`}>
+      <body className="bg-vscode-bg text-vscode-text antialiased">
         <AuthProvider>
           {children}
-          <Toaster 
+          <Toaster
             position="bottom-right"
-            containerClassName="!bottom-safe !right-4"
+            containerClassName="!bottom-4 !right-4"
             toastOptions={{
+              duration: 3500,
               style: {
-                background: '#252526',
-                color: '#cccccc',
-                border: '1px solid #3c3c3c',
-                borderRadius: '8px',
-                fontSize: '14px',
-                maxWidth: '90vw',
+                background: '#0f172a',
+                color: '#e2e8f0',
+                border: '1px solid rgba(148, 163, 184, 0.35)',
+                borderRadius: '10px',
+                fontSize: '13px',
+                maxWidth: '92vw',
               },
-              success: {
-                iconTheme: {
-                  primary: '#4caf50',
-                  secondary: '#252526',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#f44336',
-                  secondary: '#252526',
-                },
-              },
-              duration: 4000,
             }}
           />
         </AuthProvider>

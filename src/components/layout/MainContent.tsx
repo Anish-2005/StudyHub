@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Topic, Task, Reminder } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TopicDashboard from '../topics/TopicDashboard';
 import AllTopicsView from '../topics/AllTopicsView';
@@ -25,126 +25,117 @@ const MainContent: React.FC<MainContentProps> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setTasks([]);
+      setReminders([]);
+      setLoading(false);
+      return;
+    }
 
     const unsubscribes: (() => void)[] = [];
 
-    // Subscribe to tasks - simplified query without composite indexes
-    const tasksQuery = query(
-      collection(db, 'tasks'),
-      where('userId', '==', user.uid)
-    );
-
+    const tasksQuery = query(collection(db, 'tasks'), where('userId', '==', user.uid));
     const unsubscribeTasks = onSnapshot(tasksQuery, (snapshot) => {
-      const tasksData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-        dueDate: doc.data().dueDate?.toDate(),
-        reminderDate: doc.data().reminderDate?.toDate(),
+      const tasksData = snapshot.docs.map((entry) => ({
+        id: entry.id,
+        ...entry.data(),
+        createdAt: entry.data().createdAt?.toDate(),
+        updatedAt: entry.data().updatedAt?.toDate(),
+        dueDate: entry.data().dueDate?.toDate(),
+        reminderDate: entry.data().reminderDate?.toDate(),
       })) as Task[];
 
-      // Filter by topic and sort client-side to avoid composite indexes
       const filteredTasks = selectedTopic
-        ? tasksData
-            .filter(task => task.topicId === selectedTopic.id)
-            .sort((a, b) => {
-              if (!a.createdAt || !b.createdAt) return 0;
-              return b.createdAt.getTime() - a.createdAt.getTime();
-            })
-        : tasksData.sort((a, b) => {
-            if (!a.createdAt || !b.createdAt) return 0;
-            return b.createdAt.getTime() - a.createdAt.getTime();
-          });
+        ? tasksData.filter((task) => task.topicId === selectedTopic.id)
+        : tasksData;
 
-      setTasks(filteredTasks);
+      setTasks(
+        filteredTasks.sort((a, b) => {
+          const aTime = a.createdAt?.getTime() ?? 0;
+          const bTime = b.createdAt?.getTime() ?? 0;
+          return bTime - aTime;
+        }),
+      );
     });
 
     unsubscribes.push(unsubscribeTasks);
 
-    // Subscribe to reminders - simplified query without composite indexes
-    const remindersQuery = query(
-      collection(db, 'reminders'),
-      where('userId', '==', user.uid)
-    );
-
+    const remindersQuery = query(collection(db, 'reminders'), where('userId', '==', user.uid));
     const unsubscribeReminders = onSnapshot(remindersQuery, (snapshot) => {
-      const remindersData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        date: doc.data().date?.toDate(),
-        createdAt: doc.data().createdAt?.toDate(),
+      const remindersData = snapshot.docs.map((entry) => ({
+        id: entry.id,
+        ...entry.data(),
+        date: entry.data().date?.toDate(),
+        createdAt: entry.data().createdAt?.toDate(),
       })) as Reminder[];
 
-      // Filter by topic and sort client-side to avoid composite indexes
       const filteredReminders = selectedTopic
-        ? remindersData
-            .filter(reminder => reminder.topicId === selectedTopic.id)
-            .sort((a, b) => {
-              if (!a.date || !b.date) return 0;
-              return a.date.getTime() - b.date.getTime();
-            })
-        : remindersData.sort((a, b) => {
-            if (!a.date || !b.date) return 0;
-            return a.date.getTime() - b.date.getTime();
-          });
+        ? remindersData.filter((reminder) => reminder.topicId === selectedTopic.id)
+        : remindersData;
 
-      setReminders(filteredReminders);
+      setReminders(
+        filteredReminders.sort((a, b) => {
+          const aTime = a.date?.getTime() ?? 0;
+          const bTime = b.date?.getTime() ?? 0;
+          return aTime - bTime;
+        }),
+      );
+
       setLoading(false);
     });
 
     unsubscribes.push(unsubscribeReminders);
 
-    return () => {
-      unsubscribes.forEach(unsubscribe => unsubscribe());
-    };
+    return () => unsubscribes.forEach((unsubscribe) => unsubscribe());
   }, [user, selectedTopic]);
 
-  // Filter tasks and reminders based on search query
-  const filteredTasks = searchQuery
-    ? tasks.filter(task =>
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : tasks;
+  const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  const filteredReminders = searchQuery
-    ? reminders.filter(reminder =>
-        reminder.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        reminder.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : reminders;
+  const filteredTasks = useMemo(() => {
+    if (!normalizedQuery) return tasks;
+
+    return tasks.filter((task) => {
+      const inTitle = task.title.toLowerCase().includes(normalizedQuery);
+      const inDescription = task.description?.toLowerCase().includes(normalizedQuery);
+      const inTags = task.tags?.some((tag) => tag.toLowerCase().includes(normalizedQuery));
+      return inTitle || inDescription || inTags;
+    });
+  }, [tasks, normalizedQuery]);
+
+  const filteredReminders = useMemo(() => {
+    if (!normalizedQuery) return reminders;
+
+    return reminders.filter((reminder) => {
+      const inTitle = reminder.title.toLowerCase().includes(normalizedQuery);
+      const inDescription = reminder.description?.toLowerCase().includes(normalizedQuery);
+      return inTitle || inDescription;
+    });
+  }, [reminders, normalizedQuery]);
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-vscode-bg min-h-0">
-        <div className="text-center p-6">
-          <div className="w-8 h-8 border-2 border-vscode-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-vscode-text font-medium">Loading...</p>
+      <div className="flex h-full items-center justify-center bg-secondary-950/35">
+        <div className="surface-soft flex items-center gap-3 px-4 py-3 text-sm text-secondary-300">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+          Syncing workspace...
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-vscode-bg min-h-0 overflow-hidden h-full">
+    <section className="h-full overflow-hidden bg-secondary-950/35">
       {selectedTopic ? (
-        <TopicDashboard 
-          topic={selectedTopic}
-          tasks={filteredTasks}
-          reminders={filteredReminders}
-        />
+        <TopicDashboard topic={selectedTopic} tasks={filteredTasks} reminders={filteredReminders} />
       ) : (
-        <AllTopicsView 
+        <AllTopicsView
           tasks={filteredTasks}
           reminders={filteredReminders}
           onTopicSelect={onTopicSelect}
           searchQuery={searchQuery}
         />
       )}
-    </div>
+    </section>
   );
 };
 
