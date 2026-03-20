@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Topic } from '@/types';
@@ -96,3 +96,4 @@ const SidebarTopicsSection: React.FC<SidebarTopicsSectionProps> = ({
 };
 
 export default SidebarTopicsSection;
+

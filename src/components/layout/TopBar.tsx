@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -146,3 +146,4 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
 };
 
 export default TopBar;
+

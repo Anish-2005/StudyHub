@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import UserMenu from '../../ui/UserMenu';
@@ -53,3 +53,4 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
 };
 
 export default SidebarHeader;
+

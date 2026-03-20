@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
 import AuthForm from '@/components/auth/AuthForm';
@@ -18,3 +18,4 @@ export default function Home() {
     </main>
   );
 }
+

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Topic, Task, Reminder } from '@/types';
@@ -140,3 +140,4 @@ const MainContent: React.FC<MainContentProps> = ({
 };
 
 export default MainContent;
+

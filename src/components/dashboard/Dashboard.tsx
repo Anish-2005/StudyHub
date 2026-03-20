@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../layout/Sidebar';
@@ -8,7 +8,7 @@ import { Topic } from '@/types';
 
 const Dashboard: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('sidebarCollapsed');
       return saved ? JSON.parse(saved) : false;
@@ -109,3 +109,5 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
+

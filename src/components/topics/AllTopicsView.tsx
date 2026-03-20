@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Task, Reminder, Topic } from '@/types';
@@ -260,3 +260,4 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 };
 
 export default AllTopicsView;
+

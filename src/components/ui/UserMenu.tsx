@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -11,38 +11,24 @@ const UserMenu: React.FC = () => {
   return (
     <div className="relative">
       <button
-        onClick={() => setShowMenu(!showMenu)}
-        className="w-full flex items-center p-2 rounded hover:bg-vscode-active transition-colors group"
+        onClick={() => setShowMenu((prev) => !prev)}
+        className="touch-target flex w-full items-center rounded-lg border border-secondary-700 bg-secondary-800/55 p-2 transition-colors hover:bg-secondary-800"
       >
-        <div className="w-8 h-8 bg-vscode-accent rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+        <div className="mr-3 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-500 text-sm font-semibold text-white">
           {user?.photoURL ? (
-            <Image
-              src={user.photoURL}
-              alt={user.displayName || 'User'}
-              width={32}
-              height={32}
-              className="w-8 h-8 rounded-full"
-            />
+            <Image src={user.photoURL} alt={user.displayName || 'User'} width={32} height={32} className="h-8 w-8 rounded-full" />
           ) : (
-            <span className="text-white font-mono text-sm">
-              {user?.displayName?.charAt(0).toUpperCase() || 'U'}
-            </span>
+            <span>{user?.displayName?.charAt(0).toUpperCase() || 'U'}</span>
           )}
         </div>
-        
-        <div className="flex-1 min-w-0 text-left">
-          <div className="text-sm font-mono text-vscode-text truncate">
-            {user?.displayName || 'User'}
-          </div>
-          <div className="text-xs text-vscode-text/50 truncate">
-            {user?.email}
-          </div>
+
+        <div className="min-w-0 flex-1 text-left">
+          <p className="truncate text-sm font-semibold text-secondary-100">{user?.displayName || 'User'}</p>
+          <p className="truncate text-xs text-secondary-400">{user?.email}</p>
         </div>
-        
+
         <svg
-          className={`w-4 h-4 text-vscode-text/50 transition-transform ${
-            showMenu ? 'rotate-180' : ''
-          }`}
+          className={`h-4 w-4 text-secondary-500 transition-transform ${showMenu ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -51,22 +37,18 @@ const UserMenu: React.FC = () => {
         </svg>
       </button>
 
-      {/* Dropdown Menu */}
       {showMenu && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setShowMenu(false)}
-          />
-          <div className="absolute bottom-full left-0 right-0 z-20 bg-vscode-sidebar border border-vscode-border rounded-md shadow-lg py-1 mb-2">
+          <button className="fixed inset-0 z-10 cursor-default" aria-label="Close user menu" onClick={() => setShowMenu(false)} />
+          <div className="surface absolute bottom-full left-0 right-0 z-20 mb-2 p-1.5">
             <button
               onClick={() => {
                 logout();
                 setShowMenu(false);
               }}
-              className="w-full text-left px-3 py-2 text-sm font-mono text-vscode-text hover:bg-vscode-active transition-colors flex items-center"
+              className="touch-target flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-secondary-100 hover:bg-secondary-800"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
               Sign Out
@@ -79,3 +61,4 @@ const UserMenu: React.FC = () => {
 };
 
 export default UserMenu;
+

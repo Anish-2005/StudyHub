@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
@@ -299,3 +299,4 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
 };
 
 export default TopicDashboard;
+

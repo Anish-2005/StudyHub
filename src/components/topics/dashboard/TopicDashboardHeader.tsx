@@ -1,4 +1,4 @@
-'use client';
+ï»¿'use client';
 
 import React, { useMemo } from 'react';
 import { Topic, Task, Reminder, Note } from '@/types';
@@ -58,7 +58,7 @@ const TopicDashboardHeader: React.FC<TopicDashboardHeaderProps> = ({
 
           <p className="line-clamp-1 text-sm text-secondary-400">{topic.description || 'Topic dashboard'}</p>
           <p className="mt-1 text-xs text-secondary-500">
-            {completionPercentage}% complete • {tasks.length} tasks • {reminders.length} reminders
+            {completionPercentage}% complete â€¢ {tasks.length} tasks â€¢ {reminders.length} reminders
           </p>
         </div>
 
@@ -117,3 +117,4 @@ const TopicDashboardHeader: React.FC<TopicDashboardHeaderProps> = ({
 };
 
 export default TopicDashboardHeader;
+

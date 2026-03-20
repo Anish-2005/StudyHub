@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { Topic } from '@/types';
@@ -125,3 +125,4 @@ const TopicItem: React.FC<TopicItemProps> = ({
 };
 
 export default TopicItem;
+

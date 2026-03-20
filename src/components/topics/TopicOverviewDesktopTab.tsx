@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Task, Reminder } from '@/types';
@@ -84,3 +84,4 @@ const TopicOverviewDesktopTab: React.FC<TopicOverviewDesktopTabProps> = ({
 };
 
 export default TopicOverviewDesktopTab;
+

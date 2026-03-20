@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -212,3 +212,4 @@ const AuthForm: React.FC = () => {
 };
 
 export default AuthForm;
+

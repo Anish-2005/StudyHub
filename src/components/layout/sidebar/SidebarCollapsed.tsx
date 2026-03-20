@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Topic, User } from '@/types';
@@ -98,3 +98,4 @@ const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
 };
 
 export default SidebarCollapsed;
+
