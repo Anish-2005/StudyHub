@@ -14,7 +14,7 @@ const TopicNotesTab: React.FC<TopicNotesTabProps> = ({ notes, topic, onDeleteNot
   return (
     <div className="flex h-full flex-col">
       <div className="border-b border-secondary-700/70 bg-secondary-900/65 px-4 py-4 md:px-6">
-        <h2 className="text-lg font-semibold text-secondary-100 md:text-xl" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+        <h2 className="text-lg font-semibold text-secondary-100 md:text-xl" style={{ fontFamily: 'var(--font-sora)' }}>
           Notes
         </h2>
         <p className="text-sm text-secondary-400">Reference notes and study snippets for {topic.name}</p>
@@ -28,3 +28,4 @@ const TopicNotesTab: React.FC<TopicNotesTabProps> = ({ notes, topic, onDeleteNot
 };
 
 export default TopicNotesTab;
+

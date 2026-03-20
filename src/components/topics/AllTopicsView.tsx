@@ -7,6 +7,7 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import TaskList from '../tasks/TaskList';
 import ReminderList from '../reminders/ReminderList';
+import StudyHubLogo from '../branding/StudyHubLogo';
 
 interface AllTopicsViewProps {
   tasks: Task[];
@@ -106,7 +107,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
             <div className="surface p-4 md:p-5">
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-lg font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+                  <h2 className="text-lg font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
                     Topics
                   </h2>
                   <p className="text-sm text-secondary-400">Choose a topic to enter its focused workspace.</p>
@@ -162,7 +163,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 
             <div className="space-y-5">
               <section className="surface p-4 md:p-5">
-                <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+                <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
                   Next Up
                 </h3>
                 <p className="mt-1 text-xs text-secondary-400">Immediate items requiring attention.</p>
@@ -182,7 +183,7 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
               </section>
 
               <section className="surface p-4 md:p-5">
-                <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+                <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
                   Upcoming Reminders
                 </h3>
                 <p className="mt-1 text-xs text-secondary-400">Time-based commitments coming soon.</p>
@@ -210,13 +211,16 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <div className="border-b border-secondary-700/70 bg-secondary-900/60 px-4 py-4 md:px-6">
+      <div className="border-b border-secondary-700/90 bg-secondary-950/85 px-4 py-4 md:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-semibold text-secondary-100 md:text-2xl" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+          <div className="flex items-center gap-3">
+            <StudyHubLogo size={34} withWordmark={false} compact />
+            <div>
+            <h1 className="text-xl font-semibold text-secondary-100 md:text-2xl" style={{ fontFamily: 'var(--font-sora)' }}>
               Workspace
             </h1>
             <p className="text-sm text-secondary-400">Professional planning across all topics.</p>
+            </div>
           </div>
 
           <div className="surface p-1">
@@ -260,4 +264,5 @@ const AllTopicsView: React.FC<AllTopicsViewProps> = ({
 };
 
 export default AllTopicsView;
+
 

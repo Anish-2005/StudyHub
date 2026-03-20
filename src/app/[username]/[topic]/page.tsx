@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { decodeTopicFromUrl, decodeUsernameFromUrl } from '@/utils/slug';
 import TopicDashboard from '@/components/topics/TopicDashboard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import StudyHubLogo from '@/components/branding/StudyHubLogo';
 
 const PublicTopicPage: React.FC = () => {
   const params = useParams();
@@ -143,9 +144,12 @@ const PublicTopicPage: React.FC = () => {
         <div className="app-shell h-full overflow-hidden">
           {!isOwner && (
             <div className="border-b border-secondary-700/70 bg-secondary-900/80 px-4 py-3 md:px-6">
-              <p className="text-sm text-secondary-300">
-                Viewing public topic by <span className="font-semibold text-secondary-100">{username}</span>
-              </p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm text-secondary-300">
+                  Viewing public topic by <span className="font-semibold text-secondary-100">{username}</span>
+                </p>
+                <StudyHubLogo size={28} withWordmark={false} compact />
+              </div>
             </div>
           )}
 

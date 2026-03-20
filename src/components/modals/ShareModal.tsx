@@ -53,7 +53,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ topic, username, onClose }) => 
         <div className="border-b border-secondary-700/70 px-4 py-3 md:px-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+              <h3 className="text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-sora)' }}>
                 Share Topic
               </h3>
               <p className="text-xs text-secondary-400">Public link for {topic.name}</p>
@@ -105,3 +105,4 @@ const ShareModal: React.FC<ShareModalProps> = ({ topic, username, onClose }) => 
 };
 
 export default ShareModal;
+

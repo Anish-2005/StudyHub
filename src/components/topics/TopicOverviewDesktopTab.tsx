@@ -44,7 +44,7 @@ const TopicOverviewDesktopTab: React.FC<TopicOverviewDesktopTabProps> = ({
 
         <section className="grid gap-5 lg:grid-cols-2">
           <div className="surface p-5">
-            <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+            <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
               Recent Tasks
             </h3>
             <div className="mt-4 space-y-2.5">
@@ -61,7 +61,7 @@ const TopicOverviewDesktopTab: React.FC<TopicOverviewDesktopTabProps> = ({
           </div>
 
           <div className="surface p-5">
-            <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+            <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
               Upcoming Reminders
             </h3>
             <div className="mt-4 space-y-2.5">
@@ -84,4 +84,5 @@ const TopicOverviewDesktopTab: React.FC<TopicOverviewDesktopTabProps> = ({
 };
 
 export default TopicOverviewDesktopTab;
+
 

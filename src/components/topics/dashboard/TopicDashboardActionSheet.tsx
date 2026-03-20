@@ -62,7 +62,7 @@ const TopicDashboardActionSheet: React.FC<TopicDashboardActionSheetProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-secondary-700" />
-        <h3 className="text-lg font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+        <h3 className="text-lg font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
           Add to {topicName}
         </h3>
         <p className="mb-4 mt-1 text-sm text-secondary-400">Choose what you want to create.</p>
@@ -98,4 +98,5 @@ const TopicDashboardActionSheet: React.FC<TopicDashboardActionSheetProps> = ({
 };
 
 export default TopicDashboardActionSheet;
+
 

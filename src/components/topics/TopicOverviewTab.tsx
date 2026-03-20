@@ -42,7 +42,7 @@ const TopicOverviewTab: React.FC<TopicOverviewTabProps> = ({
       </section>
 
       <section className="surface p-4">
-        <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+        <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
           Recent Tasks
         </h3>
         <div className="mt-3 space-y-2.5">
@@ -60,7 +60,7 @@ const TopicOverviewTab: React.FC<TopicOverviewTabProps> = ({
       </section>
 
       <section className="surface p-4">
-        <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+        <h3 className="text-base font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
           Upcoming Reminders
         </h3>
         <div className="mt-3 space-y-2.5">
@@ -82,4 +82,5 @@ const TopicOverviewTab: React.FC<TopicOverviewTabProps> = ({
 };
 
 export default TopicOverviewTab;
+
 

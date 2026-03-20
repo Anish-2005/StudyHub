@@ -61,12 +61,12 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="h-full w-full p-0 md:p-4">
+    <div className="h-full w-full p-0 md:p-5">
       <div className="app-shell relative flex h-full overflow-hidden">
         {isMobile && showMobileSidebar && (
           <button
             aria-label="Close sidebar overlay"
-            className="absolute inset-0 z-30 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 z-30 bg-secondary-50/65 backdrop-blur-sm"
             onClick={() => setShowMobileSidebar(false)}
           />
         )}

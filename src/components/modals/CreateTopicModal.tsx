@@ -52,7 +52,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
         <div className="sticky top-0 z-10 border-b border-secondary-700/70 bg-secondary-900/95 px-4 py-3 md:px-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+              <h2 className="text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-sora)' }}>
                 Create Topic
               </h2>
               <p className="text-xs text-secondary-400">Set up a focused workspace for a subject or goal.</p>
@@ -199,3 +199,4 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
 };
 
 export default CreateTopicModal;
+

@@ -40,7 +40,7 @@ const TopicDashboardHeader: React.FC<TopicDashboardHeaderProps> = ({
   );
 
   return (
-    <header className="border-b border-secondary-700/70 bg-secondary-900/70 px-4 py-4 md:px-6">
+    <header className="border-b border-secondary-700/90 bg-secondary-950/85 px-4 py-4 md:px-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="mb-1 flex items-center gap-2">
@@ -50,10 +50,10 @@ const TopicDashboardHeader: React.FC<TopicDashboardHeaderProps> = ({
             >
               <span className="mx-auto h-2.5 w-2.5 rounded-full" style={{ backgroundColor: topic.color }} />
             </span>
-            <h1 className="truncate text-xl font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+            <h1 className="truncate text-xl font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-sora)' }}>
               {topic.name}
             </h1>
-            {isPublicView && <span className="rounded-md bg-success-500/20 px-2 py-0.5 text-xs text-success-300">Public</span>}
+            {isPublicView && <span className="rounded-md bg-success-500/20 px-2 py-0.5 text-xs text-success-200">Public</span>}
           </div>
 
           <p className="line-clamp-1 text-sm text-secondary-400">{topic.description || 'Topic dashboard'}</p>
@@ -86,7 +86,7 @@ const TopicDashboardHeader: React.FC<TopicDashboardHeaderProps> = ({
       </div>
 
       {tasks.length > 0 && (
-        <div className="mt-4 h-2 w-full rounded-full bg-secondary-800">
+        <div className="mt-4 h-2 w-full rounded-full bg-secondary-800/80">
           <div
             className="h-2 rounded-full bg-primary-500 transition-all duration-500"
             style={{ width: `${completionPercentage}%` }}
@@ -117,4 +117,5 @@ const TopicDashboardHeader: React.FC<TopicDashboardHeaderProps> = ({
 };
 
 export default TopicDashboardHeader;
+
 

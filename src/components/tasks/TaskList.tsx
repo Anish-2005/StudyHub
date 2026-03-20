@@ -84,7 +84,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
         <div className="border-b border-secondary-700/70 bg-secondary-900/65 px-4 py-4 md:px-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-secondary-100 md:text-xl" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+              <h2 className="text-lg font-semibold text-secondary-100 md:text-xl" style={{ fontFamily: 'var(--font-sora)' }}>
                 Tasks
               </h2>
               <p className="text-sm text-secondary-400">
@@ -232,3 +232,4 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, topicId, topicName }) => {
 };
 
 export default TaskList;
+
