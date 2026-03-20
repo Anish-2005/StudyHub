@@ -3,15 +3,102 @@
 @tailwind utilities;
 
 :root {
-  --app-bg: #fffaf3;
-  --app-surface: #fffdf8;
-  --app-surface-soft: #f6f0e7;
-  --app-border: #ded3c6;
-  --app-text: #2f2a24;
-  --app-muted: #7b7065;
-  --app-primary: #ff5f3a;
-  --app-primary-strong: #e94a25;
-  --app-accent: #14b8a6;
+  --color-primary-50: 255 244 238;
+  --color-primary-100: 255 229 215;
+  --color-primary-200: 255 199 171;
+  --color-primary-300: 255 160 123;
+  --color-primary-400: 255 127 93;
+  --color-primary-500: 255 95 58;
+  --color-primary-600: 233 74 37;
+  --color-primary-700: 191 51 24;
+  --color-primary-800: 150 40 22;
+  --color-primary-900: 116 35 19;
+  --color-primary-950: 62 17 8;
+
+  --color-secondary-50: 35 31 26;
+  --color-secondary-100: 47 42 36;
+  --color-secondary-200: 75 68 60;
+  --color-secondary-300: 106 96 86;
+  --color-secondary-400: 139 128 116;
+  --color-secondary-500: 167 155 143;
+  --color-secondary-600: 199 191 182;
+  --color-secondary-700: 222 211 198;
+  --color-secondary-800: 241 235 228;
+  --color-secondary-900: 251 248 242;
+  --color-secondary-950: 255 253 248;
+
+  --color-accent-50: 240 253 250;
+  --color-accent-100: 204 251 241;
+  --color-accent-200: 153 246 228;
+  --color-accent-300: 94 234 212;
+  --color-accent-400: 45 212 191;
+  --color-accent-500: 20 184 166;
+  --color-accent-600: 13 148 136;
+  --color-accent-700: 15 118 110;
+  --color-accent-800: 17 94 89;
+  --color-accent-900: 19 78 74;
+  --color-accent-950: 4 47 46;
+
+  --color-success-50: 236 253 243;
+  --color-success-100: 209 250 227;
+  --color-success-200: 167 243 208;
+  --color-success-300: 110 231 183;
+  --color-success-400: 52 211 153;
+  --color-success-500: 16 185 129;
+  --color-success-600: 5 150 105;
+  --color-success-700: 4 120 87;
+  --color-success-800: 6 95 70;
+  --color-success-900: 6 78 59;
+  --color-success-950: 2 44 34;
+
+  --color-warning-50: 255 248 232;
+  --color-warning-100: 255 239 194;
+  --color-warning-200: 255 224 138;
+  --color-warning-300: 255 207 87;
+  --color-warning-400: 255 187 47;
+  --color-warning-500: 245 158 11;
+  --color-warning-600: 217 119 6;
+  --color-warning-700: 180 83 9;
+  --color-warning-800: 146 64 14;
+  --color-warning-900: 120 53 15;
+  --color-warning-950: 69 26 3;
+
+  --color-vscode-bg: 251 248 242;
+  --color-vscode-sidebar: 255 253 248;
+  --color-vscode-active: 241 235 228;
+  --color-vscode-border: 222 211 198;
+  --color-vscode-text: 47 42 36;
+  --color-vscode-accent: 255 95 58;
+  --color-vscode-success: 16 185 129;
+  --color-vscode-warning: 245 158 11;
+  --color-vscode-error: 191 51 24;
+  --color-vscode-purple: 124 58 237;
+  --color-vscode-blue: 14 165 233;
+  --color-vscode-green: 16 185 129;
+  --color-vscode-orange: 249 115 22;
+  --color-vscode-yellow: 234 179 8;
+
+  --bg-spot-primary: 255 95 58;
+  --bg-spot-accent: 20 184 166;
+  --bg-gradient-start: 255 253 250;
+  --bg-gradient-mid: 249 243 234;
+  --bg-gradient-end: 245 236 223;
+  --toast-bg: 255 253 248;
+  --toast-text: 47 42 36;
+  --toast-border: 222 211 198;
+  --toast-shadow: 84 58 28;
+  --shadow-elevated: 24 14 2;
+  --shadow-shell: 84 58 28;
+
+  --app-bg: rgb(var(--color-vscode-bg));
+  --app-surface: rgb(var(--color-vscode-sidebar));
+  --app-surface-soft: rgb(var(--color-vscode-active));
+  --app-border: rgb(var(--color-vscode-border));
+  --app-text: rgb(var(--color-vscode-text));
+  --app-muted: rgb(var(--color-secondary-500));
+  --app-primary: rgb(var(--color-primary-500));
+  --app-primary-strong: rgb(var(--color-primary-600));
+  --app-accent: rgb(var(--color-accent-500));
   --motion-duration-fast: 180ms;
   --motion-duration-base: 280ms;
   --motion-duration-slow: 420ms;
@@ -19,6 +106,97 @@
   --motion-ease-soft: cubic-bezier(0.25, 0.9, 0.35, 1);
   --motion-distance-sm: 8px;
   --motion-distance-md: 14px;
+  color-scheme: light;
+}
+
+[data-theme='midnight'] {
+  --color-primary-50: 255 247 243;
+  --color-primary-100: 255 233 221;
+  --color-primary-200: 255 210 188;
+  --color-primary-300: 255 179 150;
+  --color-primary-400: 250 148 114;
+  --color-primary-500: 244 127 95;
+  --color-primary-600: 226 103 72;
+  --color-primary-700: 190 79 53;
+  --color-primary-800: 152 61 40;
+  --color-primary-900: 118 47 35;
+  --color-primary-950: 70 27 21;
+
+  --color-secondary-50: 16 22 40;
+  --color-secondary-100: 239 244 255;
+  --color-secondary-200: 218 228 247;
+  --color-secondary-300: 189 203 230;
+  --color-secondary-400: 157 174 206;
+  --color-secondary-500: 127 146 181;
+  --color-secondary-600: 97 117 153;
+  --color-secondary-700: 72 92 126;
+  --color-secondary-800: 53 70 102;
+  --color-secondary-900: 41 56 86;
+  --color-secondary-950: 31 43 69;
+
+  --color-accent-50: 236 255 252;
+  --color-accent-100: 203 250 245;
+  --color-accent-200: 163 242 233;
+  --color-accent-300: 116 225 213;
+  --color-accent-400: 78 198 185;
+  --color-accent-500: 50 169 157;
+  --color-accent-600: 36 138 129;
+  --color-accent-700: 28 108 102;
+  --color-accent-800: 24 84 81;
+  --color-accent-900: 20 67 65;
+  --color-accent-950: 11 39 39;
+
+  --color-success-50: 221 253 238;
+  --color-success-100: 187 247 220;
+  --color-success-200: 134 239 189;
+  --color-success-300: 74 222 128;
+  --color-success-400: 52 211 153;
+  --color-success-500: 16 185 129;
+  --color-success-600: 5 150 105;
+  --color-success-700: 4 120 87;
+  --color-success-800: 6 95 70;
+  --color-success-900: 6 78 59;
+  --color-success-950: 3 45 33;
+
+  --color-warning-50: 255 251 234;
+  --color-warning-100: 255 243 204;
+  --color-warning-200: 252 228 156;
+  --color-warning-300: 248 208 108;
+  --color-warning-400: 243 189 79;
+  --color-warning-500: 233 169 49;
+  --color-warning-600: 202 132 30;
+  --color-warning-700: 180 83 9;
+  --color-warning-800: 146 64 14;
+  --color-warning-900: 120 53 15;
+  --color-warning-950: 69 26 3;
+
+  --color-vscode-bg: 27 39 63;
+  --color-vscode-sidebar: 34 48 76;
+  --color-vscode-active: 48 66 101;
+  --color-vscode-border: 90 112 150;
+  --color-vscode-text: 239 244 255;
+  --color-vscode-accent: 244 127 95;
+  --color-vscode-success: 52 211 153;
+  --color-vscode-warning: 233 169 49;
+  --color-vscode-error: 232 107 88;
+  --color-vscode-purple: 183 170 250;
+  --color-vscode-blue: 104 205 252;
+  --color-vscode-green: 52 211 153;
+  --color-vscode-orange: 247 158 95;
+  --color-vscode-yellow: 243 204 90;
+
+  --bg-spot-primary: 244 127 95;
+  --bg-spot-accent: 50 169 157;
+  --bg-gradient-start: 54 67 103;
+  --bg-gradient-mid: 40 55 89;
+  --bg-gradient-end: 30 43 72;
+  --toast-bg: 41 57 89;
+  --toast-text: 239 244 255;
+  --toast-border: 108 130 170;
+  --toast-shadow: 12 20 40;
+  --shadow-elevated: 12 20 40;
+  --shadow-shell: 12 20 40;
+  color-scheme: dark;
 }
 
 * {
@@ -34,17 +212,25 @@ body {
 
 body {
   margin: 0;
-  color: var(--app-text);
+  color: rgb(var(--color-vscode-text));
   background:
-    radial-gradient(circle at 0% 0%, rgba(255, 95, 58, 0.2), transparent 42%),
-    radial-gradient(circle at 100% 100%, rgba(20, 184, 166, 0.16), transparent 40%),
-    linear-gradient(160deg, #fffdfa 0%, #f9f3ea 52%, #f5ecdf 100%);
+    radial-gradient(circle at 0% 0%, rgb(var(--bg-spot-primary) / 0.2), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgb(var(--bg-spot-accent) / 0.16), transparent 40%),
+    linear-gradient(
+      160deg,
+      rgb(var(--bg-gradient-start)) 0%,
+      rgb(var(--bg-gradient-mid)) 52%,
+      rgb(var(--bg-gradient-end)) 100%
+    );
   font-family: var(--font-nunito), system-ui, sans-serif;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   animation: app-fade-in var(--motion-duration-slow) var(--motion-ease-soft) both;
+  transition:
+    background var(--motion-duration-slow) var(--motion-ease-standard),
+    color var(--motion-duration-base) var(--motion-ease-standard);
 }
 
 #__next {
@@ -107,6 +293,7 @@ body {
   .app-shell {
     @apply border border-secondary-700/90 bg-secondary-950/90 backdrop-blur-xl rounded-none md:rounded-[24px] shadow-[0_18px_48px_rgba(84,58,28,0.16)];
     animation: scale-in-soft var(--motion-duration-slow) var(--motion-ease-standard) both;
+    box-shadow: 0 18px 48px rgb(var(--shadow-shell) / 0.2);
   }
 
   .surface {
@@ -247,7 +434,7 @@ body {
   .surface:hover,
   .surface-soft:hover,
   .motion-lift:hover {
-    box-shadow: 0 14px 32px rgba(24, 14, 2, 0.14);
+    box-shadow: 0 14px 32px rgb(var(--shadow-elevated) / 0.26);
   }
 }
 
@@ -257,16 +444,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(198, 183, 167, 0.35);
+  background: rgb(var(--color-vscode-border) / 0.35);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(146, 122, 96, 0.45);
+  background: rgb(var(--color-secondary-500) / 0.45);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(122, 95, 66, 0.6);
+  background: rgb(var(--color-secondary-400) / 0.6);
 }
 
 @media (max-width: 768px) {

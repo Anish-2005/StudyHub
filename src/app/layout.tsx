@@ -48,8 +48,13 @@ export default function RootLayout({
   children: ReactNode
 }) {
   return (
-    <html lang="en" className={`${nunito.variable} ${sora.variable}`}>
+    <html lang="en" data-theme="warm" className={`${nunito.variable} ${sora.variable}`} suppressHydrationWarning>
       <body className="bg-vscode-bg text-vscode-text antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('studyhub-theme');document.documentElement.setAttribute('data-theme',t==='midnight'?'midnight':'warm')}catch(_){document.documentElement.setAttribute('data-theme','warm')}})();`,
+          }}
+        />
         <AuthProvider>
           {children}
           <Toaster
@@ -58,13 +63,13 @@ export default function RootLayout({
             toastOptions={{
               duration: 3200,
               style: {
-                background: '#fffdf8',
-                color: '#2f2a24',
-                border: '1px solid #ded3c6',
+                background: 'rgb(var(--toast-bg) / 0.96)',
+                color: 'rgb(var(--toast-text))',
+                border: '1px solid rgb(var(--toast-border) / 0.82)',
                 borderRadius: '12px',
                 fontSize: '13px',
                 maxWidth: '92vw',
-                boxShadow: '0 10px 24px rgba(84,58,28,0.14)',
+                boxShadow: '0 10px 24px rgb(var(--toast-shadow) / 0.28)',
               },
             }}
           />

@@ -35,3 +35,22 @@ export function getTopicPublicUrl(username: string, topicName: string): string {
   const encodedTopicName = formatTopicForUrl(topicName);
   return `${baseUrl}/${encodedUsername}/${encodedTopicName}`;
 }
+
+export type ShareTab = 'overview' | 'tasks' | 'reminders' | 'notes';
+
+/**
+ * Get a smart topic link that opens a specific tab.
+ */
+export function getTopicShareUrl(username: string, topicName: string, tab: ShareTab = 'overview'): string {
+  const topicUrl = getTopicPublicUrl(username, topicName);
+  return `${topicUrl}?tab=${encodeURIComponent(tab)}`;
+}
+
+/**
+ * Get a smart task link that opens the topic in the tasks tab and targets a task.
+ */
+export function getTaskShareUrl(username: string, topicName: string, taskId: string): string {
+  const topicUrl = getTopicPublicUrl(username, topicName);
+  const encodedTaskId = encodeURIComponent(taskId);
+  return `${topicUrl}?tab=tasks&task=${encodedTaskId}`;
+}

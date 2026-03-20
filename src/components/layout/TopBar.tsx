@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Topic } from '@/types';
 import StudyHubLogo from '@/components/branding/StudyHubLogo';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 interface TopBarProps {
   selectedTopic: Topic | null;
@@ -75,7 +76,11 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
           </svg>
         </button>
 
+        <ThemeToggle compact className="md:hidden" />
+
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle compact />
+
           <div className="text-right">
             <p className="text-xs font-semibold text-secondary-200">{currentTime}</p>
             <p className="text-[11px] text-secondary-500">{dateText}</p>

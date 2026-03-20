@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/contexts/AuthContext';
 import StudyHubLogo from '@/components/branding/StudyHubLogo';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const AuthForm: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -47,6 +48,10 @@ const AuthForm: React.FC = () => {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-6">
+      <div className="absolute right-4 top-4 z-20">
+        <ThemeToggle compact />
+      </div>
+
       <div className="pointer-events-none absolute inset-0">
         <div className="ambient-float absolute left-0 top-12 h-72 w-72 rounded-full bg-primary-200/50 blur-3xl" />
         <div className="ambient-float motion-delay-1 absolute right-8 top-1/3 h-80 w-80 rounded-full bg-accent-200/45 blur-3xl" />

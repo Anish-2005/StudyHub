@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React, { useState } from 'react';
-import { getTopicPublicUrl } from '@/utils/slug';
+import { getTopicShareUrl } from '@/utils/slug';
 import toast from 'react-hot-toast';
 
 interface ShareModalProps {
@@ -15,7 +15,7 @@ interface ShareModalProps {
 
 const ShareModal: React.FC<ShareModalProps> = ({ topic, username, onClose }) => {
   const [copied, setCopied] = useState(false);
-  const publicUrl = getTopicPublicUrl(username, topic.name);
+  const publicUrl = getTopicShareUrl(username, topic.name, 'overview');
 
   const handleCopyLink = async () => {
     try {
@@ -56,7 +56,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ topic, username, onClose }) => 
               <h3 className="text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-sora)' }}>
                 Share Topic
               </h3>
-              <p className="text-xs text-secondary-400">Public link for {topic.name}</p>
+              <p className="text-xs text-secondary-400">Smart topic link for {topic.name}</p>
             </div>
             <button
               onClick={onClose}
