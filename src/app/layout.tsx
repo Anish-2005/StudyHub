@@ -3,6 +3,7 @@ import { Nunito_Sans, Sora } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { Toaster } from 'react-hot-toast'
+import type { ReactNode } from 'react'
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
@@ -44,7 +45,7 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="en" className={`${nunito.variable} ${sora.variable}`}>
