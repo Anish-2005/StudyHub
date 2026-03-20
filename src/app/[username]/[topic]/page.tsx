@@ -4,16 +4,17 @@ import { decodeTopicFromUrl, decodeUsernameFromUrl } from '@/utils/slug';
 import { SITE_NAME, SITE_URL } from '@/lib/seo';
 
 interface PublicTopicPageProps {
-  params: {
+  params: Promise<{
     username: string;
     topic: string;
-  };
+  }>;
 }
 
-export function generateMetadata({ params }: PublicTopicPageProps): Metadata {
-  const username = decodeUsernameFromUrl(params.username);
-  const topicName = decodeTopicFromUrl(params.topic);
-  const canonicalPath = `/${params.username}/${params.topic}`;
+export async function generateMetadata({ params }: PublicTopicPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const username = decodeUsernameFromUrl(resolvedParams.username);
+  const topicName = decodeTopicFromUrl(resolvedParams.topic);
+  const canonicalPath = `/${resolvedParams.username}/${resolvedParams.topic}`;
   const title = `${topicName} by ${username}`;
   const description = `Public StudyHub topic: ${topicName}. Explore tasks, reminders, and notes shared by ${username}.`;
 

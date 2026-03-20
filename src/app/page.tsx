@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import HomeClient from '@/components/home/HomeClient';
+import LandingPage from '@/components/landing/LandingPage';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -20,5 +20,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <HomeClient />;
+  return <LandingPage />;
 }
