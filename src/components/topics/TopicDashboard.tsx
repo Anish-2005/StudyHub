@@ -208,7 +208,7 @@ const TopicDashboard: React.FC<TopicDashboardProps> = ({
   }, [isRefreshing, pullDistance]);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
+    <div className="motion-fade-up flex h-full flex-col overflow-hidden">
       <TopicDashboardHeader
         topic={topic}
         tasks={tasks}

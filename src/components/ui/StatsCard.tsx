@@ -28,7 +28,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, color }) => {
   };
 
   return (
-    <div className={`p-3 sm:p-4 rounded-lg border ${getColorClasses(color)}`}>
+    <div className={`motion-lift motion-fade-up p-3 sm:p-4 rounded-lg border ${getColorClasses(color)}`}>
       <div className="flex items-center justify-between">
         <div className="min-w-0 flex-1">
           <p className="text-xs sm:text-sm font-medium text-vscode-text/70 truncate">{title}</p>

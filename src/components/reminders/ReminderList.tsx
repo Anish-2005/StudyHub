@@ -79,8 +79,8 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
 
   return (
     <>
-      <div className="flex h-full flex-col">
-        <div className="border-b border-secondary-700/70 bg-secondary-900/65 px-4 py-4 md:px-6">
+      <div className="motion-fade-up flex h-full flex-col">
+        <div className="motion-fade-up border-b border-secondary-700/70 bg-secondary-900/65 px-4 py-4 md:px-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-secondary-100 md:text-xl" style={{ fontFamily: 'var(--font-sora)' }}>
@@ -91,7 +91,7 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
               </p>
             </div>
 
-            <button onClick={() => setShowCreateModal(true)} className="btn-primary touch-target">
+            <button onClick={() => setShowCreateModal(true)} className="btn-primary touch-target motion-lift">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -100,15 +100,15 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
           </div>
 
           <div className="mt-4 grid grid-cols-3 gap-2 md:max-w-md">
-            <div className="surface-soft px-3 py-2">
+            <div className="surface-soft motion-fade-up px-3 py-2">
               <p className="text-[11px] uppercase tracking-wide text-secondary-500">Upcoming</p>
               <p className="text-lg font-semibold text-primary-200">{stats.upcoming}</p>
             </div>
-            <div className="surface-soft px-3 py-2">
+            <div className="surface-soft motion-fade-up motion-delay-1 px-3 py-2">
               <p className="text-[11px] uppercase tracking-wide text-secondary-500">Completed</p>
               <p className="text-lg font-semibold text-success-200">{stats.completed}</p>
             </div>
-            <div className="surface-soft px-3 py-2">
+            <div className="surface-soft motion-fade-up motion-delay-2 px-3 py-2">
               <p className="text-[11px] uppercase tracking-wide text-secondary-500">Overdue</p>
               <p className="text-lg font-semibold text-accent-200">{stats.overdue}</p>
             </div>
@@ -119,7 +119,7 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
               <button
                 key={filterOption}
                 onClick={() => setFilter(filterOption)}
-                className={`touch-target flex-1 rounded-md px-3 py-2 text-xs font-semibold capitalize transition-colors md:text-sm ${
+                className={`touch-target motion-lift flex-1 rounded-md px-3 py-2 text-xs font-semibold capitalize transition-colors md:text-sm ${
                   filter === filterOption
                     ? 'bg-primary-500 text-white'
                     : 'text-secondary-300 hover:bg-secondary-800 hover:text-secondary-100'
@@ -133,7 +133,7 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
 
         <div className="mobile-scroll-container flex-1 px-4 py-4 md:px-6 md:py-5">
           {filteredReminders.length === 0 ? (
-            <div className="surface-soft mx-auto max-w-2xl py-12 text-center">
+            <div className="surface-soft motion-scale-in mx-auto max-w-2xl py-12 text-center">
               <p className="text-base font-semibold text-secondary-100">
                 {filter === 'all' ? 'No reminders yet' : `No ${filter} reminders`}
               </p>
@@ -148,19 +148,20 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
             </div>
           ) : (
             <div className="mx-auto max-w-4xl space-y-3">
-              {filteredReminders.map((reminder) => {
+              {filteredReminders.map((reminder, index) => {
                 const isOverdue = !reminder.completed && reminder.date < new Date();
 
                 return (
                   <article
                     key={reminder.id}
-                    className={`surface p-4 transition-colors ${
+                    className={`surface motion-lift motion-fade-up p-4 transition-colors ${
                       reminder.completed
                         ? 'opacity-70'
                         : isOverdue
                           ? 'border-accent-500/55 bg-accent-500/5'
                           : 'hover:border-primary-500/40'
                     }`}
+                    style={{ animationDelay: `${Math.min(index * 35, 220)}ms` }}
                   >
                     <div className="flex items-start gap-3">
                       <button
@@ -195,7 +196,7 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
                             </span>
                             <button
                               onClick={() => handleDeleteReminder(reminder.id)}
-                              className="touch-target rounded-md p-1.5 text-secondary-400 hover:bg-accent-500/10 hover:text-accent-300"
+                              className="touch-target motion-lift rounded-md p-1.5 text-secondary-400 hover:bg-accent-500/10 hover:text-accent-300"
                               title="Delete reminder"
                             >
                               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

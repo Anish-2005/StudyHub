@@ -47,8 +47,8 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
   };
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/65 p-2 sm:items-center sm:p-6">
-      <div className="surface max-h-[94vh] w-full max-w-2xl overflow-y-auto">
+    <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/65 p-2 motion-fade-up sm:items-center sm:p-6">
+      <div className="surface motion-scale-in max-h-[94vh] w-full max-w-2xl overflow-y-auto">
         <div className="sticky top-0 z-10 border-b border-secondary-700/70 bg-secondary-900/95 px-4 py-3 md:px-5">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -59,7 +59,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
             </div>
             <button
               onClick={onClose}
-              className="touch-target rounded-md border border-secondary-700 bg-secondary-800 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
+              className="touch-target motion-lift rounded-md border border-secondary-700 bg-secondary-800 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
               title="Close"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
                   key={color}
                   type="button"
                   onClick={() => setFormData({ ...formData, color })}
-                  className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-105 ${
+                  className={`motion-lift h-8 w-8 rounded-full border-2 transition-transform hover:scale-105 ${
                     formData.color === color ? 'border-white' : 'border-secondary-700'
                   }`}
                   style={{ backgroundColor: color }}
@@ -130,7 +130,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
                   key={icon.value}
                   type="button"
                   onClick={() => setFormData({ ...formData, icon: icon.value })}
-                  className={`touch-target rounded-lg border p-2 text-secondary-300 transition-colors ${
+                  className={`touch-target motion-lift rounded-lg border p-2 text-secondary-300 transition-colors ${
                     formData.icon === icon.value
                       ? 'border-primary-500 bg-primary-500/15 text-primary-200'
                       : 'border-secondary-700 bg-secondary-900 hover:bg-secondary-800'
@@ -149,7 +149,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
             <button
               type="button"
               onClick={() => setFormData((prev) => ({ ...prev, isPublic: !prev.isPublic }))}
-              className={`mt-0.5 inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              className={`motion-lift mt-0.5 inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 formData.isPublic ? 'bg-success-500' : 'bg-secondary-600'
               }`}
               aria-label="Toggle public topic"

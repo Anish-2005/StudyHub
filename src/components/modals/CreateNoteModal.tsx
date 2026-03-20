@@ -48,8 +48,8 @@ const CreateNoteModal: React.FC<CreateNoteModalProps> = ({ onClose, onSubmit, to
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/65 p-2 sm:items-center sm:p-6">
-      <div className="surface max-h-[92vh] w-full max-w-3xl overflow-y-auto">
+    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/65 p-2 motion-fade-up sm:items-center sm:p-6">
+      <div className="surface motion-scale-in max-h-[92vh] w-full max-w-3xl overflow-y-auto">
         <div className="sticky top-0 z-10 border-b border-secondary-700/70 bg-secondary-900/95 px-4 py-3 md:px-5">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -60,7 +60,7 @@ const CreateNoteModal: React.FC<CreateNoteModalProps> = ({ onClose, onSubmit, to
             </div>
             <button
               onClick={onClose}
-              className="touch-target rounded-md border border-secondary-700 bg-secondary-800 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
+              className="touch-target motion-lift rounded-md border border-secondary-700 bg-secondary-800 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
               title="Close"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

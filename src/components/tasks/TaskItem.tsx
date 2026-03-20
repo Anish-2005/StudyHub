@@ -37,7 +37,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
   };
 
   return (
-    <div className={`group p-4 md:p-6 rounded-xl border transition-all duration-200 hover:shadow-lg ${
+    <div className={`group motion-lift motion-fade-up p-4 md:p-6 rounded-xl border transition-all duration-200 hover:shadow-lg ${
       task.completed
         ? 'bg-secondary-50 dark:bg-secondary-800/30 border-secondary-200 dark:border-secondary-700/30'
         : 'bg-white dark:bg-secondary-800/60 border-secondary-200 dark:border-secondary-700/50 hover:border-secondary-300 dark:hover:border-secondary-600/50'

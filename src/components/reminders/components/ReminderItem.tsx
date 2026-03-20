@@ -60,7 +60,7 @@ const ReminderItem: React.FC<ReminderItemProps> = ({
 
   return (
     <div
-      className={`p-4 md:p-6 bg-vscode-sidebar border rounded-lg transition-all ${
+      className={`motion-lift motion-fade-up p-4 md:p-6 bg-vscode-sidebar border rounded-lg transition-all ${
         reminder.completed
           ? 'border-vscode-border opacity-60'
           : isOverdue(reminder.date, reminder.completed)
