@@ -1,0 +1,15 @@
+﻿<svg width="340" height="96" viewBox="0 0 340 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="brandGradWord" x1="8" y1="8" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff7f5d"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="60" height="60" rx="18" fill="url(#brandGradWord)"/>
+  <path d="M16 21c6-3.8 13.4-3.8 19.4 0v21.2c-6-3.8-13.4-3.8-19.4 0V21z" fill="#fffdf8"/>
+  <path d="M32.6 21c6-3.8 13.4-3.8 19.4 0v21.2c-6-3.8-13.4-3.8-19.4 0V21z" fill="#fff3e8"/>
+  <path d="M34 20.5v22" stroke="#ffd4c6" stroke-width="1.3"/>
+  <circle cx="46.2" cy="26.4" r="2.8" fill="#ff5f3a"/>
+  <text x="82" y="24" fill="#8b8074" font-family="Sora, 'Avenir Next', sans-serif" font-size="12" letter-spacing="3">STUDY SUITE</text>
+  <text x="82" y="54" fill="#2f2a24" font-family="Sora, 'Avenir Next', sans-serif" font-size="36" font-weight="700">StudyHub</text>
+</svg>

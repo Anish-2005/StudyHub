@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Topic } from '@/types';
 
 interface CreateTopicModalProps {
@@ -28,7 +28,7 @@ const CreateTopicModal: React.FC<CreateTopicModalProps> = ({ onClose, onSubmit }
     { value: 'language', label: 'Language', path: 'M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129' },
   ];
 
-  const previewIcon = useMemo(() => icons.find((item) => item.value === formData.icon) || icons[0], [formData.icon, icons]);
+  const previewIcon = icons.find((item) => item.value === formData.icon) || icons[0];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

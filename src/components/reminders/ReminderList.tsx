@@ -18,13 +18,12 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, topicId, topicNa
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed'>('all');
 
-  const now = new Date();
-
   const filteredReminders = useMemo(() => {
+    const now = new Date();
     if (filter === 'upcoming') return reminders.filter((item) => !item.completed && item.date > now);
     if (filter === 'completed') return reminders.filter((item) => item.completed);
     return reminders;
-  }, [filter, now, reminders]);
+  }, [filter, reminders]);
 
   const stats = useMemo(() => {
     const completed = reminders.filter((item) => item.completed).length;

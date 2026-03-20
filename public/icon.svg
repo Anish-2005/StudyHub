@@ -1,25 +1,17 @@
-<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="192" height="192" rx="24" fill="#1e1e1e"/>
-  
-  <!-- VS Code inspired window frame -->
-  <rect x="16" y="16" width="160" height="160" rx="8" fill="#252526" stroke="#3c3c3c" stroke-width="1"/>
-  
-  <!-- Top bar with dots -->
-  <rect x="16" y="16" width="160" height="24" rx="8" fill="#2d2d30"/>
-  <circle cx="32" cy="28" r="3" fill="#ff5f56"/>
-  <circle cx="48" cy="28" r="3" fill="#ffbd2e"/>
-  <circle cx="64" cy="28" r="3" fill="#27ca3f"/>
-  
-  <!-- Study icon in center -->
-  <rect x="48" y="64" width="96" height="80" rx="4" fill="#007acc" fill-opacity="0.1" stroke="#007acc" stroke-width="2"/>
-  
-  <!-- Book pages -->
-  <rect x="64" y="80" width="64" height="4" rx="2" fill="#cccccc"/>
-  <rect x="64" y="92" width="48" height="4" rx="2" fill="#cccccc"/>
-  <rect x="64" y="104" width="56" height="4" rx="2" fill="#cccccc"/>
-  <rect x="64" y="116" width="40" height="4" rx="2" fill="#cccccc"/>
-  
-  <!-- StudyHub text -->
-  <text x="96" y="164" text-anchor="middle" fill="#007acc" font-family="Arial, sans-serif" font-size="12" font-weight="bold">StudyHub</text>
+﻿<svg width="256" height="256" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="brandGrad" x1="8" y1="8" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff7f5d"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+    <linearGradient id="pageGrad" x1="14" y1="14" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fffdf8" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#f0ebe2" stop-opacity="0.96"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="60" height="60" rx="18" fill="url(#brandGrad)"/>
+  <path d="M16 21c6-3.8 13.4-3.8 19.4 0v21.2c-6-3.8-13.4-3.8-19.4 0V21z" fill="url(#pageGrad)"/>
+  <path d="M32.6 21c6-3.8 13.4-3.8 19.4 0v21.2c-6-3.8-13.4-3.8-19.4 0V21z" fill="#fff7ef"/>
+  <path d="M34 20.5v22" stroke="#ffd4c6" stroke-width="1.3"/>
+  <circle cx="46.2" cy="26.4" r="2.8" fill="#ff5f3a"/>
 </svg>
