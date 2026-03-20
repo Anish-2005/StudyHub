@@ -1,9 +1,9 @@
-'use client';
+﻿'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Reminder, Topic } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 interface CreateReminderModalProps {
@@ -29,15 +29,21 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ onClose, onSu
     const fetchTopics = async () => {
       const q = query(collection(db, 'topics'), where('userId', '==', user.uid));
       const snapshot = await getDocs(q);
-      const topicsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
+      const topicsData = snapshot.docs.map((entry) => ({
+        id: entry.id,
+        ...entry.data(),
       })) as Topic[];
-      setTopics(topicsData);
+      setTopics(topicsData.sort((a, b) => a.name.localeCompare(b.name)));
     };
 
     fetchTopics();
   }, [user]);
+
+  const selectedTopicName = useMemo(() => {
+    if (!topicId) return '';
+    const topic = topics.find((item) => item.id === topicId);
+    return topic?.name || 'Selected Topic';
+  }, [topicId, topics]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,144 +60,114 @@ const CreateReminderModal: React.FC<CreateReminderModalProps> = ({ onClose, onSu
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-vscode-sidebar border border-vscode-border rounded-lg w-full max-w-md">
-        {/* Header */}
-        <div className="p-4 border-b border-vscode-border">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-mono font-semibold text-vscode-text">Create New Reminder</h2>
+    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/65 p-2 sm:items-center sm:p-6">
+      <div className="surface max-h-[92vh] w-full max-w-xl overflow-y-auto">
+        <div className="sticky top-0 z-10 border-b border-secondary-700/70 bg-secondary-900/95 px-4 py-3 md:px-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+                Create Reminder
+              </h2>
+              <p className="text-xs text-secondary-400">Schedule study checkpoints and deadlines.</p>
+            </div>
             <button
               onClick={onClose}
-              className="p-1 text-vscode-text/70 hover:text-vscode-text hover:bg-vscode-active rounded transition-colors"
+              className="touch-target rounded-md border border-secondary-700 bg-secondary-800 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
+              title="Close"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-4 md:p-5">
           <div>
-            <label className="block text-sm font-mono text-vscode-text/70 mb-2">
-              Reminder Title *
-            </label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">Title *</label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-vscode-text font-mono focus:outline-none focus:border-vscode-accent transition-colors"
-              placeholder="What do you want to be reminded about?"
+              className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3 py-2.5 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
+              placeholder="What should we remind you about?"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-mono text-vscode-text/70 mb-2">
-              Description
-            </label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">Description</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-vscode-text font-mono focus:outline-none focus:border-vscode-accent transition-colors resize-none"
-              placeholder="Add more details..."
+              className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3 py-2.5 text-sm text-secondary-100 placeholder:text-secondary-500 focus:border-primary-500 focus:outline-none"
+              placeholder="Optional details"
               rows={3}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-mono text-vscode-text/70 mb-2">
-                Topic *
-              </label>
-              <select
-                value={formData.topicId}
-                onChange={(e) => setFormData({ ...formData, topicId: e.target.value })}
-                className="w-full px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-vscode-text font-mono focus:outline-none focus:border-vscode-accent transition-colors"
-                required
-              >
-                <option value="">Select topic</option>
-                {topics.map((topic) => (
-                  <option key={topic.id} value={topic.id}>
-                    {topic.name}
-                  </option>
-                ))}
-              </select>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">Topic *</label>
+              {topicId ? (
+                <div className="rounded-lg border border-secondary-700 bg-secondary-950/70 px-3 py-2.5 text-sm text-secondary-100">
+                  {selectedTopicName || 'Selected topic'}
+                </div>
+              ) : (
+                <select
+                  value={formData.topicId}
+                  onChange={(e) => setFormData({ ...formData, topicId: e.target.value })}
+                  className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3 py-2.5 text-sm text-secondary-100 focus:border-primary-500 focus:outline-none"
+                  required
+                >
+                  <option value="">Select topic</option>
+                  {topics.map((topic) => (
+                    <option key={topic.id} value={topic.id}>
+                      {topic.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-mono text-vscode-text/70 mb-2">
-                Type
-              </label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">Type</label>
               <select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as 'task' | 'study' | 'review' })}
-                className="w-full px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-vscode-text font-mono focus:outline-none focus:border-vscode-accent transition-colors"
+                className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3 py-2.5 text-sm text-secondary-100 focus:border-primary-500 focus:outline-none"
               >
-                <option value="study">Study Session</option>
+                <option value="study">Study</option>
                 <option value="review">Review</option>
-                <option value="task">Task Reminder</option>
+                <option value="task">Task</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-mono text-vscode-text/70 mb-2">
-              Date & Time *
-            </label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">Date & Time *</label>
             <input
               type="datetime-local"
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="w-full px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-vscode-text font-mono focus:outline-none focus:border-vscode-accent transition-colors"
+              className="w-full rounded-lg border border-secondary-700 bg-secondary-950/70 px-3 py-2.5 text-sm text-secondary-100 focus:border-primary-500 focus:outline-none"
               required
             />
           </div>
 
-          {/* Preview */}
-          <div className="border border-vscode-border rounded-md p-3 bg-vscode-bg">
-            <div className="text-sm font-mono text-vscode-text/70 mb-2">Preview:</div>
-            <div className="flex items-center space-x-2">
-              <div className={`${
-                formData.type === 'study' ? 'text-green-400' :
-                formData.type === 'review' ? 'text-yellow-400' :
-                'text-blue-400'
-              }`}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {formData.type === 'study' ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  ) : formData.type === 'review' ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  )}
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm font-mono text-vscode-text">
-                  {formData.title || 'Reminder Title'}
-                </div>
-                <div className="text-xs text-vscode-text/50">
-                  {formData.date ? new Date(formData.date).toLocaleString() : 'Select date & time'}
-                </div>
-              </div>
-            </div>
+          <div className="surface-soft p-3">
+            <p className="text-xs uppercase tracking-wide text-secondary-500">Preview</p>
+            <p className="mt-1 text-sm font-semibold text-secondary-100">{formData.title || 'Reminder Title'}</p>
+            <p className="mt-0.5 text-xs text-secondary-400">
+              {formData.date ? new Date(formData.date).toLocaleString() : 'Select date and time'}
+            </p>
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end space-x-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-mono text-vscode-text/70 hover:text-vscode-text transition-colors"
-            >
+          <div className="flex flex-col-reverse gap-2 border-t border-secondary-700/70 pt-4 sm:flex-row sm:justify-end">
+            <button type="button" onClick={onClose} className="btn-secondary">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-vscode-accent text-white font-mono text-sm rounded-md hover:bg-vscode-accent/80 transition-colors"
-            >
+            <button type="submit" className="btn-primary">
               Create Reminder
             </button>
           </div>

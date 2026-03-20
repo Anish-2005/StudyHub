@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { getTopicPublicUrl } from '@/utils/slug';
@@ -15,15 +15,14 @@ interface ShareModalProps {
 
 const ShareModal: React.FC<ShareModalProps> = ({ topic, username, onClose }) => {
   const [copied, setCopied] = useState(false);
-  
   const publicUrl = getTopicPublicUrl(username, topic.name);
 
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(publicUrl);
       setCopied(true);
-      toast.success('Link copied to clipboard!');
-      setTimeout(() => setCopied(false), 2000);
+      toast.success('Link copied');
+      setTimeout(() => setCopied(false), 1500);
     } catch {
       toast.error('Failed to copy link');
     }
@@ -33,92 +32,70 @@ const ShareModal: React.FC<ShareModalProps> = ({ topic, username, onClose }) => 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${topic.name} - StudyHub Topic`,
-          text: `Check out my study topic: ${topic.name}`,
+          title: `${topic.name} - StudyHub`,
+          text: `Check out this public topic: ${topic.name}`,
           url: publicUrl,
         });
       } catch (error) {
         if ((error as Error).name !== 'AbortError') {
-          toast.error('Failed to share');
+          toast.error('Share failed');
         }
       }
-    } else {
-      handleCopyLink();
+      return;
     }
+
+    await handleCopyLink();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-vscode-sidebar border border-vscode-border rounded-lg max-w-md w-full">
-        <div className="p-4 border-b border-vscode-border">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-vscode-text">Share Topic</h3>
+    <div className="fixed inset-0 z-[90] flex items-end justify-center bg-black/65 p-2 sm:items-center sm:p-6">
+      <div className="surface w-full max-w-lg">
+        <div className="border-b border-secondary-700/70 px-4 py-3 md:px-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-semibold text-secondary-100 md:text-lg" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+                Share Topic
+              </h3>
+              <p className="text-xs text-secondary-400">Public link for {topic.name}</p>
+            </div>
             <button
               onClick={onClose}
-              className="p-1 text-vscode-text/50 hover:text-vscode-text transition-colors"
+              className="touch-target rounded-md border border-secondary-700 bg-secondary-800 px-2.5 text-secondary-300 hover:bg-secondary-700 hover:text-secondary-100"
+              title="Close"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="space-y-4 p-4 md:p-5">
           <div>
-            <h4 className="font-medium text-vscode-text mb-2">{topic.name}</h4>
-            <p className="text-sm text-vscode-text/70 mb-4">
-              Share this public topic with others. Anyone with the link can view your study progress.
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-vscode-text/70 mb-2">
-              Public Link
-            </label>
-            <div className="flex items-center space-x-2">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-secondary-400">Public URL</label>
+            <div className="flex gap-2">
               <input
                 type="text"
                 value={publicUrl}
                 readOnly
-                className="flex-1 px-3 py-2 bg-vscode-bg border border-vscode-border rounded-md text-sm text-vscode-text font-mono"
+                className="flex-1 rounded-lg border border-secondary-700 bg-secondary-950/70 px-3 py-2.5 text-sm text-secondary-100"
               />
-              <button
-                onClick={handleCopyLink}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  copied
-                    ? 'bg-green-400/10 text-green-400 border border-green-400/20'
-                    : 'bg-vscode-accent text-white hover:bg-vscode-accent/80'
-                }`}
-              >
-                {copied ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                )}
+              <button onClick={handleCopyLink} className={`${copied ? 'btn-secondary' : 'btn-primary'} min-w-[84px]`}>
+                {copied ? 'Copied' : 'Copy'}
               </button>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 pt-4">
-            <button
-              onClick={handleShare}
-              className="flex-1 px-4 py-2 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors flex items-center justify-center space-x-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-              </svg>
-              <span>Share</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border border-vscode-border text-vscode-text/70 font-medium rounded-md hover:bg-vscode-active transition-colors"
-            >
+          <div className="surface-soft p-3 text-xs text-secondary-400">
+            Anyone with this link can view this topic while it is public.
+          </div>
+
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <button onClick={onClose} className="btn-secondary">
               Close
+            </button>
+            <button onClick={handleShare} className="btn-primary">
+              Share
             </button>
           </div>
         </div>

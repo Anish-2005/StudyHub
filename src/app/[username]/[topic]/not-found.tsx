@@ -1,19 +1,18 @@
-import React from 'react';
+﻿import React from 'react';
 import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-vscode-bg flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-vscode-text mb-4">404</h1>
-        <h2 className="text-2xl font-semibold text-vscode-text mb-4">Topic Not Found</h2>
-        <p className="text-vscode-text/70 mb-8 max-w-md">
-          The topic you&apos;re looking for doesn&apos;t exist or is not public.
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="surface-soft w-full max-w-md p-8 text-center">
+        <p className="text-xs uppercase tracking-[0.2em] text-secondary-500">404</p>
+        <h1 className="mt-2 text-2xl font-semibold text-secondary-100" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+          Topic Not Found
+        </h1>
+        <p className="mt-2 text-sm text-secondary-400">
+          The topic doesn&apos;t exist, isn&apos;t public, or the URL is incorrect.
         </p>
-        <Link
-          href="/"
-          className="px-6 py-3 bg-vscode-accent text-white font-medium rounded-md hover:bg-vscode-accent/80 transition-colors"
-        >
+        <Link href="/" className="btn-primary mt-6 inline-flex">
           Go Home
         </Link>
       </div>
