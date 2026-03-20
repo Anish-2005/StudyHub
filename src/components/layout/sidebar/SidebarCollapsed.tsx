@@ -24,7 +24,7 @@ const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
   user,
 }) => {
   return (
-    <aside className="motion-slide-in-left flex h-full w-16 flex-col border-r border-secondary-700/90 bg-secondary-950/95">
+    <aside className="motion-slide-in-left flex h-full w-16 flex-col overflow-hidden border-r border-secondary-700/90 bg-secondary-950/95">
       <div className="border-b border-secondary-700/90 p-2.5">
         <button
           onClick={onToggleCollapse}
@@ -52,7 +52,7 @@ const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
         </button>
       </div>
 
-      <div className="mobile-scroll-container flex-1 space-y-2 px-2.5 py-2.5">
+      <div className="mobile-scroll-container flex-1 space-y-2 overflow-x-hidden px-2.5 py-2.5">
         {loading && <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />}
 
         {!loading &&

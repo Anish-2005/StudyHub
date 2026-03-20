@@ -1,21 +1,24 @@
-﻿'use client';
+import type { Metadata } from 'next';
+import HomeClient from '@/components/home/HomeClient';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/seo';
 
-import { useAuth } from '@/contexts/AuthContext';
-import AuthForm from '@/components/auth/AuthForm';
-import Dashboard from '@/components/dashboard/Dashboard';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+export const metadata: Metadata = {
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+  },
+  twitter: {
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+};
 
-export default function Home() {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  return (
-    <main className="motion-fade-up h-screen overflow-hidden" style={{ height: '100dvh' }}>
-      {user ? <Dashboard /> : <AuthForm />}
-    </main>
-  );
+export default function HomePage() {
+  return <HomeClient />;
 }
-

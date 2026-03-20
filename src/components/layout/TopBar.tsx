@@ -47,15 +47,17 @@ const TopBar: React.FC<TopBarProps> = ({ selectedTopic, onMenuClick, isMobile, o
   return (
     <header className="motion-fade-up border-b border-secondary-700/90 bg-secondary-950/95 px-4 py-3 backdrop-blur-xl md:px-6">
       <div className="flex items-center gap-3">
-        <button
-          onClick={onMenuClick}
-          className="touch-target motion-lift rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800"
-          title="Toggle sidebar"
-        >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        {isMobile && (
+          <button
+            onClick={onMenuClick}
+            className="touch-target motion-lift rounded-xl border border-secondary-700 bg-secondary-900 px-2.5 text-secondary-200 hover:bg-secondary-800"
+            title="Toggle sidebar"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
 
         {!selectedTopic && <StudyHubLogo size={30} withWordmark={false} compact className="hidden md:inline-flex" />}
 
